@@ -239,7 +239,7 @@ def get_all_cliques(G):
 
     # output cliques of size k = 1
     for node in nodes_sorted:
-        yield node
+        yield [node]
 
     # output cliques of size k >= 2
     while clique_sublists:
@@ -251,7 +251,7 @@ def get_all_cliques(G):
             current_sublist_cn = tuple(sorted(set(neighbors_of_node_added).intersection(a_sublist['cn'])))
 
             #print 'clique: '+str(current_sublist_base)
-            yield current_sublist_base
+            yield [[node] for node in current_sublist_base]
 
             for node in current_sublist_cn:
                 new_sublist_base = current_sublist_base+tuple(node)
@@ -259,12 +259,12 @@ def get_all_cliques(G):
     
                 if len(new_sublist_cn) == 0:
                     #print 'clique: '+str(new_sublist_base)
-                    yield new_sublist_base
+                    yield [[n] for n in new_sublist_base]
                 elif len(new_sublist_cn) == 1:
                     #print 'clique: '+str(new_sublist_base)
-                    yield new_sublist_base
+                    yield [[n] for n in new_sublist_base]
                     #print 'clique: '+str(new_sublist_base+new_sublist_cn)
-                    yield new_sublist_base+new_sublist_cn
+                    yield [[n] for n in new_sublist_base+new_sublist_cn]
                 else:
                     #print 'candidate sublist: '+str([new_sublist_base, new_sublist_cn])
                     clique_sublists.append({'sb': new_sublist_base, 'cn': new_sublist_cn})
