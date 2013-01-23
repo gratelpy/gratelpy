@@ -13,6 +13,7 @@ import resource
 
 # # DEBUG
 # from pympler import tracker
+import gc
 # # DEBUG END
 
 import numpy as np
@@ -96,5 +97,9 @@ if __name__ == '__main__':
     # limit virtual memory (address space) to 2 GB
     # see man getrlimit for identifier RLIMIT_AS
     resource.setrlimit(resource.RLIMIT_AS,(2147483648,2147483648)) 
-
+    
+    #DEBUG
+    if not gc.isenabled():
+        gc.enable()
+    gc.set_debug(gc.DEBUG_LEAK) 
     main()
