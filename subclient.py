@@ -99,7 +99,7 @@ if __name__ == '__main__':
     resource.setrlimit(resource.RLIMIT_AS,(2147483648,2147483648)) 
     
     #DEBUG
-    if not gc.isenabled():
-        gc.enable()
-    gc.set_debug(gc.DEBUG_LEAK) 
+    # if not gc.isenabled():
+    #     gc.enable()
+    # gc.set_debug(gc.DEBUG_LEAK) 
     main()
