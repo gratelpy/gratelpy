@@ -51,7 +51,7 @@ def main():
     QueueManager.register('get_fragment_q')
     QueueManager.register('get_valid_frag_q')
     
-    m = QueueManager(address=('pinguinzinho', 50000), authkey='smallg')
+    m = QueueManager(address=('pinguim', 50000), authkey='smallg')
     
     m.connect()
     
@@ -92,5 +92,9 @@ def main():
 if __name__ == '__main__':
     #DEBUG
     #memory_tracker = tracker.SummaryTracker()
-    resource.setrlimit(resource.RLIMIT_DATA,(2147483648,2147483648)) # limit heap size to 2 GB
+    
+    # limit virtual memory (address space) to 2 GB
+    # see man getrlimit for identifier RLIMIT_AS
+    resource.setrlimit(resource.RLIMIT_AS,(2147483648,2147483648)) 
+
     main()
