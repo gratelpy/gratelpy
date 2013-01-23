@@ -66,7 +66,6 @@ def get_subgraph_components(G, f):
 
 def is_cycle(paths):
     # paths: tuple of paths, i.e. ordered set of paths
-#    assert(type(paths)==type(tuple()))
 
     paths = list(paths) # resulting paths list is different from paths tuple, i.e. popping elements won't alter global 'paths' object
 
@@ -260,14 +259,14 @@ def get_sensible_subgraphs_paths_in_cycles_using_cycle_graph(sc):
             mixed_edges_cycles_subgraphs.append([edge for edge in edges_combination]+[path for cycle in cycle_comb for path in cycle])
 
     # tidy up
-    del(cycles_in_path_graph)
-    del(cycles_in_path_graph_1)
-    del(cycles_in_path_graph_2)
-    #del(complete_subgraphs)
-    path_graph.clear()
-    cycle_graph.clear()
-    del(path_graph)
-    del(cycle_graph)
+    # del(cycles_in_path_graph)
+    # del(cycles_in_path_graph_1)
+    # del(cycles_in_path_graph_2)
+    # #del(complete_subgraphs)
+    # path_graph.clear()
+    # cycle_graph.clear()
+    # del(path_graph)
+    # del(cycle_graph)
 
     # return list of subgraphs
     return [tuple(sg) for sg in all_edges_subgraphs]+[tuple(sg) for sg in mixed_edges_cycles_subgraphs]
@@ -604,7 +603,11 @@ def validate_subgraphs(all_subs, sc, f):
         paths_in_cycle = set()
         for l in range(len(paths_to_check)+1): # REMEMBER: range(3)=[0,1,2]!
 #            paths_perms = list(it.combinations(paths_to_check,l))
-            paths_perms = list(it.permutations(paths_to_check,l))  # itertools.permutations is the correct choice (over combinations) since it returns all possible orderings of permutations of length l, combinations returns just one sorted combination
+            #paths_perms = list(it.permutations(paths_to_check,l))  
+            
+            # itertools.permutations is the correct choice (over combinations) since it returns all possible orderings of permutations of length l, combinations returns just one sorted combination
+            paths_perms = it.permutations(paths_to_check,l)
+
             for pp in paths_perms:
                 if is_cycle(pp):
                     paths_in_cycle = paths_in_cycle.union(set(pp))
@@ -722,7 +725,8 @@ def score_subgraph(args):
     sc_used = []
     for l in range(len(paths)+1): # REMEMBER: range(3)=[0,1,2]!
 #        el_perms = list(it.combinations(paths,l))
-        el_perms = list(it.permutations(paths,l))
+#        el_perms = list(it.permutations(paths,l))
+        el_perms = it.permutations(paths,l)
         for elp in el_perms:
             if is_cycle(elp):
                 cycle_is_unique=True

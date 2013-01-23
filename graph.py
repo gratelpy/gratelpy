@@ -30,7 +30,7 @@ def get_valid_path_graph_cycles(path_graph):
         del(v1_beginnings)
 
     # tidy up
-    del(cycles)
+    #del(cycles)
         
     #return valid_cycles
 
@@ -201,8 +201,8 @@ def get_path_graph(sc):
 #            print 'added edge '+str(path)+' -> '+str(target_path)
 
     # tidy up
-    del(paths)
-    del(path_starts)
+    #del(paths)
+    #del(path_starts)
 
     # return
     return path_graph

@@ -327,7 +327,8 @@ def get_edges_of_sensible_fragments(G, stoich_rank):
     complexes = list(complexes)
 
     # get all complex combinations
-    complex_perms = list(it.combinations(complexes,stoich_rank))
+#    complex_perms = list(it.combinations(complexes,stoich_rank))
+    complex_perms = it.combinations(complexes,stoich_rank)
 #    print 'len(complex_perms) = '+str(len(complex_perms))
 
     # for each complex combination, create all sensible fragments
