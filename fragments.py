@@ -86,6 +86,15 @@ def get_valid_fragments(G, stoich_rank):
     complexes = list(complexes)
     reactions = list(reactions)
 
+    if 'w1' not in complexes and 'w1' not in reactions:
+        raise Exception('my hack to resolve this unexpected behavior shown by bipartite.sets assumes that reaction nodes are named \'w1\', \'w2\', ...')
+    
+    if 'w1' in complexes:
+        complexes, reactions = reactions, complexes
+
+    if not ('w1' in reactions and 's1' in complexes):
+        raise Exception('Something went wrong generating the lists of complexes of reactions.')
+
     complex_perms = list(it.combinations(complexes,stoich_rank))
     reaction_perms = list(it.combinations_with_replacement(reactions,stoich_rank))
     fragments = list(it.product(complex_perms, reaction_perms))
