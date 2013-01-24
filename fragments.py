@@ -6,6 +6,7 @@ from networkx.algorithms import bipartite
 from subgraphs import score_subgraph
 from stoich import get_substance_adjacency
 from graph import get_graph_edges, get_bipartite_sets
+from decorators import deprecated
 
 def pretty_print(all_valid_subgraphs_of_fragment):
     # pretty printing for fragments:
@@ -79,6 +80,7 @@ def get_unique_fragments(some_frags):
 
     return unique_frags
 
+@deprecated('get_sensible_fragments')
 def get_valid_fragments(G, stoich_rank):
     #reactions, complexes = bipartite.sets(G)
     complexes, reactions = bipartite.sets(G)

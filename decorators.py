@@ -33,7 +33,7 @@ def deprecated(replacement=None):
         def inner(*args, **kwargs):
             msg = "%s is deprecated" % oldfun.__name__
             if replacement is not None:
-                msg += "; use %s instead" % (replacement.__name__)
+                msg += "; use %s instead" % (replacement)
             warnings.warn(msg, DeprecationWarning, stacklevel=2)
             if replacement is not None:
                 return replacement(*args, **kwargs)

@@ -11,7 +11,7 @@ resource.setrlimit(resource.RLIMIT_AS,(2147483648,2147483648))
 from parse_mechanism import get_network_from_mechanism
 from stoich import get_graph_stoich
 from subgraphs import get_subgraph_components, get_sensible_subgraphs
-from fragments import get_valid_fragments
+from fragments import get_sensible_fragments
 
 import cPickle as pickle
 import errno
@@ -29,7 +29,7 @@ try:
         valid_fragments = pickle.load(open(fn_vfrags))
 except IOError, e:
     if e.errno == errno.ENOENT:
-        valid_fragments = get_valid_fragments(G, stoich_rank)
+        valid_fragments = get_sensible_fragments(G, stoich_rank)
         pickle.dump(valid_fragments, open(fn_vfrags, 'wb'))
     else: raise
 
