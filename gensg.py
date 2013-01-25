@@ -62,7 +62,13 @@ def gen_valid_subgraphs_mps(G, valid_fragments, stoich_rank):
         if vsg is not None:
             len_vsg = len(vsg)
         if vsg is not None:
-            valid_subgraphs.append(vsg)
+            # here we expect that vsg includes the score K_S of the corresponding fragment at index -1
+            if type(vsg[-1]) == type(float()):
+                if vsg[-1] < 0:
+                    valid_subgraphs.append(vsg) # only collect critical fragments
+            else:
+                raise
+
         n_results += 1
         perc_done = int(float(100 * n_results) / target_results)
         interval = time.time() - last_t
