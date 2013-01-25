@@ -1,5 +1,14 @@
+import socket
+hostname = socket.gethostname()
+
 import sys
-path_to_networkx_dev = '/home/waltherg/Dropbox/GratelPy/networkx-dev'
+if hostname == 'pinguinzinho':
+	path_to_networkx_dev = '/home/waltherg/Dropbox/GratelPy/networkx-dev'
+elif hostname == 'pinguim':
+	path_to_networkx_dev = '/usr/users/cbu/waltherg/JIC/Dropbox/GratelPy/networkx-dev/'
+else:
+	raise Exception('hostname unknown')
+
 sys.path.insert(1, path_to_networkx_dev)
 import networkx as nx
 
@@ -7,6 +16,7 @@ import resource
 # limit virtual memory (address space) to 2 GB
 # see man getrlimit for identifier RLIMIT_AS
 resource.setrlimit(resource.RLIMIT_AS,(2147483648,2147483648)) 
+#resource.setrlimit(resource.RLIMIT_AS,(4294967296,4294967296)) 
 
 from parse_mechanism import get_network_from_mechanism
 from stoich import get_graph_stoich
@@ -35,3 +45,11 @@ except IOError, e:
 
 sc = get_subgraph_components(G, frag)
 sensible_sgs = get_sensible_subgraphs(sc)
+
+sg_ctr = 0
+print 'sensible subgraphs: '
+for sg in sensible_sgs:
+	print sg
+	sg_ctr = sg_ctr + 1
+
+print sg_ctr
