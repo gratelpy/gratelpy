@@ -28,6 +28,10 @@ def get_network_from_mechanism(filename, no_complexes):
         curr_line = line.strip() # removes trailing and leading whitespaces
         curr_line = curr_line.replace(' ', '') # removes all remaining whitespaces on line
 
+        # check if this line is a comment
+        if curr_line[0] == '#':
+            continue
+
         # get left, reactant side
         curr_left = curr_line.split('->')[0]
         # get right, product side
