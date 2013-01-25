@@ -30,6 +30,7 @@ def get_network_from_mechanism(filename, no_complexes):
 
         # check if this line is a comment
         if curr_line[0] == '#':
+            no_constants = no_constants - 1 # no_constants is taken as number of non-comment lines in mechanism file
             continue
 
         # get left, reactant side
