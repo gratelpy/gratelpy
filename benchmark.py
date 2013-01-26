@@ -18,6 +18,9 @@ your_file_name = None
 benchmark_fs = None
 your_fs = None
 
+b_fragments = None
+y_fragments = None
+
 def data_summary(data, data_filename):
     print '----------------------'
     print data_filename
@@ -26,6 +29,9 @@ def data_summary(data, data_filename):
     print '----------------------'
 
 def data_compare(b_data, b_filename, y_data, y_filename):
+    global b_fragments
+    global y_fragments
+
     b_fragments = set([s[frag_i] for s in b_data])
     y_fragments = set([s[frag_i] for s in y_data])
 
