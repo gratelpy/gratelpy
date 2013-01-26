@@ -32,8 +32,8 @@ def data_compare(b_data, b_filename, y_data, y_filename):
     global b_fragments
     global y_fragments
 
-    b_fragments = set([s[frag_i] for s in b_data])
-    y_fragments = set([s[frag_i] for s in y_data])
+    b_fragments = frozenset([(frozenset(s[frag_i][0]), frozenset(s[frag_i][1])) for s in b_data])
+    y_fragments = frozenset([(frozenset(s[frag_i][0]), frozenset(s[frag_i][1])) for s in y_data])
 
     print 'set of fragments in',b_filename,'no. of fragments:',len(b_fragments)
     print 'set of fragments in',y_filename,'no. of fragments:',len(y_fragments)
