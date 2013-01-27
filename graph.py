@@ -207,22 +207,57 @@ def get_path_graph(sc):
     # return
     return path_graph
         
-def greater_neighbors(G, a_node):
-    # returns neighbors of node a_node in G that have grater index than a_node in sorted list of nodes
-    nodes_sorted = sorted(G.nodes())
-    a_node_index = nodes_sorted.index(a_node)
 
-    neighbors_of_a_node = []
-
-    for another_node_index, another_node in enumerate(nodes_sorted):
-        if another_node_index > a_node_index and another_node in G.neighbors(a_node):
-            neighbors_of_a_node.append(another_node)
-    
-    return tuple(neighbors_of_a_node)
-
+@not_implemented_for('directed')
 def get_all_cliques(G):
-    # returns all cliques of all sizes in NetworkX Graph G
-    # G: undirected graph
+    """Returns all cliques in an undirected graph.
+
+    This method returns cliques of size (cardinality) k = 1, 2, 3, ..., maxDegree - 1.
+    Where maxDegree is the maximal degree of any node in the graph.
+
+    Keyword arguments
+    -----------------
+    G: undirected graph
+
+    Returns
+    -------
+    generator of lists: generator of list for each clique.
+
+    Notes
+    -----
+    To obtain a list of all cliques, use list(get_all_cliques(G)).
+
+    Based on the algorithm published by Zhang et al. (2005) [1]_ and adapted to output all cliques discovered.
+    
+    This algorithm is not suitable for directed graphs.
+
+    This algorithm ignores self-loops and parallel edges as
+    clique is not conventionally defined with such edges.
+
+    There are often many cliques in graphs. This algorithm however, hopefully, does not run out of memory
+    since it only keeps candidate sublists in memory and continuously removes exhausted sublists.
+
+    References
+    ----------
+    .. [1] Yun Zhang, Abu-Khzam, F.N., Baldwin, N.E., Chesler, E.J., Langston, M.A., Samatova, N.F., 
+       Genome-Scale Computational Approaches to Memory-Intensive Applications in Systems Biology 
+       Supercomputing, 2005. Proceedings of the ACM/IEEE SC 2005 Conference , vol., no., pp. 12, 12-18 Nov. 2005
+       doi: 10.1109/SC.2005.29
+       http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1559964&isnumber=33129
+    """
+
+    def greater_neighbors(G, a_node):
+        """Helper method used in get_all_cliques"""
+        nodes_sorted = sorted(G.nodes())
+        a_node_index = nodes_sorted.index(a_node)
+        
+        neighbors_of_a_node = []
+
+        for another_node_index, another_node in enumerate(nodes_sorted):
+            if another_node_index > a_node_index and another_node in G.neighbors(a_node):
+                neighbors_of_a_node.append(another_node)
+    
+        return tuple(neighbors_of_a_node)
 
     # sorted list of nodes in graph
     nodes_sorted = sorted(G.nodes())
