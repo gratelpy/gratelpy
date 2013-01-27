@@ -5,6 +5,7 @@ Usage: benchmark.py bechnmark_file your_file"""
 
 import cPickle as pickle
 import sys
+from collections import Counter
 
 # data format
 frag_i = 0
@@ -31,6 +32,8 @@ y_sg = None
 b_ks = None
 y_ks = None
 b_dup = None
+yf_tags = None
+bf_tags = None
 
 def data_summary(data, data_filename):
     print '----------------------'
@@ -43,27 +46,57 @@ def duplicate_fragments(b_data, b_filename, y_data, y_filename):
     global b_fragments
     global y_fragments
     global b_dup
+    global bf_tags
+    global yf_tags
+    global bf_ctr
+    global yf_ctr
 
     b_duplicates = False
     y_duplicates = False
+    
+    bf_ctr = Counter([bf_tags[s[0]] for s in benchmark_fs])
+    yf_ctr = Counter([yf_tags[s[0]] for s in your_fs])
 
-    if len(b_fragments) < len(b_data):
-        print str(len(b_data)),'fragments in data set',b_filename,'-',str(len(b_fragments)),'unique fragments found'
+    if max(bf_ctr.values()) > 1:
         b_duplicates = True
-    elif len(b_fragments) > len(b_data):
-        raise
-    
-    if len(y_fragments) < len(y_data):
-        print str(len(y_data)),'fragments in data set',y_filename,'-',str(len(y_fragments)),'unique fragments found'
+    if max(yf_ctr.values()) > 1:
         y_duplicates = True
-    elif len(y_fragments) > len(y_data):
-        raise
-
-    if b_duplicates:
-        b_dup = {(frozenset(s[frag_i][0]), frozenset(s[frag_i][1])): [] for s in b_data}
-        for s in b_data:
-            b_dup[(frozenset(s[frag_i][0]), frozenset(s[frag_i][1]))].append(s)
     
+    if b_duplicates:
+        print 'duplicated fragments in',b_filename,':',str(len([val for val in bf_ctr.values() if val > 1]))
+        no_checked = 0
+        no_found_in_raw = 0
+        no_same_subgraphs = 0
+        for key in bf_ctr.keys():
+            if bf_ctr[key]>1:
+                no_checked += 1
+                sgs_in_raw = []
+                for s in b_data:
+                    if (tuple(sorted(s[frag_i][0])),tuple(sorted(s[frag_i][1]))) == key:
+                        no_found_in_raw += 1
+                        sgs_in_raw.append(s[sg_i])
+                if all(sg_1 == sg_2 for sg_1, sg_2 in zip(sgs_in_raw, sgs_in_raw)):
+                    no_same_subgraphs += 1
+        print 'checked',str(no_checked),'duplicate fragments of which',str(no_found_in_raw),'were found in raw',b_filename,'with same repeated subgraphs',str(no_same_subgraphs)
+
+    if y_duplicates:
+        print 'duplicated fragments in',y_filename,':',str(len([val for val in yf_ctr.values() if val > 1]))
+        no_checked = 0
+        no_found_in_raw = 0
+        no_same_subgraphs = 0
+        for key in yf_ctr.keys():
+            if yf_ctr[key]>1:
+                no_checked += 1
+                sgs_in_raw = []
+                for s in y_data:
+                    if (tuple(sorted(s[frag_i][0])),tuple(sorted(s[frag_i][1]))) == key:
+                        no_found_in_raw += 1
+                        sgs_in_raw.append(s[sg_i])
+                if all(sg_1 == sg_2 for sg_1, sg_2 in zip(sgs_in_raw, sgs_in_raw)):
+                    no_same_subgraphs += 1
+        print 'checked',str(no_checked),'duplicate fragments of which',str(no_found_in_raw),'were found in raw',y_filename,'with same repeated subgraphs',str(no_same_subgraphs)
+                
+
     
 def data_compare(b_data, b_filename, y_data, y_filename):
     global b_fragments
@@ -78,18 +111,23 @@ def data_compare(b_data, b_filename, y_data, y_filename):
     global y_sg
     global b_ks
     global y_ks
+    global bf_tags
+    global yf_tags
 
-    b_fragments = frozenset([(frozenset(s[frag_i][0]), frozenset(s[frag_i][1])) for s in b_data])
-    y_fragments = frozenset([(frozenset(s[frag_i][0]), frozenset(s[frag_i][1])) for s in y_data])
+    bf_tags = {s[0]: (tuple(sorted(s[frag_i][0])), tuple(sorted(s[frag_i][1]))) for s in b_data}
+    yf_tags = {s[0]: (tuple(sorted(s[frag_i][0])), tuple(sorted(s[frag_i][1]))) for s in y_data}
 
-    b_sc = {(frozenset(s[frag_i][0]), frozenset(s[frag_i][1])): s[sc_i] for s in b_data}
-    y_sc = {(frozenset(s[frag_i][0]), frozenset(s[frag_i][1])): s[sc_i] for s in y_data}
+    b_fragments = frozenset([bf_tags[s[0]] for s in b_data])
+    y_fragments = frozenset([yf_tags[s[0]] for s in y_data])
 
-    b_sg = {(frozenset(s[frag_i][0]), frozenset(s[frag_i][1])): frozenset([frozenset([path for path in sg]) for sg in s[sg_i]]) for s in b_data}
-    y_sg = {(frozenset(s[frag_i][0]), frozenset(s[frag_i][1])): frozenset([frozenset([path for path in sg]) for sg in s[sg_i]]) for s in y_data}
+    b_sc = {bf_tags[s[0]]: s[sc_i] for s in b_data}
+    y_sc = {yf_tags[s[0]]: s[sc_i] for s in y_data}
 
-    b_ks = {(frozenset(s[frag_i][0]), frozenset(s[frag_i][1])): s[ks_i] for s in b_data}
-    y_ks = {(frozenset(s[frag_i][0]), frozenset(s[frag_i][1])): s[ks_i] for s in y_data}
+    b_sg = {bf_tags[s[0]]: frozenset([frozenset([path for path in sg]) for sg in s[sg_i]]) for s in b_data}
+    y_sg = {yf_tags[s[0]]: frozenset([frozenset([path for path in sg]) for sg in s[sg_i]]) for s in y_data}
+
+    b_ks = {bf_tags[s[0]]: s[ks_i] for s in b_data}
+    y_ks = {yf_tags[s[0]]: s[ks_i] for s in y_data}
 
     print 'set of fragments in',b_filename,'no. of fragments:',len(b_fragments)
     print 'set of fragments in',y_filename,'no. of fragments:',len(y_fragments)
@@ -98,15 +136,13 @@ def data_compare(b_data, b_filename, y_data, y_filename):
     print 'fragments in',b_filename,'but not in',y_filename,':',len(b_fragments.difference(y_fragments))
     print 'fragments in',y_filename,'but not in',b_filename,':',len(y_fragments.difference(b_fragments))
 
-    b_critical = frozenset([((frozenset(s[frag_i][0]), frozenset(s[frag_i][1])), frozenset([frozenset([path for path in sg]) for sg in s[sg_i]]), s[ks_i]) for s in b_data if s[ks_i]<0.0])
+    b_critical = frozenset([(bf_tags[s[0]], frozenset([frozenset([path for path in sg]) for sg in s[sg_i]]), s[ks_i]) for s in b_data if s[ks_i]<0.0])
 
-    y_critical = frozenset([((frozenset(s[frag_i][0]), frozenset(s[frag_i][1])), frozenset([frozenset([path for path in sg]) for sg in s[sg_i]]), s[ks_i]) for s in y_data if s[ks_i]<0.0])
+    y_critical = frozenset([(yf_tags[s[0]], frozenset([frozenset([path for path in sg]) for sg in s[sg_i]]), s[ks_i]) for s in y_data if s[ks_i]<0.0])
 
     y_critical_extras = list(y_critical.difference(b_critical))
     b_critical_extras = list(b_critical.difference(y_critical))
 
-    for yf in y_critical_extras:
-        print 'sg in b:',len(b_sg[yf[0]]),', sg in y:',len(y_sg[yf[0]])
     
 def main():
     # declare global variables
