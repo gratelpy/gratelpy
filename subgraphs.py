@@ -132,6 +132,84 @@ def get_sensible_subgraphs(sc):
 
     return get_sensible_subgraphs_paths_in_cycles_using_cycle_graph(sc)
 
+
+def get_subgraph_motifs(sc):
+    # defintion of cliques / complete subgraphs
+    # http://en.wikipedia.org/wiki/Clique_(graph_theory)
+    # NOTE: in this method, the word 'subgraph' or phrase 'complete subgraph' most likely refers to the above graph-theoretic concept of cliques
+    # and not the concept used by Mincheva et al.
+
+    # get path graph
+    path_graph = get_path_graph(sc)
+
+    #cycles_in_path_graph = nx.simple_cycles(path_graph)
+    cycles_in_path_graph_1 = get_valid_path_graph_cycles(path_graph)
+    
+    cycles_in_path_graph_2 = None
+
+    # create cycle graph
+    # nodes are cycles
+    # edge(c1,c2) exists iff c1 and c2 have at least one substance as beginning of path in common
+    cycle_graph = nx.Graph()
+
+    # add all cycles (nodes) to cycle graph
+    cycles_in_path_graph = get_valid_path_graph_cycles(path_graph)
+    for cycle in cycles_in_path_graph:
+        cycle_graph.add_node(tuple(cycle))
+
+    # NOTE: code below only makes certain that nodes (cycles) connected to at least one other node (cycle) are added to the graph
+    # nodes (cycles) that are entirely disconnected from remainder of graph would be left out erroneously! Hence, we now add every cycle to the graph above before connecting all cycles.
+    for cycle_1 in cycles_in_path_graph_1:
+        # get_valid_path_graph_cycles returns a generator so receiving object of this method is 'empty' after each full loop across the list of valid path graph cycles
+        # we could also turn the returned generator into a list but here we choose a loss in performance (keeping the generator nature of returned object) over increased memory usage (conversion to list type)
+        cycles_in_path_graph_2 = get_valid_path_graph_cycles(path_graph)
+        for cycle_2 in cycles_in_path_graph_2:
+            if cycle_1 is not cycle_2 and any(path_in_cycle_1[0] in [path_in_cycle_2[0] for path_in_cycle_2 in cycle_2] for path_in_cycle_1 in cycle_1):
+                cycle_graph.add_edge(tuple(cycle_1),tuple(cycle_2)) # nodes must be immutable objects, hence create tuple from list
+
+
+    # look for all complete subgraphs in complement of cycle_graph
+    # complete subgraphs in complement are those cycles that don't share any complexes as beginning of path
+    cycle_graph = nx.complement(cycle_graph)
+
+    # subgraph motifs dictionary
+    sg_motifs = {}
+
+    # all-edges subgraphs
+    all_edges = [sc[key]['edges'] for key in sc.keys()]
+    all_edges_subgraphs = it.product(*all_edges)
+
+    #for cycle_comb in complete_subgraphs:
+    for cycle_comb in get_all_cliques(cycle_graph):
+        # IMPORTANT: cycle_comb is expected to be a list of tuples (each tuple being one cycle)
+        if type(cycle_comb) != type(list()):
+            #print "get_sensible_subgraphs: before raise: cycle_comb = "+str(cycle_comb)
+            cycle_comb = list(cycle_comb)
+            
+
+        unused_edges_per_substance = [sc[key]['edges'] for key in sc.keys() if key not in [path[0] for cycle in cycle_comb for path in cycle]]
+        for edges_combination in it.product(*unused_edges_per_substance):
+            curr_key = frozenset([edge for edge in edges_combination]+[path for cycle in cycle_comb for path in cycle])
+            if curr_key not in sg_motifs.keys():
+                sg_motifs[curr_key] = {}
+                sg_motifs[curr_key]['edges'] = [edge for edge in edges_combination]
+                sg_motifs[curr_key]['cycles'] = [cycle for cycle in cycle_comb]
+            else:
+                raise
+
+    # add all-edges subgraphs
+    for sg in all_edges_subgraphs:
+        curr_key = frozenset(sg)
+        if curr_key not in sg_motifs.keys():
+            sg_motifs[curr_key] = {}
+            sg_motifs[curr_key]['edges'] = [edge for edge in sg]
+            sg_motifs[curr_key]['cycles'] = []
+        else:
+            raise
+
+    # return subgraph motifs dictionary
+    return sg_motifs
+
 def get_sensible_subgraphs_paths_in_cycles_using_cycle_graph(sc):
     # code from test_get_all_subgraphs_using_cycle_graph_2.py
 
