@@ -127,9 +127,9 @@ for frag in critical_fragments_unique:
         if all_paths_in_cycles:
             subgraphs_with_all_paths_in_cycles += 1
         else:
-            print 'fragment',frag
-            print 'subgraph',s
-            print 'subgraph motifs',s_sg_motifs
+            print 'fragment',str(frag)
+            print 'subgraph',str(s)
+            print 'subgraph motifs',str(s_sg_motifs)
             raise Exception('not all paths in cycles')
 
         if subgraphs_tested%100==0:
