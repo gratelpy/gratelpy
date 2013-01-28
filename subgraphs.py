@@ -472,7 +472,7 @@ def validate_subgraphs(all_subs, sc, f):
         # all those paths with identical starting and end points form a shortest possible cycle by themselves and can't be part of a bigger cycle
         paths_to_check = []
         for el in sub:
-            if len(el)==3 and el[0]!=el[2]:
+            if len(el)==4 and el[0]!=el[2]:
                 # collect all paths in subgraph 'sub'
                 # omit those (presumably!) positive paths that form a positive cycle (sk, wi, sk)
                 paths_to_check.append(el)

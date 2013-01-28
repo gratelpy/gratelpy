@@ -175,10 +175,10 @@ def get_path_graph(sc):
     paths = set()
     for substance in sc.keys():
         for path in sc[substance]['p_paths']:
-            paths.add(path)
+            paths.add((path[0],path[1],path[2],'p'))
         for path in sc[substance]['n_paths']:
-            paths.add((path[0],path[1],path[2]))
-            paths.add((path[2],path[1],path[0]))
+            paths.add((path[0],path[1],path[2],'n'))
+            paths.add((path[2],path[1],path[0],'n'))
     paths = list(paths)
 
     # collect all starting and end points of paths

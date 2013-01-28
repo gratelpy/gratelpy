@@ -126,7 +126,7 @@ for frag in critical_fragments_unique:
     for s in subgraphs[frag]:
         subgraphs_tested += 1
         s_sg_motifs = sg_motifs[frozenset(s)]
-        all_paths_in_cycles = all([s_el in [path for cycle in s_sg_motifs['cycles'] for path in cycle] for s_el in s if len(s_el)==3])
+        all_paths_in_cycles = all([s_el in [path for cycle in s_sg_motifs['cycles'] for path in cycle] for s_el in s if len(s_el)==4])
         if all_paths_in_cycles:
             subgraphs_with_all_paths_in_cycles += 1
         else:
