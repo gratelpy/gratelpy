@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """subclient.py
 
-Usage: subclient.py mechanism_file num_complexes
+Usage: subclient.py mechanism_file num_complexes fragment_server_hostname
 """
 
 import sys
@@ -43,6 +43,7 @@ def main():
     try:
         mechanism_file = sys.argv[1]
         num_complexes = int(sys.argv[2])
+        frag_server = sys.argv[3]
     except IndexError:
         print __doc__
         sys.exit(2)
@@ -52,7 +53,7 @@ def main():
     QueueManager.register('get_fragment_q')
     QueueManager.register('get_valid_frag_q')
     
-    m = QueueManager(address=('pinguim', 50000), authkey='smallg')
+    m = QueueManager(address=(frag_server, 50000), authkey='smallg')
     
     m.connect()
     
