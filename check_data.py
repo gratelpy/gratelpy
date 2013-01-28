@@ -3,15 +3,27 @@
 
 Usage: check_data.py data_file"""
 
-import cPickle as pickle
+import socket
+hostname = socket.gethostname()
+
 import sys
+if hostname == 'pinguinzinho':
+	path_to_networkx_dev = '/home/waltherg/Dropbox/GratelPy/networkx-dev'
+elif hostname == 'pinguim':
+	path_to_networkx_dev = '/usr/users/cbu/waltherg/JIC/Dropbox/GratelPy/networkx-dev/'
+else:
+	raise Exception('hostname unknown')
+
+sys.path.insert(1, path_to_networkx_dev)
+import networkx as nx
+
+import cPickle as pickle
 from collections import Counter
 import errno
 from graph import get_path_graph, get_valid_path_graph_cycles
 from subgraphs import get_subgraph_motifs, score_subgraph
 from fragments import score_fragment
 
-import networkx as nx
 import itertools as it
 
 import math
