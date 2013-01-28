@@ -43,7 +43,7 @@ def get_subgraph_components(G, f):
         for n in non_edges:
             if e[1]==n[0]:
                 #print (e[0],e[1],n[1])
-                p_edge = (e[0],e[1],n[1])
+                p_edge = (e[0],e[1],n[1],'p')
                 if p_edge not in subgraph_components[e[0]]['p_paths']:
                     subgraph_components[e[0]]['p_paths'].append(p_edge)
 
@@ -56,7 +56,7 @@ def get_subgraph_components(G, f):
         for e2 in edges:
             if e1[0] != e2[0] and e1[1]==e2[1]:
                 #print (e1[0],e1[1],e2[0])
-                n_edge = (e1[0],e1[1],e2[0])
+                n_edge = (e1[0],e1[1],e2[0],'n')
                 if n_edge not in subgraph_components[e1[0]]['n_paths']:
                     subgraph_components[e1[0]]['n_paths'].append(n_edge)
 
