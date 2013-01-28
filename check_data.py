@@ -132,7 +132,7 @@ for frag in critical_fragments_unique:
             print 'subgraph motifs',s_sg_motifs
             raise Exception('not all paths in cycles')
 
-        if subgraphs_tested%10==0:
-            print str(subgraphs_tested),'of',str(no_subgraphs),'tested -',float(subgraphs_tested)/float(no_subgraphs),'%'
+        if subgraphs_tested%100==0:
+            print str(subgraphs_tested),'of',str(no_subgraphs),'tested -',100*float(subgraphs_tested)/float(no_subgraphs),'%'
 
 print str(subgraphs_tested),'subgraphs tested and',str(subgraphs_with_all_paths_in_cycles),'of these have all paths in cycles'
