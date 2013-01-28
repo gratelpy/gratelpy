@@ -169,6 +169,10 @@ for frag in critical_fragments_unique:
                     # NOTE: assuming that all stoichiometric coefficients == 1
                     k_g = k_g * 1
                 else:
+                    print 'fragment:',str(frag)
+                    print 'subgraph:',str(sg)
+                    print 'subgraph components:',str(sc)
+                    print 'path:',str(path)
                     raise
 
         k_g_library_method = score_subgraph([tuple(sg), sc])
