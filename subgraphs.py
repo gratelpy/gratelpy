@@ -620,14 +620,12 @@ def score_subgraph(args):
     K_C = 1
     for c in cycles_in_sub_graph:
         for p in c:
-            if False:
-                raise Exception('score_fragments: path is both positive and negative')
-            elif p in sc[p[0]]['p_paths']:
-                K_C = K_C * 1
-            elif p in sc[p[0]]['n_paths']:
+            if p[3] == 'p':
+                K_C = K_C*1
+            elif p[3] == 'n':
                 K_C = K_C * -1
             else:
-                raise Exception('score_fragments: path is neither positive nor negative')
+                raise
 
     K_g = K_g * math.pow(-1, t_g) * K_C
 
