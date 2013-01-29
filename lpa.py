@@ -133,6 +133,11 @@ def main():
         # beta = np.array(comb[1])
     
     G, stoich, stoich_rank = get_graph_stoich(alpha, beta)
+
+    # save more data about current system
+    system_data = base_name + '.sys'
+    pickle.dump({'alpha': alpha, 'beta': beta, 'stoich': stoich, 'graph': G}, open(system_data, 'wb'))
+
     #        stoich_rank = 6
     print 'rank of stoichiometry matrix = ' + str(stoich_rank)
     
