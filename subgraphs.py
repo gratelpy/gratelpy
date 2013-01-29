@@ -43,7 +43,7 @@ def get_subgraph_components(G, f):
         for n in non_edges:
             if e[1]==n[0]:
                 #print (e[0],e[1],n[1])
-                p_edge = (e[0],e[1],n[1])
+                p_edge = (e[0],e[1],n[1],'p')
                 if p_edge not in subgraph_components[e[0]]['p_paths']:
                     subgraph_components[e[0]]['p_paths'].append(p_edge)
 
@@ -56,7 +56,7 @@ def get_subgraph_components(G, f):
         for e2 in edges:
             if e1[0] != e2[0] and e1[1]==e2[1]:
                 #print (e1[0],e1[1],e2[0])
-                n_edge = (e1[0],e1[1],e2[0])
+                n_edge = (e1[0],e1[1],e2[0],'n')
                 if n_edge not in subgraph_components[e1[0]]['n_paths']:
                     subgraph_components[e1[0]]['n_paths'].append(n_edge)
 
@@ -472,7 +472,7 @@ def validate_subgraphs(all_subs, sc, f):
         # all those paths with identical starting and end points form a shortest possible cycle by themselves and can't be part of a bigger cycle
         paths_to_check = []
         for el in sub:
-            if len(el)==3 and el[0]!=el[2]:
+            if len(el)==4 and el[0]!=el[2]:
                 # collect all paths in subgraph 'sub'
                 # omit those (presumably!) positive paths that form a positive cycle (sk, wi, sk)
                 paths_to_check.append(el)
@@ -620,14 +620,12 @@ def score_subgraph(args):
     K_C = 1
     for c in cycles_in_sub_graph:
         for p in c:
-            if False:
-                raise Exception('score_fragments: path is both positive and negative')
-            elif p in sc[p[0]]['p_paths']:
-                K_C = K_C * 1
-            elif p in sc[p[0]]['n_paths']:
+            if p[3] == 'p':
+                K_C = K_C*1
+            elif p[3] == 'n':
                 K_C = K_C * -1
             else:
-                raise Exception('score_fragments: path is neither positive nor negative')
+                raise
 
     K_g = K_g * math.pow(-1, t_g) * K_C
 
