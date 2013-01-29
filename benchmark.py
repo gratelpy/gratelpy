@@ -123,8 +123,8 @@ def data_compare(b_data, b_filename, y_data, y_filename):
     b_sc = {bf_tags[s[0]]: s[sc_i] for s in b_data}
     y_sc = {yf_tags[s[0]]: s[sc_i] for s in y_data}
 
-    b_sg = {bf_tags[s[0]]: frozenset([frozenset([path for path in sg]) for sg in s[sg_i]]) for s in b_data}
-    y_sg = {yf_tags[s[0]]: frozenset([frozenset([path for path in sg]) for sg in s[sg_i]]) for s in y_data}
+    b_sg = {bf_tags[s[0]]: frozenset([frozenset([edge for edge in sg if len(edge)==2]+[(path[0],path[1],path[2]) for path in sg if len(path)>2]) for sg in s[sg_i]]) for s in b_data}
+    y_sg = {yf_tags[s[0]]: frozenset([frozenset([edge for edge in sg if len(edge)==2]+[(path[0],path[1],path[2]) for path in sg if len(path)>2]) for sg in s[sg_i]]) for s in y_data}
 
     b_ks = {bf_tags[s[0]]: s[ks_i] for s in b_data}
     y_ks = {yf_tags[s[0]]: s[ks_i] for s in y_data}
@@ -136,13 +136,22 @@ def data_compare(b_data, b_filename, y_data, y_filename):
     print 'fragments in',b_filename,'but not in',y_filename,':',len(b_fragments.difference(y_fragments))
     print 'fragments in',y_filename,'but not in',b_filename,':',len(y_fragments.difference(b_fragments))
 
-    b_critical = frozenset([(bf_tags[s[0]], frozenset([frozenset([path for path in sg]) for sg in s[sg_i]]), s[ks_i]) for s in b_data if s[ks_i]<0.0])
+    b_critical = frozenset([(bf_tags[s[0]], frozenset([frozenset([edge for edge in sg if len(edge)==2]+[(path[0],path[1],path[2]) for path in sg if len(path)>2]) for sg in s[sg_i]]), s[ks_i]) for s in b_data if s[ks_i]<0.0])
 
-    y_critical = frozenset([(yf_tags[s[0]], frozenset([frozenset([path for path in sg]) for sg in s[sg_i]]), s[ks_i]) for s in y_data if s[ks_i]<0.0])
+    y_critical = frozenset([(yf_tags[s[0]], frozenset([frozenset([edge for edge in sg if len(edge)==2]+[(path[0],path[1],path[2]) for path in sg if len(path)>2]) for sg in s[sg_i]]), s[ks_i]) for s in y_data if s[ks_i]<0.0])
 
-    y_critical_extras = list(y_critical.difference(b_critical))
-    b_critical_extras = list(b_critical.difference(y_critical))
+    y_critical_extras = list(set([yc[0] for yc in y_critical]).difference(set([yb[0] for yb in b_critical])))
+    b_critical_extras = list(set([yb[0] for yb in b_critical]).difference(set([yc[0] for yc in y_critical])))
+    
+    print 'critical fragments in your data set that are not present in benchmark data set:',str(len(y_critical_extras))
+    for yc in y_critical_extras:
+        print str(len(y_sg[yc])),'subgraphs in your critical fragment v.',str(len(b_sg[yc])),'subgraphs in benchmark fragment'
 
+        if len(b_sg[yc]) - len(y_sg[yc]) > 0:
+            # more subgraphs in benchmark critical fragment than in your critical fragment
+            print b_sg[yc].difference(y_sg[yc])
+        else:
+            raise
     
 def main():
     # declare global variables
