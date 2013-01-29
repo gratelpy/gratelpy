@@ -8,13 +8,13 @@ from stoich import get_substance_adjacency
 from graph import get_graph_edges, get_bipartite_sets
 from decorators import deprecated
 
-def pretty_print(all_valid_subgraphs_of_fragment):
+def pretty_print(valid_subgraphs):
     # pretty printing for fragments:
     # rearrange substance and reaction nodes in fragment tuples such that
     # substance and reaction nodes are paired up as in the fragment's 'all-edges' subgraph
     frag_print = None
     pretty_printed = False
-    for sg in el[vs_vs_i]:
+    for sg in valid_subgraphs:
         if all(len(sg_el)==2 for sg_el in sg):
             if pretty_printed:
                 # there should only be one all-edges subgraph per fragment
