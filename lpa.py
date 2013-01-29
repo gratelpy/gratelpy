@@ -116,6 +116,10 @@ def main():
 
     alpha, beta, dict_complexes, dict_constants, dict_complexes_reverse, dict_constants_reverse = get_network_from_mechanism(mechanism_file, num_complexes)
 
+    # save dictionaries for later changes in visualization / naming of complexes and reactions
+    dict_name = base_name + '.dict'
+    pickle.dump({'constants_dict': dict_constants, 'complexes_dict': dict_complexes, 'constants_dict_reverse': dict_constants_reverse, 'complexes_dict_reverse': dict_complexes_reverse}, open(dict_name, 'wb'))
+
     # presently, the subgraph scoring function (score_subgraph in subgraphs.py) assumes that all stoichiometric coefficients equal 1!
     if np.max(alpha) > 1 or np.max(beta) > 1:
         raise Exception('presently, the subgraph scoring function (score_subgraph in subgraphs.py) assumes that all stoichiometric coefficients equal 1!')
