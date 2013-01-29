@@ -115,6 +115,9 @@ print str(len(critical_fragments_unique)),'unique critical fragments'
 # (iii) that every subgraph is scored correctly, hence the overall fragment score is correct too
 
 # check multiplicity
+subgraphs_tested = 0
+no_subgraphs = sum([1 for frag in critical_fragments_unique for sg in subgraphs[frag]])
+print 'check multiplicity of complexes and reactions'
 for f in critical_fragments_unique:
     complex_multiplicity = Counter(f[0])
     reaction_multiplicty = Counter(f[1])
@@ -124,7 +127,18 @@ for f in critical_fragments_unique:
             print 'subgraph with mismatched multiplicity:'
             print sg
             raise
+        else:
+            subgraphs_tested += 1
 
+    if subgraphs_tested%100 == 0:
+        print '==========================='
+        print str(subgraphs_tested),'subgraphs of total',str(no_subgraphs),'tested. multiplicity sample:'
+        print 'fragment:',str(complex_multiplicity)
+        print 'subgraph:',str(Counter([el[0] for el in sg]))
+        print '---------------------------'
+        print 'fragment:',str(reaction_multiplicty)
+        print 'subgraph:',str(Counter([el[1] for el in sg]))
+print 'checked multiplicities of',str(subgraphs_tested),'subgraphs (of total',str(no_subgraphs),')'
 # check that every path in every subgraph is in a cycle
 subgraphs_tested = 0
 subgraphs_with_all_paths_in_cycles = 0
