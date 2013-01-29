@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 """check_data.py
 
-Usage: check_data.py data_file"""
+Usage: check_data.py data_file [dictionary file]"""
 
 import socket
 hostname = socket.gethostname()
 
 import sys
 if hostname == 'pinguinzinho':
-	path_to_networkx_dev = '/home/waltherg/Dropbox/GratelPy/networkx-dev'
+    path_to_networkx_dev = '/home/waltherg/Dropbox/GratelPy/networkx-dev'
 elif hostname == 'pinguim':
-	path_to_networkx_dev = '/usr/users/cbu/waltherg/JIC/Dropbox/GratelPy/networkx-dev/'
+    path_to_networkx_dev = '/usr/users/cbu/waltherg/JIC/Dropbox/GratelPy/networkx-dev/'
 else:
-	raise Exception('hostname unknown')
+    raise Exception('hostname unknown')
 
 sys.path.insert(1, path_to_networkx_dev)
 import networkx as nx
@@ -52,6 +52,12 @@ except IndexError:
     sys.exit(2)
 
 try:
+    dictname = sys.argv[2]
+except IndexError:
+    # no dictionary provided by caller
+    dictname = None
+
+try:
     print 'loading your data from',filename
     data = pickle.load(open(filename))
 except IOError, e:
@@ -59,6 +65,16 @@ except IOError, e:
         raise Exception('unable to open your file \'',filename,'\'')
     else:
         raise Exception('unknown error')
+
+if dictname is not None:
+    try:
+        print 'loading dictionary file from',dictname
+        dictionary = pickle.load(open(dictname))
+    except IOError, e:
+        if e.errno == errno.ENOENT: # no such file or directory
+            raise Exception('unable to open your file \'',dictname,'\'')
+        else:
+            raise Exception('unknown error')
 
 fragment_tags = {s[0]: (tuple(sorted(s[frag_i][0])), tuple(sorted(s[frag_i][1]))) for s in data}
 fragments = [fragment_tags[s[0]] for s in data] 
@@ -211,3 +227,21 @@ for frag in critical_fragments_unique:
         print str(fragments_checked),'of',str(len(critical_fragments_unique)),'fragments checked -',str(100*float(fragments_checked)/float(len(critical_fragments_unique))),'%'
 
 print str(fragments_checked),'fragments checked of total',str(len(critical_fragments_unique)),'fragments. k_s scores ok:',str(k_s_ok)
+
+# everything seems ok, now print the first 20 critical fragments
+print 'printing first 20 critical fragments'
+print ''
+if dictname is None:
+    ctr = 0
+    while ctr <= 19 and ctr < len(critical_fragments_unique):
+        print critical_fragments_unique[ctr][0]
+        print critical_fragments_unique[ctr][1]
+        print ''
+        ctr += 1
+else:
+    ctr = 0
+    while ctr <= 19 and ctr < len(critical_fragments_unique):
+        print tuple([dictionary['complexes_dict_reverse'][int(compl[1:])-1].translate(None,'[]') for compl in critical_fragments_unique[ctr][0]])
+        print tuple([dictionary['constants_dict_reverse'][int(rxn[1:])-1].translate(None,'[]') for rxn in critical_fragments_unique[ctr][1]])
+        print ''
+        ctr+=1
