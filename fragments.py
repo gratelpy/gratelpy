@@ -18,7 +18,8 @@ def pretty_print(valid_subgraphs):
         if all(len(sg_el)==2 for sg_el in sg):
             if pretty_printed:
                 # there should only be one all-edges subgraph per fragment
-                raise
+                # waltherg Jan 29: this is not true
+                pass
             else:
                 pretty_printed = True
 

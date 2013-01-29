@@ -22,7 +22,7 @@ from collections import Counter
 import errno
 from graph import get_path_graph, get_valid_path_graph_cycles
 from subgraphs import get_subgraph_motifs, score_subgraph
-from fragments import score_fragment
+from fragments import score_fragment, pretty_print
 
 import itertools as it
 
@@ -234,14 +234,16 @@ print ''
 if dictname is None:
     ctr = 0
     while ctr <= 19 and ctr < len(critical_fragments_unique):
-        print critical_fragments_unique[ctr][0]
-        print critical_fragments_unique[ctr][1]
+        frag = pretty_print(subgraphs[critical_fragments_unique[ctr]])
+        print frag[0]
+        print frag[1]
         print ''
         ctr += 1
 else:
     ctr = 0
     while ctr <= 19 and ctr < len(critical_fragments_unique):
-        print tuple([dictionary['complexes_dict_reverse'][int(compl[1:])-1].translate(None,'[]') for compl in critical_fragments_unique[ctr][0]])
-        print tuple([dictionary['constants_dict_reverse'][int(rxn[1:])-1].translate(None,'[]') for rxn in critical_fragments_unique[ctr][1]])
+        frag = pretty_print(subgraphs[critical_fragments_unique[ctr]])
+        print tuple([dictionary['complexes_dict_reverse'][int(compl[1:])-1].translate(None,'[]') for compl in frag[0]])
+        print tuple([dictionary['constants_dict_reverse'][int(rxn[1:])-1].translate(None,'[]') for rxn in frag[1]])
         print ''
         ctr+=1
