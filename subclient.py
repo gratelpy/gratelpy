@@ -11,6 +11,8 @@ if hostname == 'pinguinzinho':
 	path_to_networkx_dev = '/home/waltherg/Dropbox/GratelPy/networkx-dev'
 elif hostname == 'pinguim':
 	path_to_networkx_dev = '/usr/users/cbu/waltherg/JIC/Dropbox/GratelPy/networkx-dev/'
+elif 'ema' in hostname:
+        path_to_networkx_dev = '/usr/users/cbu/waltherg/JIC/Dropbox/GratelPy/networkx-dev/'
 else:
 	raise Exception('hostname unknown')
 
