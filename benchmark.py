@@ -6,6 +6,7 @@ Usage: benchmark.py bechnmark_file your_file"""
 import cPickle as pickle
 import sys
 from collections import Counter
+from subgraphs import get_subgraph_motifs
 
 # data format
 frag_i = 0
@@ -123,8 +124,10 @@ def data_compare(b_data, b_filename, y_data, y_filename):
     b_sc = {bf_tags[s[0]]: s[sc_i] for s in b_data}
     y_sc = {yf_tags[s[0]]: s[sc_i] for s in y_data}
 
-    b_sg = {bf_tags[s[0]]: frozenset([frozenset([edge for edge in sg if len(edge)==2]+[(path[0],path[1],path[2]) for path in sg if len(path)>2]) for sg in s[sg_i]]) for s in b_data}
-    y_sg = {yf_tags[s[0]]: frozenset([frozenset([edge for edge in sg if len(edge)==2]+[(path[0],path[1],path[2]) for path in sg if len(path)>2]) for sg in s[sg_i]]) for s in y_data}
+    # b_sg = {bf_tags[s[0]]: frozenset([frozenset([edge for edge in sg if len(edge)==2]+[(path[0],path[1],path[2]) for path in sg if len(path)>2]) for sg in s[sg_i]]) for s in b_data}
+    # y_sg = {yf_tags[s[0]]: frozenset([frozenset([edge for edge in sg if len(edge)==2]+[(path[0],path[1],path[2]) for path in sg if len(path)>2]) for sg in s[sg_i]]) for s in y_data}
+    b_sg = {bf_tags[s[0]]: frozenset([frozenset([el for el in sg]) for sg in s[sg_i]]) for s in b_data}
+    y_sg = {yf_tags[s[0]]: frozenset([frozenset([el for el in sg]) for sg in s[sg_i]]) for s in y_data}
 
     b_ks = {bf_tags[s[0]]: s[ks_i] for s in b_data}
     y_ks = {yf_tags[s[0]]: s[ks_i] for s in y_data}
@@ -136,22 +139,56 @@ def data_compare(b_data, b_filename, y_data, y_filename):
     print 'fragments in',b_filename,'but not in',y_filename,':',len(b_fragments.difference(y_fragments))
     print 'fragments in',y_filename,'but not in',b_filename,':',len(y_fragments.difference(b_fragments))
 
-    b_critical = frozenset([(bf_tags[s[0]], frozenset([frozenset([edge for edge in sg if len(edge)==2]+[(path[0],path[1],path[2]) for path in sg if len(path)>2]) for sg in s[sg_i]]), s[ks_i]) for s in b_data if s[ks_i]<0.0])
+    # b_critical = frozenset([(bf_tags[s[0]], frozenset([frozenset([edge for edge in sg if len(edge)==2]+[(path[0],path[1],path[2]) for path in sg if len(path)>2]) for sg in s[sg_i]]), s[ks_i]) for s in b_data if s[ks_i]<0.0])
 
-    y_critical = frozenset([(yf_tags[s[0]], frozenset([frozenset([edge for edge in sg if len(edge)==2]+[(path[0],path[1],path[2]) for path in sg if len(path)>2]) for sg in s[sg_i]]), s[ks_i]) for s in y_data if s[ks_i]<0.0])
+    # y_critical = frozenset([(yf_tags[s[0]], frozenset([frozenset([edge for edge in sg if len(edge)==2]+[(path[0],path[1],path[2]) for path in sg if len(path)>2]) for sg in s[sg_i]]), s[ks_i]) for s in y_data if s[ks_i]<0.0])
+
+    b_critical = frozenset([(bf_tags[s[0]], frozenset([frozenset([el for el in sg]) for sg in s[sg_i]]), s[ks_i]) for s in b_data if s[ks_i]<0.0])
+    y_critical = frozenset([(yf_tags[s[0]], frozenset([frozenset([el for el in sg]) for sg in s[sg_i]]), s[ks_i]) for s in y_data if s[ks_i]<0.0])
 
     y_critical_extras = list(set([yc[0] for yc in y_critical]).difference(set([yb[0] for yb in b_critical])))
     b_critical_extras = list(set([yb[0] for yb in b_critical]).difference(set([yc[0] for yc in y_critical])))
     
     print 'critical fragments in your data set that are not present in benchmark data set:',str(len(y_critical_extras))
+    print 'fragments that have more subgraphs in benchmark:'
     for yc in y_critical_extras:
-        print str(len(y_sg[yc])),'subgraphs in your critical fragment v.',str(len(b_sg[yc])),'subgraphs in benchmark fragment'
-
         if len(b_sg[yc]) - len(y_sg[yc]) > 0:
+            print str(len(y_sg[yc])),'subgraphs in your critical fragment v.',str(len(b_sg[yc])),'subgraphs in benchmark fragment'
+            print '======================================================'
+            print 'fragment',str(yc)
+            # more subgraphs in benchmark critical fragment than in your critical fragment
+            missing_sgs = []
+            for bench_sg in b_sg[yc]:
+                bench_sg_found = False
+                bench_sg_els = set([edge for edge in bench_sg if len(edge)==2]+[(path[0], path[1], path[2]) for path in bench_sg if len(path)==4])
+                for you_sg in y_sg[yc]:
+                    you_sg_els = set([edge for edge in you_sg if len(edge)==2]+[(path[0], path[1], path[2]) for path in you_sg if len(path)==4])
+                    if bench_sg_els == you_sg_els:
+                        bench_sg_found = True
+                        break
+                if not bench_sg_found:
+                    missing_sgs.append(bench_sg)
+
+            sg_motifs = get_subgraph_motifs(b_sc[yc]) # needs to be benchmark sugraph components since this subgraph is missing in your set
+            print '------------------------------------------------------'
+            print 'missing cycles per subgraph (one subgraph per line)'
+            print '------------------------------------------------------'
+            for msg in missing_sgs:
+                #print msg
+                print sg_motifs[msg]['cycles']
+            print ''
+          
+        # else:
+        #    raise
+    print 'fragments that have equal numbers of subgraphs:'
+    for yc in y_critical_extras:
+        if len(b_sg[yc]) - len(y_sg[yc]) == 0:
+            print str(len(y_sg[yc])),'subgraphs in your critical fragment v.',str(len(b_sg[yc])),'subgraphs in benchmark fragment'
             # more subgraphs in benchmark critical fragment than in your critical fragment
             print b_sg[yc].difference(y_sg[yc])
-        else:
-            raise
+        # else:
+        #     raise
+
     
 def main():
     # declare global variables
@@ -176,6 +213,29 @@ def main():
         else:
             raise Exception('unknown error')
 
+    # convert old paths (length 3) to new paths (length 4)
+    print 'checking if we need to convert old paths to new paths and doing it if needed ...'
+    for f_index, f in enumerate(benchmark_fs):
+        for sg_index, sg in enumerate(f[sg_i]):
+            sg_new = []
+            for el_index, el in enumerate(sg):
+                if len(el) == 3:
+                    sg_new.append((el[0], el[1], el[2], ''))
+                else:
+                    sg_new.append(el)
+            
+                for sc_index, sc in enumerate(f[sc_i][el[0]]['n_paths']):
+                    if len(sc) == 3:
+                        del benchmark_fs[f_index][sc_i][el[0]]['n_paths'][sc_index]
+                        benchmark_fs[f_index][sc_i][el[0]]['n_paths'].append((sc[0], sc[1], sc[2], ''))
+                        
+                for sc_index, sc in enumerate(f[sc_i][el[0]]['p_paths']):
+                    if len(sc) == 3:
+                        del benchmark_fs[f_index][sc_i][el[0]]['p_paths'][sc_index]
+                        benchmark_fs[f_index][sc_i][el[0]]['p_paths'].append((sc[0], sc[1], sc[2], ''))
+                    
+            benchmark_fs[f_index][sg_i][sg_index] = tuple(sg_new)
+
     try:
         print 'loading your data from', your_file_name
         your_fs = pickle.load(open(your_file_name))
@@ -185,6 +245,29 @@ def main():
         else:
             raise Exception('unknown error')
 
+    # convert old paths (length 3) to new paths (length 4)
+    print 'checking if we need to convert old paths to new paths and doing it if needed ...'
+    for f_index, f in enumerate(your_fs):
+        for sg_index, sg in enumerate(f[sg_i]):
+            sg_new = []
+            for el_index, el in enumerate(sg):
+                if len(el) == 3:
+                    sg_new.append((el[0], el[1], el[2], ''))
+                else:
+                    sg_new.append(el)
+
+            for sc_index, sc in enumerate(f[sc_i][el[0]]['n_paths']):
+                if len(sc) == 3:
+                    del benchmark_fs[f_index][sc_i][el[0]]['n_paths'][sc_index]
+                    benchmark_fs[f_index][sc_i][el[0]]['n_paths'].append((sc[0], sc[1], sc[2], ''))
+                        
+            for sc_index, sc in enumerate(f[sc_i][el[0]]['p_paths']):
+                if len(sc) == 3:
+                    del benchmark_fs[f_index][sc_i][el[0]]['p_paths'][sc_index]
+                    benchmark_fs[f_index][sc_i][el[0]]['p_paths'].append((sc[0], sc[1], sc[2], ''))
+
+            your_fs[f_index][sg_i][sg_index] = tuple(sg_new)    
+    
     # data summary
     data_summary(benchmark_fs, benchmark_file_name)
     data_summary(your_fs, your_file_name)
