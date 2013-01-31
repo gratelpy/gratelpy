@@ -170,13 +170,21 @@ def data_compare(b_data, b_filename, y_data, y_filename):
                     missing_sgs.append(bench_sg)
 
             sg_motifs = get_subgraph_motifs(b_sc[yc]) # needs to be benchmark sugraph components since this subgraph is missing in your set
-            print '------------------------------------------------------'
-            print 'missing cycles per subgraph (one subgraph per line)'
-            print '------------------------------------------------------'
             for msg in missing_sgs:
                 #print msg
+                print '******************************************************'
+                print 'missing subgraph'
+                print '------------------------------------------------------'
+                print list(msg)
+                print '------------------------------------------------------'
+                print 'subgraph components of missing subgraph'
+                print '------------------------------------------------------'
                 print sg_motifs[msg]['cycles']
+                print '------------------------------------------------------'
+                print sg_motifs[msg]['edges']
             print ''
+
+            break
           
         # else:
         #    raise
