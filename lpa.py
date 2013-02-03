@@ -2,6 +2,21 @@
 """lpa.py
 
 Usage: lpa.py mechanism_file num_complexes"""
+import socket
+hostname = socket.gethostname()
+
+import sys
+if hostname == 'pinguinzinho':
+	path_to_networkx_dev = '/home/waltherg/Dropbox/GratelPy/networkx-dev'
+elif hostname == 'pinguim':
+	path_to_networkx_dev = '/usr/users/cbu/waltherg/JIC/Dropbox/GratelPy/networkx-dev/'
+elif 'ema' in hostname:
+        path_to_networkx_dev = '/usr/users/cbu/waltherg/JIC/Dropbox/GratelPy/networkx-dev/'
+else:
+	raise Exception('hostname unknown')
+
+sys.path.insert(1, path_to_networkx_dev)
+import networkx as nx
 
 import os
 import sys
@@ -13,7 +28,6 @@ import itertools as it
 from multiprocessing import Pool
 
 import numpy as np
-import networkx as nx
 
 from fragments import get_valid_fragments, score_fragment, get_sensible_fragments, pretty_print
 from subgraphs import get_all_valid_subgraphs
