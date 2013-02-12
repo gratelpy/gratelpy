@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """lpa.py
 
-Usage: lpa.py mechanism_file num_complexes"""
+Usage: lpa.py mechanism_file num_complexes [order of interest]"""
 import socket
 hostname = socket.gethostname()
 
