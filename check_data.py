@@ -271,3 +271,35 @@ else:
         print tuple([dictionary['constants_dict_reverse'][int(rxn[1:])-1].translate(None,'[]') for rxn in frag[1]])
         print ''
         ctr+=1
+
+output_file_name = basename+'_order_'+str(order)+'.dat'
+try:
+    output_file = open(output_file_name, 'wb')
+except:
+    print 'cannot open file for output',output_file_name
+    sys.exit(2)
+
+print 'printing all critical fragments with subgraphs and K_S score to file',output_file_name
+
+#if dictname is None:
+for f_i, f in enumerate(critical_fragments_unique):
+    sg_motifs = get_subgraph_motifs(subgraph_components[f])
+
+    output_file.write('==========================================\n')
+    output_file.write('frag '+str(f_i)+' '+str(f[0])+str(f[1])+' K_S = '+str(ks[f]))
+    output_file.write('\n')
+    output_file.write('------------------------------------------\n')
+    for sg_i, sg in enumerate(subgraphs[f]):
+        output_file.write('sg '+str(sg_i)+': '+str(sg)+'\n')
+        output_file.write('edges: ')
+        for edge in sg_motifs[frozenset(sg)]['edges']:
+            output_file.write(str(edge)+' ')
+        output_file.write('\n')
+        output_file.write('cycles: ')
+        for cycle in sg_motifs[frozenset(sg)]['cycles']:
+            output_file.write(str(cycle)+' ')
+        output_file.write('\n')
+        output_file.write('------------------------------------------\n')
+    output_file.write('\n')
+
+output_file.close()
