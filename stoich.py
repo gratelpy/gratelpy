@@ -29,7 +29,34 @@ def get_substance_adjacency(alpha, beta):
 
     # return numpy array of adjacency matrix
     return np.array(subs_adj)
-        
+
+def get_random_alpha_beta(no_complexes, no_reactions, no_times_complexes_tested):
+    # build alpha
+    alpha_as_list = []
+    for s_i in range(no_complexes):
+        s_alpha = [0 for w_i in range(no_reactions)]
+        test_indices = np.random.randint(0, no_reactions-1, size=no_times_complexes_tested)
+        for index in test_indices:
+            if np.random.rand() <= 0.5:
+                s_alpha[index] = 1
+        alpha_as_list.append(s_alpha)
+    alpha = np.array(alpha_as_list)
+
+    # build beta
+    beta_as_list = []
+    for s_i in range(no_complexes):
+        s_beta = [0 for w_i in range(no_reactions)]
+        test_indices = np.random.randint(0, no_reactions-1, size=no_times_complexes_tested)
+        for index in test_indices:
+            if np.random.rand() <= 0.5:
+                s_beta[index] = 1
+        beta_as_list.append(s_beta)
+    beta = np.array(beta_as_list)
+
+    print alpha
+    print beta
+    return alpha, beta
+
 def get_graph_stoich(alpha, beta, complex_names = None, constant_names = None):
 
     # stoichiometry matrix
