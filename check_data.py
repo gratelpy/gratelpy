@@ -281,25 +281,49 @@ except:
 
 print 'printing all critical fragments with subgraphs and K_S score to file',output_file_name
 
-#if dictname is None:
-for f_i, f in enumerate(critical_fragments_unique):
-    sg_motifs = get_subgraph_motifs(subgraph_components[f])
-
-    output_file.write('==========================================\n')
-    output_file.write('frag '+str(f_i)+' '+str(f[0])+str(f[1])+' K_S = '+str(ks[f]))
-    output_file.write('\n')
-    output_file.write('------------------------------------------\n')
-    for sg_i, sg in enumerate(subgraphs[f]):
-        output_file.write('sg '+str(sg_i)+': '+str(sg)+'\n')
-        output_file.write('edges: ')
-        for edge in sg_motifs[frozenset(sg)]['edges']:
-            output_file.write(str(edge)+' ')
-        output_file.write('\n')
-        output_file.write('cycles: ')
-        for cycle in sg_motifs[frozenset(sg)]['cycles']:
-            output_file.write(str(cycle)+' ')
+if dictname is None:
+    for f_i, f in enumerate(critical_fragments_unique):
+        sg_motifs = get_subgraph_motifs(subgraph_components[f])
+        
+        output_file.write('==========================================\n')
+        output_file.write('frag '+str(f_i)+' '+str(f[0])+str(f[1])+' K_S = '+str(ks[f]))
         output_file.write('\n')
         output_file.write('------------------------------------------\n')
-    output_file.write('\n')
-
+        for sg_i, sg in enumerate(subgraphs[f]):
+            output_file.write('sg '+str(sg_i)+': '+str(sg)+'\n')
+            output_file.write('edges: ')
+            for edge in sg_motifs[frozenset(sg)]['edges']:
+                output_file.write(str(edge)+' ')
+            output_file.write('\n')
+            output_file.write('cycles: ')
+            for cycle in sg_motifs[frozenset(sg)]['cycles']:
+                output_file.write(str(cycle)+' ')
+            output_file.write('\n')
+            output_file.write('------------------------------------------\n')
+        output_file.write('\n')
+else:
+    cd = {'s'+str(key+1): dictionary['complexes_dict_reverse'][key].translate(None,'[]') for key in dictionary['complexes_dict_reverse']}
+    kd = {'w'+str(key+1): dictionary['constants_dict_reverse'][key].translate(None,'[]') for key in dictionary['constants_dict_reverse']}
+    
+    for f_i, f in enumerate(critical_fragments_unique):
+        sg_motifs = get_subgraph_motifs(subgraph_components[f])
+        fp = pretty_print(subgraphs[f])
+        
+        output_file.write('==========================================\n')
+        output_file.write('frag '+str(f_i)+' '+str(tuple(cd[compl] for compl in fp[0]))+str(tuple(kd[const] for const in fp[1]))+' K_S = '+str(ks[f]))
+        output_file.write('\n')
+        output_file.write('------------------------------------------\n')
+        for sg_i, sg in enumerate(subgraphs[f]):
+            output_file.write('sg '+str(tuple(tuple(cd[elc] if 's' in elc else kd[elc] for elc in el if elc not in ['n','p']) for el in sg))+'\n')
+            output_file.write('edges: ')
+            for edge in sg_motifs[frozenset(sg)]['edges']:
+                output_file.write(str(tuple(cd[edge_el] if 's' in edge_el else kd[edge_el] for edge_el in edge))+' ')
+            output_file.write('\n')
+            output_file.write('cycles: ')
+            for cycle in sg_motifs[frozenset(sg)]['cycles']:
+                output_file.write(str(tuple(tuple(cd[cycle_el] if 's' in cycle_el else kd[cycle_el] if 'w' in cycle_el else cycle_el for cycle_el in path) for path in cycle))+' ')
+                #output_file.write(tuple(str(tuple(cd[cycle_el] if 's' in cycle_el elif 'w' in cycle_el kd[cycle_el] else cycle_el for cycle_el path if cycle_el) for path in in cycle))+' ')
+            output_file.write('\n')
+            output_file.write('------------------------------------------\n')
+        output_file.write('\n')
 output_file.close()
