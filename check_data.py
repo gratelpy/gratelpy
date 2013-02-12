@@ -66,6 +66,9 @@ except IOError, e:
     else:
         raise Exception('unknown error')
 
+basename = filename.split('.')[0]
+print 'Name of your data is',basename
+
 if dictname is not None:
     try:
         print 'loading dictionary file from',dictname
