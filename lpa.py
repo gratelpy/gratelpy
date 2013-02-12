@@ -126,6 +126,12 @@ def main():
         print __doc__
         sys.exit(2)
 
+    try:
+            stoich_rank_user = int(sys.argv[3])
+            stoich_rank_set = True
+    except IndexError, e:
+            stoich_rank_set = False
+
     base_name, ext = os.path.splitext(os.path.basename(mechanism_file))
 
     alpha, beta, dict_complexes, dict_constants, dict_complexes_reverse, dict_constants_reverse = get_network_from_mechanism(mechanism_file, num_complexes)
@@ -147,6 +153,9 @@ def main():
         # beta = np.array(comb[1])
     
     G, stoich, stoich_rank = get_graph_stoich(alpha, beta)
+
+    if stoich_rank_set:
+            stoich_rank = stoich_rank_user
 
     # save more data about current system
     system_data = base_name + '.sys'
