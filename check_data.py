@@ -98,6 +98,13 @@ for f in fragments:
             edges_only_subgraphs[f].append(sg)
 
 ks = {fragment_tags[s[frag_i]]: s[ks_i] for s in data}
+order = len(fragments[0][0])
+if any(order != len(f[0]) for f in fragments):
+    print 'Orders of fragments detected:'
+    for f in fragments:
+        print str(f),'has order',str(len(f[0]))
+    raise Exception('not all fragments of the same order')
+print 'Order of fragments in your data:',str(order)
 
 if len(duplicate_fragments) > 0:
     print str(len(fragments)),'fragments reported'
