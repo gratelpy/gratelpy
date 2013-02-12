@@ -314,7 +314,7 @@ else:
         output_file.write('\n')
         output_file.write('------------------------------------------\n')
         for sg_i, sg in enumerate(subgraphs[f]):
-            output_file.write('sg '+str(tuple(tuple(cd[elc] if 's' in elc else kd[elc] for elc in el if elc not in ['n','p']) for el in sg))+'\n')
+            output_file.write('sg '+str(tuple(tuple(cd[elc] if 's' in elc else kd[elc] if 'w' in elc else elc for elc in el) for el in sg))+'\n')
             output_file.write('edges: ')
             for edge in sg_motifs[frozenset(sg)]['edges']:
                 output_file.write(str(tuple(cd[edge_el] if 's' in edge_el else kd[edge_el] for edge_el in edge))+' ')
