@@ -30,7 +30,7 @@ def get_substance_adjacency(alpha, beta):
     # return numpy array of adjacency matrix
     return np.array(subs_adj)
 
-def get_random_alpha_beta(no_complexes, no_reactions, no_times_complexes_tested):
+def get_random_alpha_beta(no_complexes, no_reactions, no_times_complexes_tested, remove_empty_reactions = True):
     # build alpha
     alpha_as_list = []
     for s_i in range(no_complexes):
@@ -53,8 +53,40 @@ def get_random_alpha_beta(no_complexes, no_reactions, no_times_complexes_tested)
         beta_as_list.append(s_beta)
     beta = np.array(beta_as_list)
 
-    print alpha
-    print beta
+    if remove_empty_reactions:
+        reaction_indexes = []
+        for rxn_i in range(no_reactions):
+            if all(entries == 0 for entries in alpha[:,rxn_i]) and all(entries == 0 for entries in beta[:,rxn_i]):
+                reaction_indexes.append(rxn_i)
+        alpha = np.delete(alpha, np.s_[reaction_indexes], 1)
+        beta = np.delete(beta, np.s_[reaction_indexes], 1)
+
+    # make sure nothing funny happened
+    assert alpha.shape == beta.shape
+
+    # remove s1 -> s1 type of reactions
+    reaction_indexes = []
+    for rxn_i in range(alpha.shape[1]):
+        if sum(alpha[:,rxn_i]) == 1 and sum(beta[:,rxn_i]) == 1:
+            if all(a == b for a,b in zip(alpha[:,rxn_i], beta[:,rxn_i])):
+                reaction_indexes.append(rxn_i)
+    alpha = np.delete(alpha, np.s_[reaction_indexes], 1)
+    beta = np.delete(beta, np.s_[reaction_indexes], 1)
+
+    # make sure nothing funny happened
+    assert alpha.shape == beta.shape
+
+    # remove empty rows (unused complexes)
+    complex_indexes = []
+    for cmpl_i in range(alpha.shape[0]):
+        if all(entry == 0 for entry in alpha[cmpl_i,:]) and all(entry == 0 for entry in beta[cmpl_i,:]):
+            complex_indexes.append(cmpl_i)
+    alpha = np.delete(alpha, np.s_[complex_indexes], 0)
+    beta = np.delete(beta, np.s_[complex_indexes], 0)
+
+    # make sure nothing funny happened
+    assert alpha.shape == beta.shape
+
     return alpha, beta
 
 def get_graph_stoich(alpha, beta, complex_names = None, constant_names = None):
