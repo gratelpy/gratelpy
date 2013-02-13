@@ -4,7 +4,7 @@ import numpy as np
 
 def print_mechanism_from_alpha_beta(basename, alpha, beta):
     # open file
-    mechanism_file_name = basename+'.txt'
+    mechanism_file_name = basename+'.mechanism'
     mechanism_file = open(mechanism_file_name, 'wb')
 
     no_complexes, no_reactions = alpha.shape
