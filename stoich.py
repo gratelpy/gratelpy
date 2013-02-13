@@ -87,6 +87,18 @@ def get_random_alpha_beta(no_complexes, no_reactions, no_times_complexes_tested,
     # make sure nothing funny happened
     assert alpha.shape == beta.shape
 
+    # remove trimolcular and higher order reactions
+    reaction_indexes = []
+    for rxn_i in range(alpha.shape[1]):
+        if sum(alpha[:,rxn_i]) >= 3:
+            reaction_indexes.append(rxn_i)
+
+    alpha = np.delete(alpha, np.s_[reaction_indexes], 1)
+    beta = np.delete(beta, np.s_[reaction_indexes], 1)
+
+    # make sure nothing funny happened
+    assert alpha.shape == beta.shape
+
     return alpha, beta
 
 def get_graph_stoich(alpha, beta, complex_names = None, constant_names = None):
