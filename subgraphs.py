@@ -518,7 +518,7 @@ def validate_subgraphs(all_subs, sc, f):
         if sub_valid:
             valid_subs.append(sub)
 
-    print 'validate_subgraphs: len(valid_subs) = '+str(len(valid_subs))
+    #print 'validate_subgraphs: len(valid_subs) = '+str(len(valid_subs))
 
     #return sc, valid_subs
     return valid_subs
