@@ -2,6 +2,58 @@ import re
 
 import numpy as np
 
+def print_mechanism_from_alpha_beta(basename, alpha, beta):
+    # open file
+    mechanism_file_name = basename+'.txt'
+    mechanism_file = open(mechanism_file_name, 'wb')
+
+    no_complexes, no_reactions = alpha.shape
+    if (no_complexes, no_reactions) != tuple(beta.shape):
+        raise
+    
+    for rxn_i in range(no_reactions):
+        # print reactants
+        reactant_side = ''
+        for cmp_i in range(no_complexes):
+            if alpha[cmp_i,rxn_i] == 1:
+                reactant_side = reactant_side +'[s'+str(cmp_i+1)+']'+' + '
+            elif alpha[cmp_i,rxn_i] > 1:
+                raise Exception('stoichiometric coefficients > 1 not implemented yet')
+        # prune last '+'
+        reactant_side = reactant_side.rstrip()
+        reactant_side = reactant_side.rstrip('+')
+        reactant_side = reactant_side.rstrip()
+
+        # write to file
+        mechanism_file.write(reactant_side)
+
+        # add '->'
+        mechanism_file.write(' -> ')
+
+        # print products
+        product_side = ''
+        for cmp_i in range(no_complexes):
+            if beta[cmp_i,rxn_i] == 1:
+                product_side = product_side +'[s'+str(cmp_i+1)+']'+' + '
+            elif beta[cmp_i,rxn_i] > 1:
+                raise Exception('stoichiometric coefficients > 1 not implemented yet')
+        # prune last '+'
+        product_side = product_side.rstrip()
+        product_side = product_side.rstrip('+')
+        product_side = product_side.rstrip()
+
+        # write to file
+        mechanism_file.write(product_side)
+
+        # add constant
+        mechanism_file.write('; k'+str(rxn_i+1))
+
+        # add newline
+        mechanism_file.write('\n')
+    
+    # close file
+    mechanism_file.close()
+            
 def get_network_from_mechanism(filename, no_complexes):
     # reads mechanism file: each line is of the form alpha_1 [A] -> beta_1 [B]; k_rat
     # NOTE: mechanism file is read case-sensitively
