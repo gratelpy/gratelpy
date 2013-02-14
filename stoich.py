@@ -93,8 +93,9 @@ def get_random_alpha_beta(no_complexes, no_reactions, no_times_complexes_tested,
         if sum(alpha[:,rxn_i]) >= 3:
             reaction_indexes.append(rxn_i)
 
-    alpha = np.delete(alpha, np.s_[reaction_indexes], 1)
-    beta = np.delete(beta, np.s_[reaction_indexes], 1)
+    if min(alpha.shape) != 0:
+        alpha = np.delete(alpha, np.s_[reaction_indexes], 1)
+        beta = np.delete(beta, np.s_[reaction_indexes], 1)
 
     # make sure nothing funny happened
     assert alpha.shape == beta.shape
