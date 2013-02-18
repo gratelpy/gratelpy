@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """subclient.py
 
-Usage: subclient.py mechanism_file num_complexes fragment_server_hostname
+Usage: subclient.py mechanism_file num_complexes fragment_server_hostname [port number on fragments server = 50000]
 """
 import socket
 hostname = socket.gethostname()
@@ -62,12 +62,18 @@ def main():
         print __doc__
         sys.exit(2)
 
+    try:
+	    fragments_server_port = int(sys.argv[4])
+    except IndexError:
+	    fragments_server_port = 50000
+	    
+
     class QueueManager(SyncManager): pass
     
     QueueManager.register('get_fragment_q')
     QueueManager.register('get_valid_frag_q')
     
-    m = QueueManager(address=(frag_server, 50000), authkey='smallg')
+    m = QueueManager(address=(frag_server, fragments_server_port), authkey='smallg')
     
     m.connect()
     
