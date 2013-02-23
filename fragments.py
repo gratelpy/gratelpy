@@ -9,9 +9,24 @@ from graph import get_graph_edges, get_bipartite_sets
 from decorators import deprecated
 
 def pretty_print(valid_subgraphs):
-    # pretty printing for fragments:
-    # rearrange substance and reaction nodes in fragment tuples such that
-    # substance and reaction nodes are paired up as in the fragment's 'all-edges' subgraph
+    r"""Returns fragment with substance and complex nodes paired up as in one of its constituent all-edges subgraph.
+
+    Parameters
+    ----------
+    valid_subgraphs: List of valid subgraphs.
+
+    Returns
+    -------
+    frag_print: list
+
+    Examples
+    --------
+    >>> from fragments import pretty_print
+    >>> pretty_print([(('s1','w1'),('s2','w2'))])
+    (('s1', 's2'), ('w1', 'w2'))
+    >>> pretty_print([(('s1','w1'),('s2','w2')),(('s1','w1','s2'),('s2','w2','s1'))])
+    (('s1', 's2'), ('w1', 'w2'))
+    """
     frag_print = None
     pretty_printed = False
     for sg in valid_subgraphs:
