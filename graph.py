@@ -1,6 +1,7 @@
 import networkx as nx
 import numpy as np
 from networkx.algorithms import bipartite
+from collections import defaultdict
 
 def get_valid_path_graph_cycles(path_graph):
     # path_graph: digraph with nodes = paths & edge n1 -> n2 => endpoint(n1) = beginning(n2)
