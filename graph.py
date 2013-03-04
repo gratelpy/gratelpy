@@ -72,10 +72,24 @@ def get_bipartite_sets(G):
     else:
         return complexes, reactions
 
-def get_lpa_alpha_beta(alpha, beta, slow_indices):
+def get_lpa_alpha_beta(alpha, beta, slow_indices, complex_dict=None, constant_dict=None):
     # alpha: reactant stoichiometric coefficients of well-mixed system
     # beta: product stoichiometric coefficients of well-mixed system
     # slow_indices: indices of slow species in system; indices are row indices of alpha, beta
+
+    # construct reverse dictionaries
+    if complex_dict is not None:
+        complex_dict_reverse = {v:k for k,v in complex_dict.iteritems()}
+    else:
+        complex_dict_reverse = None
+    if constant_dict is not None:
+        constant_dict_reverse = {v:k for k,v in constant_dict.iteritems()}
+    else:
+        constant_dict_reverse = None
+
+    # construct LPA dictionaries
+    complex_dict_lpa_reverse = {}
+    constant_dict_lpa_reverse = {}
 
     if not type(alpha) is type(np.array([])) or not type(beta) is type(np.array([])):
         raise Exception('alpha and beta are expected to be NumPy arrays')
@@ -104,6 +118,21 @@ def get_lpa_alpha_beta(alpha, beta, slow_indices):
     #fast_indices = range(no_slow, no_slow+no_fast-1,1)
     #slow_local_indices = range(no_slow+no_fast, 2*no_slow+no_fast-1,1)
 
+    # fill in LPA dictionary of complexes with global variables
+    if complex_dict_reverse is not None:
+        complex_dict_lpa_reverse = {}
+        complex_dict_lpa_key_i = 0
+    else:
+        complex_dict_lpa_reverse = None
+
+    # fill in LPA dictionary of constants
+    # TODO: check if following assumption correct: 
+    # reactions 0 & 0+no_reactions have same rate constant
+    constant_dict_lpa_reverse = {}
+    for rxn_i in range(no_rxn):
+        constant_dict_lpa_reverse[rxn_i] = constant_dict_reverse[rxn_i]
+        constant_dict_lpa_reverse[rxn_i+no_rxn] = constant_dict_reverse[rxn_i]
+
     # lpa alpha matrix
     alpha_lpa = []
     # slow global variables
@@ -111,6 +140,11 @@ def get_lpa_alpha_beta(alpha, beta, slow_indices):
         alpha_lpa_row = list(alpha[slow_i])
         alpha_lpa_row = alpha_lpa_row + [0 for r in range(no_rxn)]
         alpha_lpa.append(alpha_lpa_row)
+
+        if complex_dict_reverse is not None:
+            complex_dict_lpa_reverse[complex_dict_lpa_key_i] = complex_dict_reverse[slow_i]+'_G'
+            complex_dict_lpa_key_i += 1
+
         #print "global slow_i = "+str(slow_i)
         #print alpha_lpa_row
     # fast variables
@@ -118,14 +152,24 @@ def get_lpa_alpha_beta(alpha, beta, slow_indices):
         alpha_lpa_row = list(alpha[fast_i])
         alpha_lpa_row = alpha_lpa_row + list(alpha[fast_i])
         alpha_lpa.append(alpha_lpa_row)
+
+        if complex_dict_reverse is not None:
+            complex_dict_lpa_reverse[complex_dict_lpa_key_i] = complex_dict_reverse[fast_i]+'_G'
+            complex_dict_lpa_key_i += 1
+
         #print "fast_i = "+str(fast_i)
         #print alpha_lpa_row
     # slow local variables
 #    for slow_i in reversed(slow_indices): # not sure why I'm using reversed here ... ?
-    for slow_i in slow_indices: # not sure why I'm using reversed here ... ?
+    for slow_i in slow_indices:
         alpha_lpa_row = [0 for r in range(no_rxn)]
         alpha_lpa_row = alpha_lpa_row + list(alpha[slow_i])
         alpha_lpa.append(alpha_lpa_row)
+
+        if complex_dict_reverse is not None:
+            complex_dict_lpa_reverse[complex_dict_lpa_key_i] = complex_dict_reverse[slow_i]+'_L'
+            complex_dict_lpa_key_i += 1
+
         #print "local slow_i = "+str(slow_i)
         #print alpha_lpa_row
 
@@ -162,8 +206,22 @@ def get_lpa_alpha_beta(alpha, beta, slow_indices):
         beta_lpa_row = beta_lpa_row + list(beta[slow_i])
         beta_lpa.append(beta_lpa_row)
 
+    if complex_dict_reverse is not None:
+        complex_dict_lpa = {v:k for k,v in complex_dict_lpa_reverse.iteritems()}
+    else:
+        complex_dict_lpa = None
+    if constant_dict_reverse is not None:
+        constant_dict_lpa = {v:k for k,v in constant_dict_lpa_reverse.iteritems()}
+    else:
+        constant_dict_lpa = None
+
+    # NOTE: keys in constant_dict_lpa are not unique!!
+
     # convert to expected numpy.array type
-    return np.array(alpha_lpa), np.array(beta_lpa)
+    if constant_dict_lpa is not None and complex_dict_lpa is not None:
+        return np.array(alpha_lpa), np.array(beta_lpa), complex_dict_lpa_reverse, constant_dict_lpa_reverse
+    else:
+        return np.array(alpha_lpa), np.array(beta_lpa)
 
 def get_path_graph(sc):
     # sc: subgraph components
