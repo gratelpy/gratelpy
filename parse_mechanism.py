@@ -2,6 +2,76 @@ import re
 
 import numpy as np
 
+def print_ode_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant_dict=None):
+
+    # check if we were passed a 'reverse' dict and reverse it if needed
+    if complex_dict is not None:
+        if type(complex_dict.keys()[0]) is not type(int()):
+            complex_dict = {v:k for k,v in complex_dict.iteritems()}
+
+    if constant_dict is not None:
+        if type(constant_dict.keys()[0]) is not type(int()):
+            constant_dict = {v:k for k,v in constant_dict.iteritems()}
+    
+    # open file
+    mechanism_file_name = basename+'.ode'
+    mechanism_file = open(mechanism_file_name, 'wb')
+
+    no_complexes, no_reactions = alpha.shape
+    if (no_complexes, no_reactions) != tuple(beta.shape):
+        raise
+    
+    # net stoichiometric matrix
+    gamma = beta - alpha
+    
+    for ode_cmp_i in range(no_complexes):
+        # print right-hand side for each complex
+        rhs = ''
+        for rxn_i in range(no_reactions):
+            # rxn_i relevant for rhs of complex ode_cmp_i iff ode_cmp_i either produced or consumed in that reaction
+            reactant_side = ''
+            if alpha[ode_cmp_i, rxn_i] == 1 or beta[ode_cmp_i, rxn_i] == 1:
+                for cmp_i in range(no_complexes):
+                    if complex_dict is None:
+                        if alpha[cmp_i,rxn_i] == 1:
+                            reactant_side = reactant_side + '*[s'+str(cmp_i+1)+']'#+' + '
+                        elif alpha[cmp_i,rxn_i] > 1:
+                            raise Exception('stoichiometric coefficients > 1 not implemented yet')
+                    else:
+                        if alpha[cmp_i,rxn_i] == 1:
+                            reactant_side = reactant_side + '*' +complex_dict[cmp_i]# + ' + '
+                        elif alpha[cmp_i,rxn_i] > 1:
+                            raise Exception('stoichiometric coefficients > 1 not implemented yet')
+                
+                # prune last '+'
+                # reactant_side = reactant_side.rstrip()
+                # reactant_side = reactant_side.rstrip('+')
+                # reactant_side = reactant_side.rstrip()
+
+            if constant_dict is None:
+                if gamma[ode_cmp_i, rxn_i] == 0:
+                    pass
+                elif gamma[ode_cmp_i, rxn_i] == 1:
+                    rhs += '+' + 'k'+str(rxn_i+1) + reactant_side
+                elif gamma[ode_cmp_i, rxn_i] == -1:
+                    rhs += '-' + 'k'+str(rxn_i+1) + reactant_side
+            else:
+                if gamma[ode_cmp_i, rxn_i] == 0:
+                    pass
+                elif gamma[ode_cmp_i, rxn_i] == 1:
+                    rhs += '+' + constant_dict[rxn_i] + reactant_side
+                elif gamma[ode_cmp_i, rxn_i] == -1:
+                    rhs += '-' + constant_dict[rxn_i] + reactant_side
+         
+        # write kinetics of cmp_i to file
+        if complex_dict is None:
+            mechanism_file.write('[s'+str(ode_cmp_i+1)+']\' = '+rhs)
+        else:
+            mechanism_file.write(complex_dict[ode_cmp_i] + '\' = ' +rhs)
+        mechanism_file.write('\n')
+
+    mechanism_file.close()
+
 def print_mechanism_from_alpha_beta(basename, alpha, beta):
     # open file
     mechanism_file_name = basename+'.mechanism'
