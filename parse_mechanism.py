@@ -2,7 +2,41 @@ import re
 
 import numpy as np
 
-def print_jac_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant_dict=None):
+def fgsl(v):
+    return format_gsl(v)
+
+def format_gsl(v):
+    v = v.replace('[', '__')
+    v = v.replace(']', '__')
+    v = v.replace('.', '_')
+    v = v.replace('{', '')
+    v = v.replace('}', '')
+
+    return v
+
+def print_jac_gsl_header(mechanism_file, alpha, beta, complex_dict=None, constant_dict=None):
+    no_complexes, no_reactions = alpha.shape
+
+    gsl_header = ''
+    gsl_header += 'int get_jacobian(gsl_matrix *m, double *x, double *params){\n'
+    
+    for complex_i in range(no_complexes):
+        if complex_dict is not None:
+            gsl_header += '\tdouble '+fgsl(complex_dict[complex_i])+' = x['+str(complex_i)+'];\n'
+        else:
+            gsl_header += '\tdouble s'+str(complex_i+1)+' = x['+str(complex_i)+'];\n'
+
+    for reaction_i in range(no_reactions):
+        if constant_dict is not None:
+            gsl_header += '\tdouble '+fgsl(constant_dict[reaction_i])+' = params['+str(reaction_i)+'];\n'
+        else:
+            gsl_header += '\tdouble k'+str(reaction_i+1)+' = params['+str(reaction_i)+'];\n'
+
+    gsl_header += '\n\n'
+
+    mechanism_file.write(gsl_header)
+
+def print_jac_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant_dict=None, gsl=False):
     
     # check if we were passed a 'reverse' dict and reverse it if needed
     if complex_dict is not None:
@@ -23,6 +57,10 @@ def print_jac_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant
     
     # net stoichiometric matrix
     gamma = beta - alpha
+
+    # if printing GSL matrix, print header now
+    if gsl:
+        print_jac_gsl_header(mechanism_file, alpha, beta, complex_dict, constant_dict)
     
     for jac_row_i in range(no_complexes):
         for jac_col_i in range(no_complexes):
@@ -69,12 +107,23 @@ def print_jac_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant
                         jac_entry += '-' + constant_dict[rxn_i] + jac_entry_complexes
          
             # write kinetics of cmp_i to file
-            if len(jac_entry)==0:
-                mechanism_file.write('jac['+str(jac_row_i)+']['+str(jac_col_i)+'] = 0.0')
+            if gsl:
+                if len(jac_entry)==0:
+                    mechanism_file.write('\tgsl_matrix_set(m, '+str(jac_row_i)+', '+str(jac_col_i)+', 0.0);')
+                else:
+                    mechanism_file.write('\tgsl_matrix_set(m, '+str(jac_row_i)+', '+str(jac_col_i)+', '+ fgsl(jac_entry)+');')
             else:
-                mechanism_file.write('jac['+str(jac_row_i)+']['+str(jac_col_i)+'] = '+ jac_entry)
+                if len(jac_entry)==0:
+                    mechanism_file.write('jac['+str(jac_row_i)+']['+str(jac_col_i)+'] = 0.0')
+                else:
+                    mechanism_file.write('jac['+str(jac_row_i)+']['+str(jac_col_i)+'] = '+ jac_entry)
             mechanism_file.write('\n')
 
+    if gsl:
+        # write bottom
+        mechanism_file.write('\n\n')
+        mechanism_file.write('\treturn 0;\n')
+        mechanism_file.write('}')
 
     mechanism_file.close()
 
