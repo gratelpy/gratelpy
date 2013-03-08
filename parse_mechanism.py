@@ -2,6 +2,83 @@ import re
 
 import numpy as np
 
+def print_jac_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant_dict=None):
+    
+    # check if we were passed a 'reverse' dict and reverse it if needed
+    if complex_dict is not None:
+        if type(complex_dict.keys()[0]) is not type(int()):
+            complex_dict = {v:k for k,v in complex_dict.iteritems()}
+
+    if constant_dict is not None:
+        if type(constant_dict.keys()[0]) is not type(int()):
+            constant_dict = {v:k for k,v in constant_dict.iteritems()}
+    
+    # open file
+    mechanism_file_name = basename+'.jac'
+    mechanism_file = open(mechanism_file_name, 'wb')
+
+    no_complexes, no_reactions = alpha.shape
+    if (no_complexes, no_reactions) != tuple(beta.shape):
+        raise
+    
+    # net stoichiometric matrix
+    gamma = beta - alpha
+    
+    for jac_row_i in range(no_complexes):
+        for jac_col_i in range(no_complexes):
+            # print right-hand side for each complex
+            jac_entry = ''
+            for rxn_i in range(no_reactions):
+                # rxn_i relevant for rhs of complex jac_row_i iff jac_row_i either produced or consumed in that reaction
+                if alpha[jac_col_i,rxn_i] != 1:
+                    jac_entry_complexes = '0.0'
+                    
+                else:
+                    jac_entry_complexes = ''
+
+                    if alpha[jac_row_i, rxn_i] == 1 or beta[jac_row_i, rxn_i] == 1:
+                        for cmp_i in range(no_complexes):
+                            if complex_dict is None:
+                                if alpha[cmp_i,rxn_i] == 1 and alpha[jac_col_i,rxn_i] == 1 and cmp_i != jac_col_i:
+                                    jac_entry_complexes += '*[s'+str(cmp_i+1)+']'#+' + '
+                                elif alpha[cmp_i,rxn_i] > 1:
+                                    raise Exception('stoichiometric coefficients > 1 not implemented yet')
+                            else:
+                                if alpha[cmp_i,rxn_i] == 1 and alpha[jac_col_i,rxn_i] == 1 and cmp_i != jac_col_i:
+                                    jac_entry_complexes += '*' +complex_dict[cmp_i]# + ' + '
+                                elif alpha[cmp_i,rxn_i] > 1:
+                                    raise Exception('stoichiometric coefficients > 1 not implemented yet')
+
+                if constant_dict is None:
+                    if jac_entry_complexes == '0.0':
+                        pass
+                    elif gamma[jac_row_i, rxn_i] == 0:
+                        pass
+                    elif gamma[jac_row_i, rxn_i] == 1:
+                        jac_entry += '+' + 'k'+str(rxn_i+1) + jac_entry_complexes
+                    elif gamma[jac_row_i, rxn_i] == -1:
+                        jac_entry += '-' + 'k'+str(rxn_i+1) + jac_entry_complexes
+                else:
+                    if jac_entry_complexes == '0.0':
+                        pass
+                    elif gamma[jac_row_i, rxn_i] == 0:
+                        pass
+                    elif gamma[jac_row_i, rxn_i] == 1:
+                        jac_entry += '+' + constant_dict[rxn_i] + jac_entry_complexes
+                    elif gamma[jac_row_i, rxn_i] == -1:
+                        jac_entry += '-' + constant_dict[rxn_i] + jac_entry_complexes
+         
+            # write kinetics of cmp_i to file
+            if len(jac_entry)==0:
+                mechanism_file.write('jac['+str(jac_row_i)+']['+str(jac_col_i)+'] = 0.0')
+            else:
+                mechanism_file.write('jac['+str(jac_row_i)+']['+str(jac_col_i)+'] = '+ jac_entry)
+            mechanism_file.write('\n')
+
+
+    mechanism_file.close()
+
+    
 def print_ode_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant_dict=None):
 
     # check if we were passed a 'reverse' dict and reverse it if needed
