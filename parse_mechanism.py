@@ -36,16 +36,22 @@ def print_jac_gsl_header(mechanism_file, alpha, beta, complex_dict=None, constan
                 gsl_header += '\tdouble s'+str(complex_print_i+1)+' = x['+str(complex_print_i)+'];\n'
                 complex_print_i += 1
 
+    constants_printed = []
     for reaction_i in range(no_reactions):
         if constant_dict is not None:
-            gsl_header += '\tdouble '+fgsl(constant_dict[reaction_i])+' = params['+str(reaction_i)+'];\n'
+            if fgsl(constant_dict[reaction_i]) not in constants_printed:
+                gsl_header += '\tdouble '+fgsl(constant_dict[reaction_i])+' = params['+str(reaction_i)+'];\n'
+                constants_printed.append(fgsl(constant_dict[reaction_i]))
         else:
-            gsl_header += '\tdouble k'+str(reaction_i+1)+' = params['+str(reaction_i)+'];\n'
+            if 'k'+str(reaction_i+1) not in constants_printed:
+                gsl_header += '\tdouble k'+str(reaction_i+1)+' = params['+str(reaction_i)+'];\n'
+                constants_printed.append('k'+str(reaction_i+1))
+    no_constants_printed = len(constants_printed)
 
     # conservation rules if any
     gsl_header += '\n'
     for cons_rule_i in range(len(gsl_conservation_rules)):
-        gsl_header += '\tdouble '+fgsl(gsl_conservation_rules[cons_rule_i][1])+' = params['+str(no_reactions+cons_rule_i)+'];\n'
+        gsl_header += '\tdouble '+fgsl(gsl_conservation_rules[cons_rule_i][1])+' = params['+str(no_constants_printed+cons_rule_i)+'];\n'
     gsl_header += '\n'
     for cons_rule_i in range(len(gsl_conservation_rules)):
         gsl_header += '\tdouble '+fgsl(gsl_conservation_rules[cons_rule_i][0])+' = '+fgsl(gsl_conservation_rules[cons_rule_i][1])
