@@ -2,7 +2,221 @@ import re
 
 import numpy as np
 
-def print_ode_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant_dict=None):
+def fgsl(v):
+    return format_gsl(v)
+
+def format_gsl(v):
+    v = v.replace('[', '__')
+    v = v.replace(']', '__')
+    v = v.replace('.', '_')
+    v = v.replace('{', '')
+    v = v.replace('}', '')
+
+    return v
+
+def print_jac_gsl_footer(mechanism_file, alpha, beta, complex_dict=None, constant_dict=None, gsl_conservation_rules=None):
+    print_gsl_footer('jac', mechanism_file, alpha, beta, complex_dict, constant_dict, gsl_conservation_rules)
+
+def print_ode_gsl_footer(mechanism_file, alpha, beta, complex_dict=None, constant_dict=None, gsl_conservation_rules=None):
+    print_gsl_footer('ode', mechanism_file, alpha, beta, complex_dict, constant_dict, gsl_conservation_rules)
+
+def print_gsl_footer(footer_type, mechanism_file, alpha, beta, complex_dict=None, constant_dict=None, gsl_conservation_rules=None):
+
+    no_complexes, no_reactions = alpha.shape
+    
+    # check for conservation rules
+    gsl_conserved = []
+    if gsl_conservation_rules is not None:
+        gsl_conserved = [a_rule[0] for a_rule in gsl_conservation_rules]
+    no_conserved = len(gsl_conserved)
+
+    if footer_type == 'jac':
+        for complex_i in range(no_complexes-no_conserved):
+            mechanism_file.write('\tdfdt['+str(complex_i)+'] = 0.0;\n')
+    
+    mechanism_file.write('\n\n')
+    mechanism_file.write('\treturn GSL_SUCCESS;\n')
+    mechanism_file.write('}')
+    
+def print_jac_gsl_header(mechanism_file, alpha, beta, complex_dict=None, constant_dict=None, gsl_conservation_rules=None):
+    print_gsl_header('jac', mechanism_file, alpha, beta, complex_dict, constant_dict, gsl_conservation_rules)
+
+def print_ode_gsl_header(mechanism_file, alpha, beta, complex_dict=None, constant_dict=None, gsl_conservation_rules=None):
+    print_gsl_header('ode', mechanism_file, alpha, beta, complex_dict, constant_dict, gsl_conservation_rules)
+ 
+def print_gsl_header(header_type, mechanism_file, alpha, beta, complex_dict=None, constant_dict=None, gsl_conservation_rules=None):
+
+    no_complexes, no_reactions = alpha.shape
+
+    # check for conservation rules
+    gsl_conserved = []
+    if gsl_conservation_rules is not None:
+        gsl_conserved = [a_rule[0] for a_rule in gsl_conservation_rules]
+    no_conserved = len(gsl_conserved)
+
+    gsl_header = ''
+    if header_type == 'jac':
+        gsl_header += 'int jac (double t, const double y[], double *dfdy, double dfdt[], void *void_params){\n'
+        gsl_header += '\tdouble * params = (double*)void_params;\n'
+        gsl_header += '\tgsl_matrix_view dfdy_mat = gsl_matrix_view_array (dfdy, '+str(no_complexes-no_conserved)+','+str(no_complexes-no_conserved)+');\n'
+        gsl_header += '\tgsl_matrix * m = &dfdy_mat.matrix;\n'
+    elif header_type == 'ode':
+        gsl_header += 'int func (double t, const double y[], double f[], void *void_params){\n'
+        gsl_header += '\tdouble * params = (double*)void_params;\n'
+    else:
+        raise
+
+    complex_print_i = 0
+    for complex_i in range(no_complexes):
+        if complex_dict is not None:
+            if complex_dict[complex_i] not in gsl_conserved:
+                gsl_header += '\tdouble '+fgsl(complex_dict[complex_i])+' = y['+str(complex_print_i)+'];\n'
+                complex_print_i += 1
+        else:
+            if 's'+str(complex_i+1) not in gsl_conserved:
+                gsl_header += '\tdouble s'+str(complex_print_i+1)+' = y['+str(complex_print_i)+'];\n'
+                complex_print_i += 1
+
+    constants_printed = []
+    for reaction_i in range(no_reactions):
+        if constant_dict is not None:
+            if fgsl(constant_dict[reaction_i]) not in constants_printed:
+                gsl_header += '\tdouble '+fgsl(constant_dict[reaction_i])+' = params['+str(reaction_i)+'];\n'
+                constants_printed.append(fgsl(constant_dict[reaction_i]))
+        else:
+            if 'k'+str(reaction_i+1) not in constants_printed:
+                gsl_header += '\tdouble k'+str(reaction_i+1)+' = params['+str(reaction_i)+'];\n'
+                constants_printed.append('k'+str(reaction_i+1))
+    no_constants_printed = len(constants_printed)
+
+    # conservation rules if any
+    if gsl_conservation_rules is not None:
+        gsl_header += '\n'
+        for cons_rule_i in range(len(gsl_conservation_rules)):
+            gsl_header += '\tdouble '+fgsl(gsl_conservation_rules[cons_rule_i][1])+' = params['+str(no_constants_printed+cons_rule_i)+'];\n'
+        gsl_header += '\n'
+        for cons_rule_i in range(len(gsl_conservation_rules)):
+            gsl_header += '\tdouble '+fgsl(gsl_conservation_rules[cons_rule_i][0])+' = '+fgsl(gsl_conservation_rules[cons_rule_i][1])
+            for el in gsl_conservation_rules[cons_rule_i][2:]:
+                gsl_header += '-'+fgsl(el)
+
+            gsl_header += ';\n'
+
+
+    gsl_header += '\n\n'
+
+    mechanism_file.write(gsl_header)
+
+
+def print_jac_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant_dict=None, gsl=False, gsl_conservation_rules = None):
+    
+    # check if we were passed a 'reverse' dict and reverse it if needed
+    if complex_dict is not None:
+        if type(complex_dict.keys()[0]) is not type(int()):
+            complex_dict = {v:k for k,v in complex_dict.iteritems()}
+
+    if constant_dict is not None:
+        if type(constant_dict.keys()[0]) is not type(int()):
+            constant_dict = {v:k for k,v in constant_dict.iteritems()}
+
+    # open file
+    mechanism_file_name = basename+'.jac'
+    mechanism_file = open(mechanism_file_name, 'wb')
+
+    # no complexes and reactions
+    no_complexes, no_reactions = alpha.shape
+    if (no_complexes, no_reactions) != tuple(beta.shape):
+        raise
+
+    # check for conservation rules
+    gsl_conserved = []
+    if gsl_conservation_rules is not None:
+        gsl_conserved = [a_rule[0] for a_rule in gsl_conservation_rules]
+    
+    # net stoichiometric matrix
+    gamma = beta - alpha
+
+    # if printing GSL matrix, print header now
+    if gsl:
+        print_jac_gsl_header(mechanism_file, alpha, beta, complex_dict=complex_dict, constant_dict=constant_dict, gsl_conservation_rules=gsl_conservation_rules)
+    
+    jac_row_print_i = 0
+    for jac_row_i in range(no_complexes):
+        jac_column_print_i = 0
+        for jac_col_i in range(no_complexes):
+            # print right-hand side for each complex
+            jac_entry = ''
+            for rxn_i in range(no_reactions):
+                # rxn_i relevant for rhs of complex jac_row_i iff jac_row_i either produced or consumed in that reaction
+                if alpha[jac_col_i,rxn_i] != 1:
+                    jac_entry_complexes = '0.0'
+                    
+                else:
+                    jac_entry_complexes = ''
+
+                    if alpha[jac_row_i, rxn_i] == 1 or beta[jac_row_i, rxn_i] == 1:
+                        for cmp_i in range(no_complexes):
+                            if complex_dict is None:
+                                if alpha[cmp_i,rxn_i] == 1 and alpha[jac_col_i,rxn_i] == 1 and cmp_i != jac_col_i:
+                                    jac_entry_complexes += '*[s'+str(cmp_i+1)+']'#+' + '
+                                elif alpha[cmp_i,rxn_i] > 1:
+                                    raise Exception('stoichiometric coefficients > 1 not implemented yet')
+                            else:
+                                if alpha[cmp_i,rxn_i] == 1 and alpha[jac_col_i,rxn_i] == 1 and cmp_i != jac_col_i:
+                                    jac_entry_complexes += '*' +complex_dict[cmp_i]# + ' + '
+                                elif alpha[cmp_i,rxn_i] > 1:
+                                    raise Exception('stoichiometric coefficients > 1 not implemented yet')
+
+                if constant_dict is None:
+                    if jac_entry_complexes == '0.0':
+                        pass
+                    elif gamma[jac_row_i, rxn_i] == 0:
+                        pass
+                    elif gamma[jac_row_i, rxn_i] == 1:
+                        jac_entry += '+' + 'k'+str(rxn_i+1) + jac_entry_complexes
+                    elif gamma[jac_row_i, rxn_i] == -1:
+                        jac_entry += '-' + 'k'+str(rxn_i+1) + jac_entry_complexes
+                else:
+                    if jac_entry_complexes == '0.0':
+                        pass
+                    elif gamma[jac_row_i, rxn_i] == 0:
+                        pass
+                    elif gamma[jac_row_i, rxn_i] == 1:
+                        jac_entry += '+' + constant_dict[rxn_i] + jac_entry_complexes
+                    elif gamma[jac_row_i, rxn_i] == -1:
+                        jac_entry += '-' + constant_dict[rxn_i] + jac_entry_complexes
+         
+
+            if gsl:
+                if (complex_dict[jac_row_i] not in gsl_conserved if complex_dict is not None else 's'+str(jac_row_i+1) not in gsl_conserved) and (complex_dict[jac_col_i] not in gsl_conserved if complex_dict is not None else 's'+str(jac_col_i+1) not in gsl_conserved):
+                    if len(jac_entry)==0:
+                        mechanism_file.write('\tgsl_matrix_set(m, '+str(jac_row_print_i)+', '+str(jac_column_print_i)+', 0.0);')
+                        mechanism_file.write('\n')
+                    else:
+                        mechanism_file.write('\tgsl_matrix_set(m, '+str(jac_row_print_i)+', '+str(jac_column_print_i)+', '+ fgsl(jac_entry)+');')
+                        mechanism_file.write('\n')
+                        
+                    jac_column_print_i += 1
+                    if jac_column_print_i == no_complexes - len(gsl_conserved):
+                        jac_row_print_i += 1
+            else:
+                if len(jac_entry)==0:
+                    mechanism_file.write('jac['+str(jac_row_i)+']['+str(jac_col_i)+'] = 0.0')
+                    mechanism_file.write('\n')
+                else:
+                    mechanism_file.write('jac['+str(jac_row_i)+']['+str(jac_col_i)+'] = '+ jac_entry)
+                    mechanism_file.write('\n')
+
+            
+
+    # if printing GSL matrix, print footer now
+    if gsl:
+        print_jac_gsl_footer(mechanism_file, alpha, beta, complex_dict=complex_dict, constant_dict=constant_dict, gsl_conservation_rules=gsl_conservation_rules)
+
+    mechanism_file.close()
+
+    
+def print_ode_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant_dict=None, gsl=False, gsl_conservation_rules=None):
 
     # check if we were passed a 'reverse' dict and reverse it if needed
     if complex_dict is not None:
@@ -17,13 +231,24 @@ def print_ode_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant
     mechanism_file_name = basename+'.ode'
     mechanism_file = open(mechanism_file_name, 'wb')
 
+    # number of complexes and number of reactions
     no_complexes, no_reactions = alpha.shape
     if (no_complexes, no_reactions) != tuple(beta.shape):
         raise
+
+    # check for conservation rules
+    gsl_conserved = []
+    if gsl_conservation_rules is not None:
+        gsl_conserved = [a_rule[0] for a_rule in gsl_conservation_rules]
     
     # net stoichiometric matrix
     gamma = beta - alpha
     
+    # if printing GSL ode, print header now
+    if gsl:
+        print_ode_gsl_header(mechanism_file, alpha, beta, complex_dict=complex_dict, constant_dict=constant_dict, gsl_conservation_rules=gsl_conservation_rules)
+    
+    ode_row_print_i = 0
     for ode_cmp_i in range(no_complexes):
         # print right-hand side for each complex
         rhs = ''
@@ -64,11 +289,20 @@ def print_ode_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant
                     rhs += '-' + constant_dict[rxn_i] + reactant_side
          
         # write kinetics of cmp_i to file
-        if complex_dict is None:
-            mechanism_file.write('[s'+str(ode_cmp_i+1)+']\' = '+rhs)
+        if gsl:
+            if (complex_dict[ode_cmp_i] not in gsl_conserved if complex_dict is not None else 's'+str(ode_cmp_i+1) not in gsl_conserved):
+                mechanism_file.write('\tf['+str(ode_row_print_i)+'] = '+fgsl(rhs)+';\n')
+                ode_row_print_i += 1
         else:
-            mechanism_file.write(complex_dict[ode_cmp_i] + '\' = ' +rhs)
-        mechanism_file.write('\n')
+            if complex_dict is None:
+                mechanism_file.write('[s'+str(ode_cmp_i+1)+']\' = '+rhs)
+                mechanism_file.write('\n')
+            else:
+                mechanism_file.write(complex_dict[ode_cmp_i] + '\' = ' +rhs)
+                mechanism_file.write('\n')
+
+    if gsl:
+        print_ode_gsl_footer(mechanism_file, alpha, beta, complex_dict=None, constant_dict=None, gsl_conservation_rules=None)
 
     mechanism_file.close()
 
