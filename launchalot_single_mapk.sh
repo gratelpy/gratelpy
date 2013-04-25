@@ -1,6 +1,0 @@
-#!/bin/bash
-N=80
-CLIENT='/usr/users/cbu/waltherg/JIC/Dropbox/GratelPy/src/subclient.py mechanisms/single_layer_mapk_mechanism.txt 9'
-for i in `seq $N`; do
-    bsub -q normal -o ~/tmp/out-%J.txt $CLIENT
-done

@@ -1,1 +1,0 @@
-fragments: pretty_printing: assumes that there must be exactly one all-edges subgraph per fragment, this is not true
