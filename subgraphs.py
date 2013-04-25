@@ -2,7 +2,6 @@ import itertools as it
 import networkx as nx
 import math
 from graph import get_path_graph, get_valid_path_graph_cycles, get_all_cliques
-import networkx_modified
 
 def get_subgraph_components(G, f):
     indgr = G.subgraph([item for sublist in f for item in sublist])
