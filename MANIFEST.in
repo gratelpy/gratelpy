@@ -1,4 +1,4 @@
-include READMEN.md
+include README.md
 include INSTALL
 include LICENSE
 include MANIFEST.in
