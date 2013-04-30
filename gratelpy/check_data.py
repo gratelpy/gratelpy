@@ -3,18 +3,8 @@
 
 Usage: check_data.py data_file [dictionary file]"""
 
-import socket
-hostname = socket.gethostname()
-
 import sys
-if hostname == 'pinguinzinho':
-    path_to_networkx_dev = '/home/waltherg/Dropbox/GratelPy/networkx-dev'
-elif hostname == 'pinguim':
-    path_to_networkx_dev = '/usr/users/cbu/waltherg/JIC/Dropbox/GratelPy/networkx-dev/'
-else:
-    raise Exception('hostname unknown')
 
-sys.path.insert(1, path_to_networkx_dev)
 import networkx as nx
 
 import cPickle as pickle

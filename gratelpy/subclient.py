@@ -3,20 +3,7 @@
 
 Usage: subclient.py mechanism_file num_complexes fragment_server_hostname [port number on fragments server = 50000]
 """
-import socket
-hostname = socket.gethostname()
-
 import sys
-if hostname == 'pinguinzinho':
-	path_to_networkx_dev = '/home/waltherg/Dropbox/GratelPy/networkx-dev'
-elif hostname == 'pinguim':
-	path_to_networkx_dev = '/usr/users/cbu/waltherg/JIC/Dropbox/GratelPy/networkx-dev/'
-elif 'ema' in hostname:
-        path_to_networkx_dev = '/usr/users/cbu/waltherg/JIC/Dropbox/GratelPy/networkx-dev/'
-else:
-	raise Exception('hostname unknown')
-
-sys.path.insert(1, path_to_networkx_dev)
 import networkx as nx
 
 import Queue
