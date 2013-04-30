@@ -1,2 +1,10 @@
-include *.html *.txt
-recursive-include docs *.txt *.html *.inv *.js
+include READMEN.md
+include INSTALL
+include LICENSE
+include MANIFEST.in
+recursive-include gratelpy/ *.py
+recursive-include doc/* *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude *.*~
+recursive-exlude *#*
