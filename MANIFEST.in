@@ -2,7 +2,8 @@ include README.md
 include INSTALL
 include LICENSE
 include MANIFEST.in
-recursive-include gratelpy/ *.py
+recursive-include gratelpy *.py
+recursive-include doc *
 recursive-include doc/* *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
