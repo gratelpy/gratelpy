@@ -1,9 +1,0 @@
-# Reversible Substrate Inhibition
-# Example 4, Mincheva and Roussel 2007
-# 4 complexes
-[A1] -> ; k1
- -> [A1]; k2
-[A1] + [A2] -> [A3] ; k3
-[A3] -> [A2] ; k4
-[A1] + [A3] -> [A4] ; k5
-[A4] -> [A1] + [A3] ; k6

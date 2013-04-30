@@ -1,4 +1,0 @@
-.. highlight:: rst
-
-Examples
-=========
