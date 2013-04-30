@@ -132,14 +132,6 @@ def main():
     # presently, the subgraph scoring function (score_subgraph in subgraphs.py) assumes that all stoichiometric coefficients equal 1!
     if np.max(alpha) > 1 or np.max(beta) > 1:
         raise Exception('presently, the subgraph scoring function (score_subgraph in subgraphs.py) assumes that all stoichiometric coefficients equal 1!')
-
-    # alpha_beta_combinations=[[alpha,beta]]
-
-    # print len(alpha_beta_combinations), 'networks tested'
-
-    # for comb in alpha_beta_combinations:
-        # alpha = np.array(comb[0])
-        # beta = np.array(comb[1])
     
     G, stoich, stoich_rank = get_graph_stoich(alpha, beta)
 
@@ -150,7 +142,6 @@ def main():
     system_data = base_name + '.sys'
     pickle.dump({'alpha': alpha, 'beta': beta, 'stoich': stoich, 'graph': G}, open(system_data, 'wb'))
 
-    #        stoich_rank = 6
     print 'rank of stoichiometry matrix = ' + str(stoich_rank)
     
     #valid_fragments = get_valid_frags_with_caching(base_name, G, stoich_rank)
