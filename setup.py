@@ -8,7 +8,7 @@ setup(
     author='Georg Walther and Matthew Hartley',
     author_email='Georg.Walther@jic.ac.uk',
     packages=['gratelpy'],
-    scripts=['bin/subclient.py'],
+    scripts=['bin/subclient.py', 'bin/fragment_server.py', 'bin/check_data.py'],
     url='http://pypi.python.org/pypi/GraTeLPy',
     license='BSD',
     description='Graph theoretic linear stability analysis',
