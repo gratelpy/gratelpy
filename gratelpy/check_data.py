@@ -139,13 +139,15 @@ for f in critical_fragments_unique:
         print 'fragment:',str(reaction_multiplicty)
         print 'subgraph:',str(Counter([el[1] for el in sg]))
 print 'checked multiplicities of',str(subgraphs_tested),'subgraphs (of total',str(no_subgraphs),')'
+
 # check that every path in every subgraph is in a cycle
 subgraphs_tested = 0
 subgraphs_with_all_paths_in_cycles = 0
 no_subgraphs = sum([1 for frag in critical_fragments_unique for sg in subgraphs[frag]])
+
 print 'checking if all paths in every subgraph are witihin a cycle ...'
+
 for frag in critical_fragments_unique:
-#frag = critical_fragments_unique[0]
     path_graph = get_path_graph(subgraph_components[frag])
     cycles = get_valid_path_graph_cycles(path_graph)
     sc = subgraph_components[frag]
@@ -187,7 +189,6 @@ print str(subgraphs_tested),'subgraphs tested and',str(subgraphs_with_all_paths_
 fragments_checked = 0
 k_s_ok = 0
 for frag in critical_fragments_unique:
-#frag = critical_fragments_unique[0]
     fragments_checked += 1
     sc = subgraph_components[frag]
     sg_motifs = get_subgraph_motifs(subgraph_components[frag])
