@@ -9,22 +9,14 @@ import networkx as nx
 import Queue
 from multiprocessing.managers import SyncManager
 
-# import and use resource stuff to limit amount of memory each sublcient is allowed
+# resource package to limit memory used by subclient
 import resource
-
-# # DEBUG
-# from pympler import tracker
-import gc
-# # DEBUG END
 
 import numpy as np
 
 from parse_mechanism import get_network_from_mechanism
 from subgraphs import get_all_valid_subgraphs
 from stoich import get_graph_stoich
-
-# #DEBUG
-# memory_tracker = None
 
 def process_fragment_q(fragment_q, valid_frag_q, G, stoich_rank):
     while True:
@@ -33,8 +25,6 @@ def process_fragment_q(fragment_q, valid_frag_q, G, stoich_rank):
             print 'Got', f
             valid_sgs = get_all_valid_subgraphs(G, stoich_rank, f)
             valid_frag_q.put(valid_sgs)
-            #DEBUG
-            #memory_tracker.print_diff()
 
         except Queue.Empty:
             print 'All done'
@@ -68,46 +58,14 @@ def main():
     valid_frag_q = m.get_valid_frag_q()
     
     alpha, beta, _, _, _, _ = get_network_from_mechanism(mechanism_file, num_complexes)
-#    alpha = np.array(
-#         [[1,0,0,0,0,0,0,0,0,0,0,0],
-#          [1,0,0,1,0,0,0,0,0,0,0,0],
-#          [0,1,1,0,0,0,0,0,0,0,0,0],
-#          [0,0,0,1,0,0,0,0,0,1,0,0],
-#          [0,0,0,0,1,1,0,0,0,0,0,0],
-#          [0,0,0,0,0,0,1,0,0,0,0,0],
-#          [0,0,0,0,0,0,1,0,0,1,0,0],
-#          [0,0,0,0,0,0,0,1,1,0,0,0],
-#          [0,0,0,0,0,0,0,0,0,0,1,1]]
-#         )
-#    
-#    beta = np.array(
-#         [[0,1,0,0,0,0,0,0,0,0,0,1],
-#          [0,1,1,0,1,1,0,0,0,0,0,0],
-#          [1,0,0,0,0,0,0,0,0,0,0,0],
-#          [0,0,1,0,1,0,0,0,1,0,0,0],
-#          [0,0,0,1,0,0,0,0,0,0,0,0],
-#          [0,0,0,0,0,1,0,1,0,0,0,0],
-#          [0,0,0,0,0,0,0,1,1,0,1,1],
-#          [0,0,0,0,0,0,1,0,0,0,0,0],
-#          [0,0,0,0,0,0,0,0,0,1,0,0]]
-#         )
-#
 
     G, stoich, stoich_rank = get_graph_stoich(alpha, beta)
-#    stoich_rank = 6
     
     process_fragment_q(fragment_q, valid_frag_q, G, stoich_rank)
 
 if __name__ == '__main__':
-    #DEBUG
-    #memory_tracker = tracker.SummaryTracker()
-    
     # limit virtual memory (address space) to 2 GB
     # see man getrlimit for identifier RLIMIT_AS
     resource.setrlimit(resource.RLIMIT_AS,(2147483648,2147483648)) 
     
-    #DEBUG
-    # if not gc.isenabled():
-    #     gc.enable()
-    # gc.set_debug(gc.DEBUG_LEAK) 
     main()
