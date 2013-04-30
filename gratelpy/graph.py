@@ -371,7 +371,7 @@ def get_all_cliques(G):
 def simple_cycles_unique_complexes(G):
     """Find simple cycles (elementary circuits) of a directed graph and do not revisit complexes.
 
-    This method is a slightly modified clone of the method networkx.algorithms.cycles.simple_cycles provided by NetworkX.
+    This method and documentation are slightly modified clones of the method and documentation networkx.algorithms.cycles.simple_cycles provided by NetworkX.
     The original method can be found at https://github.com/networkx/networkx/blob/master/networkx/algorithms/cycles.py#L98.
     All credit goes to the authors of the original method [2].
 
@@ -383,28 +383,15 @@ def simple_cycles_unique_complexes(G):
     Parameters
     ----------
     G : NetworkX DiGraph
-       A directed graph
+        A path graph.
 
     Returns
     -------
     A list of circuits, where each circuit is a list of nodes, with the first
     and last node being the same.
-
-    Example:
-    >>> G = nx.DiGraph([(0, 0), (0, 1), (0, 2), (1, 2), (2, 0), (2, 1), (2, 2)])
-    >>> nx.simple_cycles(G)
-    [[0, 0], [0, 1, 2, 0], [0, 2, 0], [1, 2, 1], [2, 2]]
-
-    See Also
-    --------
-    cycle_basis (for undirected graphs)
-
-    Notes
-    -----
-    The implementation follows pp. 79-80 in [1]_.
-
-    The time complexity is O((n+e)(c+1)) for n nodes, e edges and c
-    elementary circuits.
+    
+    This modified clone of the original NetworkX method is used in the enumeration of all simple cycles in path graphs.
+    This method discards all simple cycles in the provided path graph G that revisit a chemical species node.
 
     References
     ----------
@@ -414,10 +401,6 @@ def simple_cycles_unique_complexes(G):
     .. [2] Exploring network structure, dynamics, and function using {NetworkX}.
        Aric A. Hagberg and Daniel A. Schult and Pieter J. Swart. Proceedings of the 7th Python in Science Conference (SciPy2008).
        http://math.lanl.gov/~hagberg/Papers/hagberg-2008-exploring.pdf
-
-    See Also
-    --------
-    cycle_basis
     """
     # Jon Olav Vik, 2010-08-09
     def _unblock(thisnode):
