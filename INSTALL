@@ -1,0 +1,6 @@
+Thank you for downloading GraTelPy.
+
+To install GraTelPy please make sure you have both Python 2.7 and NetworkX (at least version 1.7) installed.
+Then run this command from the command prompt:
+
+		python setup.py install
