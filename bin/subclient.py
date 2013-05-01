@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """subclient.py
 
-Usage: subclient.py mechanism_file num_complexes fragment_server_hostname [port number on fragments server = 50000]
+Usage: subclient.py mechanism_file num_complexes [fragment_server_hostname=localhost] [port number on fragments server = 50000]
 """
 import sys
 import networkx as nx
@@ -34,10 +34,14 @@ def main():
     try:
         mechanism_file = sys.argv[1]
         num_complexes = int(sys.argv[2])
-        frag_server = sys.argv[3]
     except IndexError:
         print __doc__
         sys.exit(2)
+
+    try:
+        frag_server = sys.argv[3]
+    except IndexError:
+        frag_server = 'localhost'
 
     try:
 	    fragments_server_port = int(sys.argv[4])
