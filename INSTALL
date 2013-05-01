@@ -1,15 +1,38 @@
-Thank you for downloading GraTelPy.
+Thank you for your interest in GraTeLPy.
 
-To install GraTelPy please make sure you have both Python 2.7 and NetworkX (at least version 1.7) installed.
-If you have permission to write to root then run this command from the command prompt:
+To install GraTeLPy please make sure you have both Python 2.7 and NetworkX (at least version 1.7) installed.
+
+You can either install GraTeLPy from PyPI (the Python Package Index) directly if you have pip installed or
+first download the source code and run the setup on your computer.
+
+Using pip and if you have permission to write to root, invoke
+
+       pip install gratelpy
+
+or if you wish to install GraTeLPy locally to your home directory, invoke
+
+       pip install --user gratelpy
+
+
+Without using pip, download the latest version of GraTeLPy from
+
+       https://github.com/gratelpy/gratelpy
+
+or
+
+       https://pypi.python.org/pypi/GraTeLPy
+
+Unpack the downloaded file and change to the GraTeLPy directory contained therein.
+
+Then to install and if you have permission to write to root run this command from the command prompt:
 
        python setup.py install
 
-If you do not have permission to write to root and wish to install GraTelPy locally to your home directory run this command:
+If you do not have permission to write to root and wish to install GraTeLPy locally to your home directory run this command:
 
        python setup.py install --user
 
-Make certain you installed GraTelPy successfully by starting Python and importing GraTelPy:
+Make certain you installed GraTeLPy successfully by starting Python and importing GraTelPy:
 
        python
        Python 2.7.1 (r271:86832, Apr 12 2011, 16:15:16) 
