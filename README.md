@@ -8,7 +8,7 @@ This necessary condition is the existence of critical fragments [1] which are ne
 
 Typical usage looks like this::
 
-On the command prompt, invoke `python` and import GraTelPy:
+After following the installation instructions in `INSTALL`, invoke on the command prompt `python` and import GraTelPy:
 ```bash
 Python 2.7.1 (r271:86832, Apr 12 2011, 16:15:16) 
 [GCC 4.6.0 20110331 (Red Hat 4.6.0-2)] on linux2
