@@ -14,9 +14,9 @@ import resource
 
 import numpy as np
 
-from parse_mechanism import get_network_from_mechanism
-from subgraphs import get_all_valid_subgraphs
-from stoich import get_graph_stoich
+from gratelpy.parse_mechanism import get_network_from_mechanism
+from gratelpy.subgraphs import get_all_valid_subgraphs
+from gratelpy.stoich import get_graph_stoich
 
 def process_fragment_q(fragment_q, valid_frag_q, G, stoich_rank):
     while True:

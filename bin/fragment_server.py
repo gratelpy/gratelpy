@@ -18,11 +18,11 @@ from multiprocessing import Pool
 
 import numpy as np
 
-from fragments import get_valid_fragments, score_fragment, get_sensible_fragments, pretty_print
-from subgraphs import get_all_valid_subgraphs
-from stoich import get_graph_stoich
-from parse_mechanism import get_network_from_mechanism
-from gensg import gen_valid_subgraphs, gen_valid_subgraphs_mp, gen_valid_subgraphs_mps
+from gratelpy.fragments import get_valid_fragments, score_fragment, get_sensible_fragments, pretty_print
+from gratelpy.subgraphs import get_all_valid_subgraphs
+from gratelpy.stoich import get_graph_stoich
+from gratelpy.parse_mechanism import get_network_from_mechanism
+from gratelpy.gensg import gen_valid_subgraphs, gen_valid_subgraphs_mp, gen_valid_subgraphs_mps
 
 
 def get_valid_frags_with_caching(base_name, G, stoich_rank):

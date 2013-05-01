@@ -6,7 +6,7 @@ Usage: benchmark.py bechnmark_file your_file"""
 import cPickle as pickle
 import sys
 from collections import Counter
-from subgraphs import get_subgraph_motifs
+from gratelpy.subgraphs import get_subgraph_motifs
 
 # data format
 frag_i = 0

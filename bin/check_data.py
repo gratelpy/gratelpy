@@ -10,9 +10,9 @@ import networkx as nx
 import cPickle as pickle
 from collections import Counter
 import errno
-from graph import get_path_graph, get_valid_path_graph_cycles
-from subgraphs import get_subgraph_motifs, score_subgraph
-from fragments import score_fragment, pretty_print
+from gratelpy.graph import get_path_graph, get_valid_path_graph_cycles
+from gratelpy.subgraphs import get_subgraph_motifs, score_subgraph
+from gratelpy.fragments import score_fragment, pretty_print
 
 import itertools as it
 
