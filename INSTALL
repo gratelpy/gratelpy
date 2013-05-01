@@ -8,3 +8,13 @@ If you have permission to write to root then run this command from the command p
 If you do not have permission to write to root and wish to install GraTelPy locally to your home directory run this command:
 
        python setup.py install --user
+
+Make certain you installed GraTelPy successfully by starting Python and importing GraTelPy:
+
+       python
+       Python 2.7.1 (r271:86832, Apr 12 2011, 16:15:16) 
+       [GCC 4.6.0 20110331 (Red Hat 4.6.0-2)] on linux2
+       Type "help", "copyright", "credits" or "license" for more information.
+       >>> import gratelpy
+       >>> gratelpy.get_version()
+       '0.1.0'
