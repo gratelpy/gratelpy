@@ -12,7 +12,7 @@ setup(
     url='http://pypi.python.org/pypi/GraTeLPy',
     license='BSD',
     description='Graph theoretic linear stability analysis',
-    long_description=open('README.md').read(),
+    long_description='GratTeLPy (Graph Theoretic Analysis of Linear Stability) is a software tool for parameter-free, graph-theoretic linear stability analysis. Given a mechanism file that describes a chemical reaction network (CRN) of mass-action reactions, GraTelPy analyzes the provided mechanism and determines if it meets a necessary condition for multistability.\nPlease find out more at https://github.com/gratelpy/gratelpy',
 	classifiers= [
 		'Development Status :: 3 - Alpha',
 		'Environment :: Console',
