@@ -49,7 +49,8 @@ Let us look at these three steps with a mechanism file provided by GraTelPy, `me
 
 Open two terminal windows. In the first window, invoke the fragment server:
 ```bash
-gratelpy_fragment_server mechanisms/reversible_substrate_inhibition.txt 4
+$ gratelpy_fragment_server mechanisms/reversible_substrate_inhibition.txt 4
+
 rank of stoichiometry matrix = 3
 numer of valid fragments: 17
 [(('s3', 's2', 's1'), ('w5', 'w3', 'w5')), (('s3', 's2', 's1'), ('w5', 'w3', 'w3')), 
@@ -70,7 +71,7 @@ However, GraTelPy also outputs a dictionary file that translates between the nam
 
 At this point, `gratelpy_fragment_server` waits for a `gratelpy_subclient` instance to start processing the 17 fragments it discovered. So in your second terminal window run the command
 ```bash
-gratelpy_subclient mechanisms/reversible_substrate_inhibition.txt 4
+$ gratelpy_subclient mechanisms/reversible_substrate_inhibition.txt 4
 Got (('s3', 's2', 's1'), ('w5', 'w3', 'w5'))
 Got (('s3', 's2', 's1'), ('w5', 'w3', 'w3'))
 Got (('s3', 's2', 's1'), ('w5', 'w3', 'w1'))
@@ -108,7 +109,7 @@ To output all discovered critical fragments in a readable format we now use the 
 For the above example, GraTelPy writes files `reversible_substrate_inhibition.vsg` and `reversible_substrate_inhibition.dict`.
 
 ```bash
-gratelpy_check_data reversible_substrate_inhibition.vsg
+$ gratelpy_check_data reversible_substrate_inhibition.vsg
 loading your data from reversible_substrate_inhibition.vsg
 
 Name of your data is reversible_substrate_inhibition
@@ -132,7 +133,7 @@ The output of this invocation of `gratelpy_check_data` shows that there is exact
 The above invocation outputs the discovered critical fragments with GraTelPy's internal naming scheme. To output the critical fragments with the naming scheme you use in your mechanism file, provide the dictionary file `.dict`
 
 ```bash
-gratelpy_check_data reversible_substrate_inhibition.vsg reversible_substrate_inhibition.dict
+$ gratelpy_check_data reversible_substrate_inhibition.vsg reversible_substrate_inhibition.dict
 
 loading your data from reversible_substrate_inhibition.vsg
 Name of your data is reversible_substrate_inhibition
