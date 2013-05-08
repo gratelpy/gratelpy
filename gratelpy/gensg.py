@@ -42,8 +42,11 @@ def gen_valid_subgraphs_mp(G, valid_fragments, stoich_rank):
     return valid_subgraphs
 
 def gen_valid_subgraphs_mps(G, valid_fragments, stoich_rank):
-    print valid_fragments
-    server_manager = make_server_manager(50000, 'smallg')
+    print 'gensg: gen_valid_subgraphs_mps received',str(len(valid_fragments)),'fragments. the first up to 20 fragments are:'
+    for ctr in range(min(len(valid_fragments),20)):
+        print valid_fragments[ctr]
+
+	server_manager = make_server_manager(50000, 'smallg')
     fragment_q = server_manager.get_fragment_q()
     valid_frag_q = server_manager.get_valid_frag_q()
     for f in valid_fragments:
