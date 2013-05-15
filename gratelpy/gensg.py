@@ -46,7 +46,8 @@ def gen_valid_subgraphs_mps(G, valid_fragments, stoich_rank):
     for ctr in range(min(len(valid_fragments),20)):
         print valid_fragments[ctr]
 
-	server_manager = make_server_manager(50000, 'smallg')
+    server_manager = make_server_manager(50000, 'smallg')
+    
     fragment_q = server_manager.get_fragment_q()
     valid_frag_q = server_manager.get_valid_frag_q()
     for f in valid_fragments:
