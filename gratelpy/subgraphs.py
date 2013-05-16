@@ -4,16 +4,13 @@ import math
 from graph import get_path_graph, get_valid_path_graph_cycles, get_all_cliques
 
 def get_subgraph_components(G, f):
-    indgr = G.subgraph([item for sublist in f for item in sublist])
-    
-    edges = []
-    non_edges = [] # those arcs that go from reaction node to complex node
-    for arc in indgr.edges():
-        if indgr.node[arc[0]]['bipartite']==0:
-            edges.append(arc)
-        else:
-            non_edges.append(arc)
-        
+    species = [spec for spec in f[0]]
+    edges = [(e0, e1) for e0, e1 in zip(f[0],f[1])]
+    if len(edges) != len(f[0]):
+        print 'get_subgraph_components: fragment',fragment
+        print 'get_subgraph_components: edges found',edges
+        raise('More edges discovered than number of edges indicated by fragment order')
+
     subgraph_components = {}
     for n in f[0]:
         subgraph_components[n]={'edges' : [], 'p_paths':[], 'n_paths':[]}
@@ -29,10 +26,9 @@ def get_subgraph_components(G, f):
     # for e in cycle_edges:
     #     for n in cycle_non_edges:
     for e in edges:
-        for n in non_edges:
-            if e[1]==n[0]:
-                #print (e[0],e[1],n[1])
-                p_edge = (e[0],e[1],n[1],'p')
+        for sp in species:
+            if (e[1], sp) in G.edges():
+                p_edge = (e[0],e[1],sp,'p')
                 if p_edge not in subgraph_components[e[0]]['p_paths']:
                     subgraph_components[e[0]]['p_paths'].append(p_edge)
 
