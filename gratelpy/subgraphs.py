@@ -5,8 +5,6 @@ from graph import get_path_graph, get_valid_path_graph_cycles, get_all_cliques
 
 def get_subgraph_components(G, f):
     indgr = G.subgraph([item for sublist in f for item in sublist])
-    cycles_undir = nx.cycle_basis(nx.Graph(indgr))
-    cycles_undir_indgr=G.subgraph([item for sublist in cycles_undir for item in sublist])
     
     edges = []
     non_edges = [] # those arcs that go from reaction node to complex node
