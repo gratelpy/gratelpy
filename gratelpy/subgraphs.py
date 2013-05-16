@@ -38,10 +38,10 @@ def get_subgraph_components(G, f):
     # for e1 in cycle_edges:
     #     for e2 in cycle_edges:
     for e1 in edges:
-        for e2 in edges:
-            if e1[0] != e2[0] and e1[1]==e2[1]:
+        for sp in species:
+            if e1[0] != sp and (sp, e1[1]) in G.edges():
                 #print (e1[0],e1[1],e2[0])
-                n_edge = (e1[0],e1[1],e2[0],'n')
+                n_edge = (e1[0],e1[1],sp,'n')
                 if n_edge not in subgraph_components[e1[0]]['n_paths']:
                     subgraph_components[e1[0]]['n_paths'].append(n_edge)
 
