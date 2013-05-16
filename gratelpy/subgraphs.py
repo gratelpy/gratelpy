@@ -13,15 +13,7 @@ def get_subgraph_components(G, f):
             edges.append(arc)
         else:
             non_edges.append(arc)
-    
-    # cycle_edges = []
-    # cycle_non_edges = []
-    # for arc in cycles_undir_indgr.edges():
-    #     if cycles_undir_indgr.node[arc[0]]['bipartite']==0:
-    #         cycle_edges.append(arc)
-    #     else:
-    #         cycle_non_edges.append(arc)
-    
+        
     subgraph_components = {}
     for n in f[0]:
         subgraph_components[n]={'edges' : [], 'p_paths':[], 'n_paths':[]}
