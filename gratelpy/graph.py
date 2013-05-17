@@ -237,7 +237,8 @@ def get_path_graph(sc):
             paths.add((path[0],path[1],path[2],path[3]))
         for path in sc[substance]['n_paths']:
             paths.add((path[0],path[1],path[2],path[3]))
-            paths.add((path[2],path[1],path[0],path[3]))
+            if (path[2], path[1]) in sc[path[2]]['edges']: # only add reverse direction if corresponding edge exists in this fragment
+                paths.add((path[2],path[1],path[0],path[3]))
     paths = list(paths)
 
     # collect all starting and end points of paths
