@@ -66,7 +66,7 @@ def gen_valid_subgraphs_mps(G, valid_fragments, stoich_rank):
         except:
             import time
             import cPickle as pickle
-            pickle.dump(valid_subgraphs, 'valid_subgraphs_dunp'+time.asctime()+'.vsg')
+            pickle.dump(valid_subgraphs, 'valid_subgraphs_dump'+time.asctime()+'.vsg')
 
         len_vsg = 0
         if vsg is not None:
