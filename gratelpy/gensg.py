@@ -61,7 +61,13 @@ def gen_valid_subgraphs_mps(G, valid_fragments, stoich_rank):
     last_t = start
     intervals = [1] * 10
     while n_results < target_results:
-        vsg = valid_frag_q.get()
+        try:
+            vsg = valid_frag_q.get()
+        except:
+            import time
+            import cPickle as pickle
+            pickle.dump(valid_subgraphs, 'valid_subgraphs_dunp'+time.asctime()+'.vsg')
+
         len_vsg = 0
         if vsg is not None:
             len_vsg = len(vsg)
