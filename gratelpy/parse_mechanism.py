@@ -109,6 +109,9 @@ def print_gsl_header(header_type, mechanism_file, alpha, beta, complex_dict=None
 
 
 def print_jac_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant_dict=None, gsl=False, gsl_conservation_rules = None):
+    # conservation rules expected as
+    # [variable_to_be_replaced, new_constant, independent_variable_1, independent_variable_2, ...]
+    # variable_to_be_replaced = new_constant - independent_variable_1 - independent_variable_2 - ...
     
     # check if we were passed a 'reverse' dict and reverse it if needed
     if complex_dict is not None:
@@ -217,7 +220,10 @@ def print_jac_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant
 
     
 def print_ode_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant_dict=None, gsl=False, gsl_conservation_rules=None):
-
+    # conservation rules expected as
+    # [variable_to_be_replaced, new_constant, independent_variable_1, independent_variable_2, ...]
+    # variable_to_be_replaced = new_constant - independent_variable_1 - independent_variable_2 - ...
+    
     # check if we were passed a 'reverse' dict and reverse it if needed
     if complex_dict is not None:
         if type(complex_dict.keys()[0]) is not type(int()):
