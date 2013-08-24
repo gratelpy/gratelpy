@@ -1,7 +1,7 @@
 GraTeLPy
 ========
 
-**Please Note: At present the documentation we provide (in doc/) is
+**Please Note**: At present the documentation we provide (in doc/) is
 very rudimentary. Until we update our documentation, this README.md file
 will act in place of proper documentation that we owe you.
 
@@ -9,11 +9,10 @@ If anything remains unclear or is confusing, please open an
 [issue](https://github.com/gratelpy/gratelpy/issues) or
 [drop us a line](mailto:gratelpy@gmail.com) and we will do our best
 to help.
-**
 
 ## Introduction
 
-GratTeLPy (Graph Theoretic Analysis of Linear Stability) is a software tool for parameter-free, graph-theoretic linear stability analysis. 
+GraTeLPy (GRAph ThEoretic Analysis of Linear Stability in Python -- slightly contrived) is a software tool for parameter-free, graph-theoretic linear stability analysis. 
 Given a mechanism file that describes a chemical reaction network (CRN) of mass-action reactions, GraTelPy analyzes the provided mechanism and determines if it meets a necessary condition for multistability.
 
 This necessary condition is the existence of critical fragments [1] which are necessary for a fold bifurcation thus permitting multistability.
@@ -111,14 +110,14 @@ Use the mode of installation you chose from the above options and append the
     $ python setup.py install --upgrade
     $ python setup.py install --user --upgrade
 
-** Note: this will also upgrade NetworkX if that library has been updated **
+**Note**: this will also upgrade NetworkX if that library has been updated.
 
 ## Test Your GraTeLPy Setup
 
 Invoke on the command prompt `python` and import GraTeLPy:
-```bash
 <!--- Ignore 'bash': this is only for syntax highlighting on
 GitHub.com, https://help.github.com/articles/github-flavored-markdown#syntax-highlighting --->
+```bash
 
 Python 2.7.1 (r271:86832, Apr 12 2011, 16:15:16) 
 [GCC 4.6.0 20110331 (Red Hat 4.6.0-2)] on linux2
@@ -127,9 +126,10 @@ Type "help", "copyright", "credits" or "license" for more information.
 ```
 Validate that you loaded GraTeLPy correctly and that you have 
 the latest version installed
-```bash
+
 <!--- Ignore 'bash': this is only for syntax highlighting on
 GitHub.com, https://help.github.com/articles/github-flavored-markdown#syntax-highlighting --->
+```bash
 
 >>> gratelpy.get_version()
 '0.1.1'
@@ -166,9 +166,10 @@ There are only three scripts, provided with GraTelPy, that you need to analyze a
 Let us look at these three steps with a mechanism file provided by GraTeLPy, `mechanisms/reversible_substrate_inhibition.txt`.
 
 Open two terminal windows. In the first window, invoke the fragment server:
-```bash 
+
 <!--- Ignore 'bash': this is only for syntax highlighting on
 GitHub.com, https://help.github.com/articles/github-flavored-markdown#syntax-highlighting --->
+```bash 
 
 $ gratelpy_fragment_server mechanisms/reversible_substrate_inhibition.txt 4
 
@@ -192,9 +193,10 @@ Note that currently GraTeLPy uses its own naming scheme for chemical species and
 However, GraTeLPy also outputs a dictionary file that translates between the naming scheme you use in your mechanism file and its internal naming scheme -- more on this below.
 
 At this point, `gratelpy_fragment_server` waits for a `gratelpy_subclient` instance to start processing the 17 fragments it discovered. So in your second terminal window run the command
-```bash
+
 <!--- Ignore 'bash': this is only for syntax highlighting on
 GitHub.com, https://help.github.com/articles/github-flavored-markdown#syntax-highlighting --->
+```bash
 
 $ gratelpy_subclient mechanisms/reversible_substrate_inhibition.txt 4
 Got (('s3', 's2', 's1'), ('w5', 'w3', 'w5'))
@@ -222,12 +224,14 @@ Also note that if  `gratelpy_fragment_server` discovers a large number of fragme
 
 Further note that you  `gratelpy_fragment_server` and one or multiple instances of `gratelpy_subclient` can be run on different computers.
 If `gratelpy_fragment_server` runs on a computer different from `gratelpy_subclient`, all you need to do is invoke `gratelpy_subclient` with the name of the computer (`hostname`) that `gratelpy_fragment_server` runs on
-```bash
+
 <!--- Ignore 'bash': this is only for syntax highlighting on
 GitHub.com, https://help.github.com/articles/github-flavored-markdown#syntax-highlighting --->
+```bash
 
 $ gratelpy_subclient mechanisms/reversible_substrate_inhibition.txt 4 HOSTNAME
 ```
+
 This allows you to easily deploy GraTeLPy on a large cluster with hundreds of subclients.
 
 Once all fragments have been analyzed, `gratelpy_fragment_server` writes two files of interest to the directory from which you invoked `gratelpy_fragment_server`: a `.vsg` and a `.dict` file.
@@ -236,9 +240,9 @@ To output all discovered critical fragments in a readable format we now use the 
 
 For the above example, GraTeLPy writes files `reversible_substrate_inhibition.vsg` and `reversible_substrate_inhibition.dict`.
 
-```bash
 <!--- Ignore 'bash': this is only for syntax highlighting on
 GitHub.com, https://help.github.com/articles/github-flavored-markdown#syntax-highlighting --->
+```bash
 
 $ gratelpy_check_data reversible_substrate_inhibition.vsg
 loading your data from reversible_substrate_inhibition.vsg
@@ -263,9 +267,9 @@ The output of this invocation of `gratelpy_check_data` shows that there is exact
 
 The above invocation outputs the discovered critical fragments with GraTeLPy's internal naming scheme. To output the critical fragments with the naming scheme you use in your mechanism file, provide the dictionary file `.dict`
 
-```bash
 <!--- Ignore 'bash': this is only for syntax highlighting on
 GitHub.com, https://help.github.com/articles/github-flavored-markdown#syntax-highlighting --->
+```bash
 
 $ gratelpy_check_data reversible_substrate_inhibition.vsg reversible_substrate_inhibition.dict
 
