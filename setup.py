@@ -1,4 +1,9 @@
-from distutils.core import setup
+# Use preferably setuptools.setup as this will install required packages
+# automatically. distutils.core.setup does not do so.
+try:
+    from setuptools import setup
+except:
+    from distutils.core import setup
 
 version = __import__('gratelpy').get_version()
 
