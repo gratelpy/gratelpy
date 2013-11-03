@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+
+import os
+
+def main():
+    path = os.path.split(os.path.realpath(__file__))[0]
+
+    rev_sub_path = os.path.join(path, '..', 
+                                'tests',
+                                'test_reversible_substrate_inhibition.py')
+
+    if os.path.exists(rev_sub_path):
+        os.system('python '+rev_sub_path+' -v')
+
+    else:
+        rev_sub_path = os.path.join(path, '..', '..',
+                                    'tests',
+                                    'test_reversible_substrate_inhibition.py')
+        os.system('python '+rev_sub_path+' -v')
+
+if __name__ == '__main__':
+    main()
+else:
+    print 'Run GraTeLPy Test from the Command Line'
