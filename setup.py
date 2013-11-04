@@ -38,6 +38,8 @@ setup(
 		'Topic :: Scientific/Engineering :: Physics',
 	],
     install_requires=[
-        "networkx >= 1.7.0"
+        "networkx >= 1.7.0",
+        "numpy >= 1.6.2",
+        "matplotlib >= 1.2.1"
     ],
 )
