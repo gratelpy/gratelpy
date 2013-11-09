@@ -61,9 +61,11 @@ class TestReversibleSubstrateInhibition(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls._alpha, cls._beta, cls._species, cls._constants, _, _ = \
-            get_network_from_mechanism(os.path.join(path, '../mechanisms/'\
-                                       'reversible_substrate_inhibition.txt'),
-                                       4)
+            get_network_from_mechanism(
+            os.path.join(path, '..', 'mechanisms',
+                         'reversible_substrate_inhibition.txt'), 
+            4)
+
         cls._G, cls._stoich, cls._stoich_rank = \
             get_graph_stoich(cls._alpha, cls._beta)
 
