@@ -3,12 +3,9 @@ include INSTALL
 include LICENSE
 include MANIFEST.in
 recursive-include gratelpy *.py
-recusrive-include tests *.py
-recursive-include tests *.dat
+recursive-include gratelpy/mechanisms *.txt
 recursive-include bin gratelpy_*
 recursive-include doc *
-recursive-include mechanisms *.txt
-recursive-exclude mechanisms *mapk*
 recursive-include doc/* *
 recursive-exclude doc/_* *
 recursive-exclude * __pycache__
