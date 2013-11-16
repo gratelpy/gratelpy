@@ -124,7 +124,9 @@ def main():
 
     base_name, ext = os.path.splitext(os.path.basename(mechanism_file))
 
-    alpha, beta, dict_complexes, dict_constants, dict_complexes_reverse, dict_constants_reverse = get_network_from_mechanism(mechanism_file, num_complexes)
+    alpha, beta, dict_complexes, dict_constants, dict_complexes_reverse, \
+    dict_constants_reverse = get_network_from_mechanism(mechanism_file, 
+                                                        num_complexes)
 
     # save dictionaries for later changes in visualization / naming of complexes and reactions
     dict_name = base_name + '.dict'
@@ -186,6 +188,25 @@ def main():
                % (no_critical,
                   stoich_rank))
 
+    print ('\n')
+    if full_stoich_rank == stoich_rank:
+        print ('You tested for multistability because '
+               'you looked for critical fragments of order equal '
+               'to the rank of the stoichiometric matrix.')
+    if full_stoich_rank > stoich_rank:
+        print ('You tested for oscillations because '
+               'you looked for critical fragments of order less than '
+               'the rank of the stoichiometric matrix.')
+    if stoich_rank < num_complexes:
+        print ('You tested for patterns (Turing instability) '
+               'because you looked for critical fragments of order '
+               'less than the number of species in your system.')
+
+    print ('The aforementioned number of discovered critical fragments '
+           'means the following for your mechanism and the instabilities '
+           'you tested for.')
+    print ('\n')
+
     if full_stoich_rank == stoich_rank:
         if no_critical == 0:
             print ('The stoichiometric matrix of your mechanism has '
@@ -221,6 +242,25 @@ def main():
                    '(Andronov-Hopf bifurcation).' % (full_stoich_rank,
                                                      no_critical,
                                                      stoich_rank))
+
+    if stoich_rank < num_complexes:
+        if no_critical == 0:
+            print ('Your mechanism has %d species '
+                   'and we did not discover any critical '
+                   'fragments of order %d.\n'
+                   'Hence your mechanism does not meet a necessary '
+                   'condition for pattern formation ' 
+                   '(Turing bifurcation).' % (num_complexes,
+                                              stoich_rank))
+        elif no_critical > 0:
+            print ('Your mechanism has %d species '
+                   'and we discovered %d critical '
+                   'fragment(s) of order %d.\n'
+                   'Hence your mechanism meets a necessary '
+                   'condition for pattern formation ' 
+                   '(Turing bifurcation).' % (num_complexes,
+                                              no_critical,
+                                              stoich_rank))
 
 #    frag_scores_result = score_valid_fragments_with_caching(base_name, valid_subgraphs_result)
 
