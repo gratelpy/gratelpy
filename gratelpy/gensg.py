@@ -42,7 +42,9 @@ def gen_valid_subgraphs_mp(G, valid_fragments, stoich_rank):
     return valid_subgraphs
 
 def gen_valid_subgraphs_mps(G, valid_fragments, stoich_rank):
-    print 'gensg: gen_valid_subgraphs_mps received',str(len(valid_fragments)),'fragments. the first up to 20 fragments are:'
+    print ('Fragment queue received %d fragments. ' 
+           'The first up to 20 fragments are:' % (len(valid_fragments)))
+
     for ctr in range(min(len(valid_fragments),20)):
         print valid_fragments[ctr]
 
@@ -87,7 +89,11 @@ def gen_valid_subgraphs_mps(G, valid_fragments, stoich_rank):
         iavg = sum(intervals) / len(intervals)
         freq = 1 / iavg
         est_time = iavg * (target_results - n_results)
-        print '%d (%d subgraphs) / %d (%d%%), %f, %ds' % (n_results, len_vsg, target_results, 
-            perc_done, freq, est_time)
+        print ('%d fragments of %d (%d%%) finished, %f fragments / s, '
+               '~ %d s left' % (n_results,  
+                                target_results, 
+                                perc_done, 
+                                freq, 
+                                est_time))
 
     return valid_subgraphs

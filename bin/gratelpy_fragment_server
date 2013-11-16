@@ -12,6 +12,7 @@ import sys
 import errno
 import cPickle as pickle
 import datetime
+import time
 import functools
 import itertools as it
 from multiprocessing import Pool
@@ -134,6 +135,7 @@ def main():
         raise Exception('presently, the subgraph scoring function (score_subgraph in subgraphs.py) assumes that all stoichiometric coefficients equal 1!')
     
     G, stoich, stoich_rank = get_graph_stoich(alpha, beta)
+    full_stoich_rank = stoich_rank
 
     if stoich_rank_set:
             stoich_rank = stoich_rank_user
@@ -142,17 +144,83 @@ def main():
     system_data = base_name + '.sys'
     pickle.dump({'alpha': alpha, 'beta': beta, 'stoich': stoich, 'graph': G}, open(system_data, 'wb'))
 
-    print 'rank of stoichiometry matrix = ' + str(stoich_rank)
-    
+    print 'Rank of stoichiometry matrix:', str(full_stoich_rank)
+    print 'You are looking for critical fragments of order', str(stoich_rank)
+
     #valid_fragments = get_valid_frags_with_caching(base_name, G, stoich_rank)
+    print 'Enumerating fragments of order', str(stoich_rank), '...'
+
+    frag_start = time.time()
     valid_fragments = get_sensible_fragments(G, stoich_rank)
-    print 'numer of valid fragments: '+str(len(valid_fragments))
+    frag_duration = time.time() - frag_start
+
+    print ('Fragment server: Number of fragments of order %d '
+           'placed in queue: %d' % (stoich_rank, len(valid_fragments))) 
 
     #display_valid_fragments(valid_fragments)
 
+    sg_start = time.time()
     valid_subgraphs_result = get_valid_subgraphs_with_caching(base_name, G, valid_fragments, stoich_rank)
+    sg_duration = time.time() - sg_start
     
-    print 'number of fragments we found valid subgraphs for: '+str(len(valid_subgraphs_result))
+    print 'Fragment queue exhausted!'
+    print ('Enumerating fragments took %.2f seconds.' % (frag_duration))
+    print ('Enumerating all subgraphs for all fragments took %.2f seconds. '
+           '(This includes waiting for clients!)' % (sg_duration))
+    print ('Total run time %.2f seconds.' % (time.time() - frag_start))
+
+    print ('Number of fragments with non-zero contribution to coefficient '
+           'a_%d of characteristic polynomial: %d' % (stoich_rank, 
+                                                      len(valid_subgraphs_result)))
+
+    print ('Computing how many of these fragments are critical ... ')
+
+    no_critical = 0
+    for frag in valid_subgraphs_result:
+        if frag[-1] < 0.:
+            no_critical += 1
+
+    assert no_critical >= 0
+
+    print ('Your mechanism contains %d critical fragment(s) of order %d.' \
+               % (no_critical,
+                  stoich_rank))
+
+    if full_stoich_rank == stoich_rank:
+        if no_critical == 0:
+            print ('The stoichiometric matrix of your mechanism has '
+                   'rank %d and we did not discover any critical '
+                   'fragments of order %d.\n'
+                   'Hence your mechanism does not meet a necessary '
+                   'condition for multistability.' % (full_stoich_rank,
+                                                      stoich_rank))
+        elif no_critical > 0:
+            print ('The stoichiometric matrix of your mechanism has '
+                   'rank %d and discovered %d critical fragment(s) of '
+                   'order %d.\n'
+                   'Hence your mechanism meets a necessary condition '
+                   'for multistability.' % (full_stoich_rank,
+                                            no_critical,
+                                            stoich_rank))
+
+    elif full_stoich_rank > stoich_rank:
+        if no_critical == 0:
+            print ('The stoichiometric matrix of your mechanism has '
+                   'rank %d and we did not discover any critical '
+                   'fragments of order %d.\n'
+                   'Hence your mechanism does not meet a necessary '
+                   'condition for oscillations ' 
+                   '(Andronov-Hopf bifurcation).' % (full_stoich_rank,
+                                                     stoich_rank))
+        elif no_critical > 0:
+            print ('The stoichiometric matrix of your mechanism has '
+                   'rank %d and we discovered %d critical fragment(s) of '
+                   'order %d.\n'
+                   'Hence your mechanism meets a necessary condition '
+                   'for oscillations ' 
+                   '(Andronov-Hopf bifurcation).' % (full_stoich_rank,
+                                                     no_critical,
+                                                     stoich_rank))
 
 #    frag_scores_result = score_valid_fragments_with_caching(base_name, valid_subgraphs_result)
 
