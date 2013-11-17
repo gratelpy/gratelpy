@@ -9,6 +9,7 @@ from gratelpy.parse_mechanism import get_network_from_mechanism
 from gratelpy.stoich import get_graph_stoich
 from gratelpy.fragments import get_sensible_fragments
 from gratelpy.subgraphs import get_all_valid_subgraphs
+from gratelpy.pyin import resource_path
 
 alpha_reference = np.array([[1, 0, 1, 0, 1, 0],
                             [0, 0, 1, 0, 0, 0],
@@ -42,7 +43,7 @@ fragments_reference = [(('s3', 's2', 's1'), ('w5', 'w3', 'w5')),
                        (('s2', 's1', 's4'), ('w3', 'w1', 'w6'))]
 
 subgraphs_reference = pickle.load(open(
-        os.path.join(path, 'test_reversible_substrate_inhibition.dat'), 'r'))
+        resource_path(path, 'test_reversible_substrate_inhibition.dat'), 'r'))
 sg_fragments_reference = [sg[0] for sg in subgraphs_reference]
 frag_i = 0
 sc_i = 1
@@ -62,8 +63,8 @@ class TestReversibleSubstrateInhibition(unittest.TestCase):
     def setUpClass(cls):
         cls._alpha, cls._beta, cls._species, cls._constants, _, _ = \
             get_network_from_mechanism(
-            os.path.join(path, '..', 'mechanisms',
-                         'reversible_substrate_inhibition.txt'), 
+            resource_path(os.path.join(path, '..', 'mechanisms'),
+                          'reversible_substrate_inhibition.txt'), 
             4)
 
         cls._G, cls._stoich, cls._stoich_rank = \
