@@ -12,7 +12,7 @@ setup(
     version=version,
     author='Georg Walther and Matthew Hartley',
     author_email='Georg.Walther@jic.ac.uk',
-    packages=['gratelpy'],
+    packages=['gratelpy', 'gratelpy.tests'],
     package_dir = {'gratelpy': 'gratelpy'},
     package_data = {'gratelpy': ['gratelpy/mechanisms/*.txt',
                                  'gratelpy/tests/*.dat']},
