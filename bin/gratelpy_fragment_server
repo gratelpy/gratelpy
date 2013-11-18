@@ -229,8 +229,8 @@ def main():
             print ('The stoichiometric matrix of your mechanism has '
                    'rank %d and we did not discover any critical '
                    'fragments of order %d.\n'
-                   'Hence your mechanism does not meet a necessary '
-                   'condition for oscillations ' 
+                   'With this result, we cannot exclude that your '
+                   'mechanism has the potential for oscillations '
                    '(Andronov-Hopf bifurcation).' % (full_stoich_rank,
                                                      stoich_rank))
         elif no_critical > 0:
