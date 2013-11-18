@@ -7,12 +7,19 @@ from multiprocessing.managers import SyncManager
 
 from subgraphs import get_all_valid_subgraphs
 
+class JobQueueManager(SyncManager): pass
+fragment_q = Queue.Queue()
+valid_frag_q = Queue.Queue()
+
+def get_fragment_q():
+    return fragment_q
+
+def get_valid_frag_q():
+    return valid_frag_q
+
 def make_server_manager(port, authkey):
-    class JobQueueManager(SyncManager): pass
-    fragment_q = Queue.Queue()
-    valid_frag_q = Queue.Queue()
-    JobQueueManager.register('get_fragment_q', callable=lambda:fragment_q)
-    JobQueueManager.register('get_valid_frag_q', callable=lambda:valid_frag_q)
+    JobQueueManager.register('get_fragment_q', callable=get_fragment_q)
+    JobQueueManager.register('get_valid_frag_q', callable=get_valid_frag_q)
     
     manager = JobQueueManager(address=('localhost', port), authkey=authkey)
     
