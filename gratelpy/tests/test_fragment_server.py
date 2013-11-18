@@ -11,6 +11,7 @@ from gratelpy.parse_mechanism import get_network_from_mechanism
 from gratelpy.stoich import get_graph_stoich
 from gratelpy.fragments import get_sensible_fragments
 from gratelpy.pyin import resource_path
+from gratelpy.subgraphs import get_all_valid_subgraphs
 
 def main():
     alpha, beta, dict_complexes, dict_constants, dict_complexes_reverse, \
@@ -47,8 +48,10 @@ def main():
 
     client_fragment_q = client_manager.get_fragment_q()
     client_valid_frag_q = client_manager.get_valid_frag_q()
+    print('fragment_q.qsize() = %d' % client_fragment_q.qsize())
 
     print('Client starts fetching fragments off the queue ...')
+    
     while True:
         try:
             f = client_fragment_q.get_nowait()
@@ -61,12 +64,14 @@ def main():
             break
 
     # now let the server go through the list of data deposited by the client
-    while True:
+    for f in valid_fragments:
         try:
-            server_valid_subgraphs = server_valid_frag_q.get()
-            print server_valid_subgraphs
+            print('Server fetching fragment ...')
+            server_valid_subgraphs = server_valid_frag_q.get_nowait()
+            print('Server fetched data for fragment %s. '
+                  '' % str(server_valid_subgraphs[0]))
         except:
-            break
+            exit
 
 if __name__ == '__main__':
     # Required on Windows 
