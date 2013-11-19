@@ -1,10 +1,12 @@
-# Use preferably setuptools.setup as this will install required packages
-# automatically. distutils.core.setup does not do so.
+# setuptools.setup must be used for entry_points (needed on Windows),
+# package_data, and others.
+# at any rate, distutils.core.setup is deprecated now
 try:
     from setuptools import setup
 except:
-    from distutils.core import setup
-
+    print('Setuptools is required for installation of GraTeLPy.')
+    exit()
+    
 version = __import__('gratelpy').get_version()
 
 setup(
@@ -44,6 +46,7 @@ setup(
     install_requires=[
         "networkx >= 1.7.0",
         "numpy >= 1.6.2",
-        "matplotlib >= 1.2.1"
+        "matplotlib >= 1.2.1",
+        "setuptools >= 1.4"
     ],
 )
