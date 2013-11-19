@@ -4,6 +4,7 @@ include LICENSE
 include MANIFEST.in
 recursive-include gratelpy *.py
 recursive-include gratelpy/mechanisms *.txt
+recursive-include gratelpy/tests *.dat
 recursive-include bin gratelpy_*
 recursive-include doc *
 recursive-include doc/* *
