@@ -6,9 +6,36 @@ try:
 except:
     print('Setuptools is required for installation of GraTeLPy.')
     exit()
-    
+
+import os
+from os.path import join
+import shutil
+
 version = __import__('gratelpy').get_version()
 
+gratelpy_scripts = [join('bin', 'gratelpy_subclient'), 
+                    join('bin', 'gratelpy_fragment_server'), 
+                    join('bin', 'gratelpy_check_data'), 
+                    join('bin', 'gratelpy_benchmark'),
+                    join('bin', 'gratelpy_test')]
+                        
+def extension():
+    if os.name == 'nt':
+        return '.py'
+    else:
+        return ''
+
+def windows_prepare(gratelpy_scripts):
+    gratelpy_scripts_windows = []
+    for script in gratelpy_scripts:
+        gratelpy_scripts_windows.append(script+'.py')
+    for script, script_w in zip(gratelpy_scripts, gratelpy_scripts_windows):
+        shutil.copy(script, script_w)
+    return gratelpy_scripts_windows 
+                        
+if os.name == 'nt':
+    gratelpy_scripts = windows_prepare(gratelpy_scripts)
+    
 setup(
     name='GraTeLPy',
     version=version,
@@ -20,9 +47,7 @@ setup(
     package_data = {'gratelpy': ['mechanisms/*.txt'],
                     'gratelpy.tests': ['*.dat']},
     include_package_data = True,
-    scripts=['bin/gratelpy_subclient', 'bin/gratelpy_fragment_server', 
-             'bin/gratelpy_check_data', 'bin/gratelpy_benchmark',
-             'bin/gratelpy_test'],
+    scripts=gratelpy_scripts,
     url='http://pypi.python.org/pypi/GraTeLPy',
     license='BSD',
     description='Graph theoretic linear stability analysis',
