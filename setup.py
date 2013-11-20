@@ -26,12 +26,25 @@ def extension():
         return ''
 
 def windows_prepare(gratelpy_scripts):
+    bat = ['@echo off\n',
+          'set PYFILE=%~f0\n',
+          'set PYFILE=%PYFILE:~0,-4%-script.py\n'
+          '"python.exe" "%PYFILE%" %*\n']
+
     gratelpy_scripts_windows = []
+    windows_bat_files = []
+    
     for script in gratelpy_scripts:
-        gratelpy_scripts_windows.append(script+'.py')
+        gratelpy_scripts_windows.append(script+'-script.py')
+        with open(script+'.bat', "w") as f:
+            for string in bat:
+                f.write(string)
+            windows_bat_files.append(f.name)
+        print('Wrote .bat file: %s.' % str(script+'.bat'))    
     for script, script_w in zip(gratelpy_scripts, gratelpy_scripts_windows):
         shutil.copy(script, script_w)
-    return gratelpy_scripts_windows 
+        print('Copied %s to %s.' % (script, script_w))
+    return gratelpy_scripts_windows + windows_bat_files
                         
 if os.name == 'nt':
     gratelpy_scripts = windows_prepare(gratelpy_scripts)
