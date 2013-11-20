@@ -10,7 +10,7 @@ import Queue
 from multiprocessing.managers import SyncManager
 
 # resource package to limit memory used by subclient
-import resource
+# import resource
 
 import numpy as np
 
@@ -70,6 +70,6 @@ def main():
 if __name__ == '__main__':
     # limit virtual memory (address space) to 2 GB
     # see man getrlimit for identifier RLIMIT_AS
-    resource.setrlimit(resource.RLIMIT_AS,(2147483648,2147483648)) 
+    # resource.setrlimit(resource.RLIMIT_AS,(2147483648,2147483648)) 
     
     main()
