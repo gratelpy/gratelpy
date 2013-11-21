@@ -17,7 +17,8 @@ gratelpy_scripts = [join('bin', 'gratelpy_subclient'),
                     join('bin', 'gratelpy_fragment_server'), 
                     join('bin', 'gratelpy_check_data'), 
                     join('bin', 'gratelpy_benchmark'),
-                    join('bin', 'gratelpy_test')]
+                    join('bin', 'gratelpy_test'),
+                    join('bin', 'gratelpy_time')]
                         
 def extension():
     if os.name == 'nt':
