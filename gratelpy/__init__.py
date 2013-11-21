@@ -9,7 +9,7 @@ from functools import partial
 import os
 
 def get_version(*args, **kwargs):
-	return str(VERSION[0])+'.'+str(VERSION[1])+'.'+str(VERSION[2])
+    return str(VERSION[0])+'.'+str(VERSION[1])+'.'+str(VERSION[2])
 
 def analyze(name, no_species, no_proc=1):
 
