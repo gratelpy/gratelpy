@@ -1,0 +1,61 @@
+#!/usr/bin/env python
+"""
+This script analyzes a number of mechanisms that are provided
+with GraTeLPy and times execution time of these analyses.
+
+The following mechansims are analyzed with one client:
+Reversible Substrate Inhibition
+Glycolysis Gluconeogenesis
+
+The following mechanisms are analyzed with two clients:
+Single-Layer MAPK
+
+All analyses are repeated three times.
+"""
+
+import os
+path = os.path.split(os.path.realpath(__file__))[0]
+
+from multiprocessing import freeze_support
+from gratelpy import analyze, get_mechanism
+from gratelpy.pyin import resource_path
+from os.path import join
+from time import time
+
+def main():
+    proc_1 = [(get_mechanism('reversible_substrate_inhibition.txt'), 4),
+              (get_mechanism('glycolysis_mechanism.txt'), 7)]
+
+    proc_2 = [(get_mechanism('single_layer_mapk_mechanism.txt'), 9)]
+
+    print('')
+    print('One client:')
+    print('')
+
+    for m in proc_1:
+        timings = []
+        print('Analyzing %s ...' % str(m[0])) 
+        for i in range(3):
+            now = time()
+            _ = analyze(m[0], m[1], 1)
+            timings.append(time()-now)
+            print('run time %.4f' % timings[-1])
+        print('median %.4f' % sorted(timings)[1])
+
+    print('')
+    print('Two clients:')
+    print('')
+
+    for m in proc_2:
+        timings = []
+        print('Analyzing %s ...' % str(m[0])) 
+        for i in range(3):
+            now = time()
+            _ = analyze(m[0], m[1], 2)
+            timings.append(time()-now)
+            print('run time %.4f' % timings[-1])
+        print('median %.4f' % sorted(timings)[1])
+
+if __name__ == "__main__":
+    freeze_support()
+    main()
