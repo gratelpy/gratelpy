@@ -29,3 +29,6 @@ def analyze(name, no_species, no_proc=1):
 
     return results[0]
 
+def get_mechanism(name):
+    _me = path = os.path.split(os.path.realpath(__file__))[0]
+    return os.path.join(_me, 'mechanisms', name)
