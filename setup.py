@@ -112,10 +112,11 @@ def windows_prepare(gratelpy_scripts):
     
     for script in gratelpy_scripts:
         gratelpy_scripts_windows.append(script+'-script.py')
-        with open(script+'.bat', "w") as f:
-            for string in bat:
-                f.write(string)
-            windows_bat_files.append(f.name)
+        f = open(script+'.bat', 'w')
+        for string in bat:
+            f.write(string)
+        windows_bat_files.append(f.name)
+        f.close()
         print('Wrote .bat file: %s.' % str(script+'.bat'))    
     for script, script_w in zip(gratelpy_scripts, gratelpy_scripts_windows):
         shutil.copy(script, script_w)
