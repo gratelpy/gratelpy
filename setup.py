@@ -53,8 +53,8 @@ if 'setuptools' not in sys.modules:
         try:
             _ = __import__(dep[0])
         except ImportError:
-            print('Could not find package %s in your Python setup.\n',
-                  'Please install version %s or higher of %s.\n',
+            print('Could not find package %s in your Python setup.\n'
+                  'Please install version %s or higher of %s.\n'
                   'Find out more here: %s\n' % (dep[0], v_str, dep[0], dep[2]))
             interrupt = True
         else:
@@ -63,23 +63,23 @@ if 'setuptools' not in sys.modules:
             v_tuple = tuple([int(s) for s in v_tuple])
 
             if v_tuple < dep[1]:
-                print('Package %s was found in your Python setup, however\n',
-                      'you have version %s installed, while GraTeLPy was\n',
-                      'developed with version %s of this package.\n',
-                      'Please consider upgrading %s to at least version %s.',
-                      'More info on %s is here: %s\n', % (dep[0], _.__version__,
+                print('Package %s was found in your Python setup, however\n'
+                      'you have version %s installed, while GraTeLPy was\n'
+                      'developed with version %s of this package.\n'
+                      'Please consider upgrading %s to at least version %s.\n'
+                      'More info on %s is here: %s\n' % (dep[0], _.__version__,
                                                           v_str, dep[0],
                                                           v_str, dep[0],
                                                           dep[2]))
 
         if interrupt:
-            print('One ore multiple packages that GraTeLPy depends on are ',
-                  'not installed on your system.\n',
-                  'Please install these packages first and then attempt ',
-                  'installing GraTeLPy again.\n',
-                  'Manual installation of these packages can be avoided by ',
-                  'getting a recent version of setuptools first.\n',
-                  'You can get setuptools here: ',
+            print('One ore multiple packages that GraTeLPy depends on are '
+                  'not installed on your system.\n'
+                  'Please install these packages first and then attempt '
+                  'installing GraTeLPy again.\n'
+                  'Manual installation of these packages can be avoided by '
+                  'getting a recent version of setuptools first.\n'
+                  'You can get setuptools here: '
                   'https://pypi.python.org/pypi/setuptools')
             sys.exit(1)
         
