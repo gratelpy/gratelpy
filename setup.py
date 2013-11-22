@@ -85,7 +85,13 @@ if 'setuptools' not in sys.modules:
                   'You can get setuptools here: '
                   'https://pypi.python.org/pypi/setuptools')
             sys.exit(1)
-        
+
+    print('We will now attempt to install GraTeLPy.\n'
+          'Ignore any distutils warnings in the '
+          'following output ("UserWarning")!')
+
+    raw_input('\nPress Enter to continue ...\n')
+
 version = get_version()
 
 gratelpy_scripts = [join('bin', 'gratelpy_subclient'), 
