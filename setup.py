@@ -11,6 +11,10 @@ import os
 from os.path import join
 import shutil
 
+os_name = os.name
+if os_name in ('nt', 'dos'):
+    os_name = 'windows'
+
 version = __import__('gratelpy').get_version()
 
 gratelpy_scripts = [join('bin', 'gratelpy_subclient'), 
@@ -41,7 +45,7 @@ def windows_prepare(gratelpy_scripts):
         print('Copied %s to %s.' % (script, script_w))
     return gratelpy_scripts_windows + windows_bat_files
                         
-if os.name == 'nt':
+if os_name == 'windows':
     gratelpy_scripts = windows_prepare(gratelpy_scripts)
     
 setup(
