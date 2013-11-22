@@ -3,9 +3,8 @@
 # at any rate, distutils.core.setup is deprecated now
 try:
     from setuptools import setup
-except:
-    print('Setuptools is required for installation of GraTeLPy.')
-    exit()
+except ImportError:
+    from distutils.core import setup
 
 import os
 from os.path import join
