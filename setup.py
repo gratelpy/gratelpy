@@ -9,7 +9,13 @@ except:
 
 import os
 from os.path import join
+import sys
 import shutil
+
+python_version = sys.version_info
+if python_version[:2] < (2, 7):
+    print('GraTeLPy requires Python 2.7')
+    sys.exit(1)
 
 os_name = os.name
 if os_name in ('nt', 'dos'):
