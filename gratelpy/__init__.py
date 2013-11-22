@@ -1,17 +1,18 @@
 VERSION = (0,1,1)
 
-from multiprocessing import Pool
-from gratelpy.parse_mechanism import get_network_from_mechanism
-from gratelpy.stoich import get_graph_stoich
-from gratelpy.fragments import get_sensible_fragments
-from gratelpy.subgraphs import get_all_valid_subgraphs
-from functools import partial
 import os
 
 def get_version(*args, **kwargs):
     return str(VERSION[0])+'.'+str(VERSION[1])+'.'+str(VERSION[2])
 
 def analyze(name, no_species, no_proc=1):
+
+    from multiprocessing import Pool
+    from gratelpy.parse_mechanism import get_network_from_mechanism
+    from gratelpy.stoich import get_graph_stoich
+    from gratelpy.fragments import get_sensible_fragments
+    from gratelpy.subgraphs import get_all_valid_subgraphs
+    from functools import partial
 
     pool = Pool(no_proc)
 
