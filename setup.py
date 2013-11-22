@@ -32,18 +32,18 @@ if os_name in ('nt', 'dos'):
     os_name = 'windows'
 
 if 'setuptools' not in sys.modules:
-    print('Warning: setuptools was not detected for your Python setup.\n',
-          'This means that package dependencies will not get installed ',
-          'automatically!\n',
+    print('Warning: setuptools was not detected for your Python setup.\n'
+          'This means that package dependencies will not get installed '
+          'automatically!\n'
           'We will now check which dependencies you miss ...\n')
 
     if os_name == 'windows':
-        print('Since you are on Windows, we strongly recommend that you\n',
-              'install a recent version of one of the popular Python\n',
-              'distributions: Continuum Anaconda or Enthought Canopy.\n',
-              'Installing Python packages on Windows by hand is a ',
-              'painful process ...\n',
-              'Anaconda: http://continuum.io/downloads \n',
+        print('Since you are on Windows, we strongly recommend that you\n'
+              'install a recent version of one of the popular Python\n'
+              'distributions: Continuum Anaconda or Enthought Canopy.\n'
+              'Installing Python packages on Windows by hand is a '
+              'painful process ...\n'
+              'Anaconda: http://continuum.io/downloads \n'
               'Enthought Canopy Express https://www.enthought.com/store/\n')
 
     interrupt = False
