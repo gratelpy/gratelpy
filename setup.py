@@ -7,7 +7,7 @@ except ImportError:
     from distutils.core import setup
 
 import os
-from os.path import join
+from os.path import join # this isn't great, confused with str.join
 import sys
 import shutil
 from gratelpy import get_version
