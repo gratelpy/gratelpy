@@ -17,10 +17,68 @@ if python_version[:2] < (2, 7):
     print('GraTeLPy requires Python 2.7')
     sys.exit(1)
 
+dependencies = [
+    ('networkx', (1, 7, 0), 'https://pypi.python.org/pypi/networkx/'),
+    ('numpy', (1, 6, 2), 'https://pypi.python.org/pypi/numpy'),
+    ('matplotlib', (1, 2, 1), 'https://pypi.python.org/pypi/matplotlib')
+]
+
 os_name = os.name
 if os_name in ('nt', 'dos'):
     os_name = 'windows'
 
+if 'setuptools' not in sys.modules:
+    print('Warning: setuptools was not detected for your Python setup.\n',
+          'This means that package dependencies will not get installed ',
+          'automatically!\n',
+          'We will now check which dependencies you miss ...\n')
+
+    if os_name == 'windows':
+        print('Since you are on Windows, we strongly recommend that you\n',
+              'install a recent version of one of the popular Python\n',
+              'distributions: Continuum Anaconda or Enthought Canopy.\n',
+              'Installing Python packages on Windows by hand is a ',
+              'painful process ...\n',
+              'Anaconda: http://continuum.io/downloads \n',
+              'Enthought Canopy Express https://www.enthought.com/store/\n')
+
+    interrupt = False
+
+    for dep in dependencies:
+        v_str = '.'.join('%d' % i for i in dep[1]) # (X,Y.Z) -> 'X.Y.Z'
+        try:
+            _ = __import__(dep[0])
+        except ImportError:
+            print('Could not find package %s in your Python setup.\n',
+                  'Please install version %s or higher of %s.\n',
+                  'Find out more here: %s\n' % (dep[0], v_str, dep[0], dep[2]))
+            interrupt = True
+        else:
+            # 'X.Y.Z' -> (X,Y,Z)
+            v_tuple = _.__version__.split('.') # asummes 'X.Y.Z' numbering
+            v_tuple = tuple([int(s) for s in v_tuple])
+
+            if v_tuple < dep[1]:
+                print('Package %s was found in your Python setup, however\n',
+                      'you have version %s installed, while GraTeLPy was\n',
+                      'developed with version %s of this package.\n',
+                      'Please consider upgrading %s to at least version %s.',
+                      'More info on %s is here: %s\n', % (dep[0], _.__version__,
+                                                          v_str, dep[0],
+                                                          v_str, dep[0],
+                                                          dep[2]))
+
+        if interrupt:
+            print('One ore multiple packages that GraTeLPy depends on are ',
+                  'not installed on your system.\n',
+                  'Please install these packages first and then attempt ',
+                  'installing GraTeLPy again.\n',
+                  'Manual installation of these packages can be avoided by ',
+                  'getting a recent version of setuptools first.\n',
+                  'You can get setuptools here: ',
+                  'https://pypi.python.org/pypi/setuptools')
+            sys.exit(1)
+        
 version = get_version()
 
 gratelpy_scripts = [join('bin', 'gratelpy_subclient'), 
@@ -91,6 +149,5 @@ setup(
         "networkx >= 1.7.0",
         "numpy >= 1.6.2",
         "matplotlib >= 1.2.1",
-        "setuptools >= 1.4"
     ],
 )
