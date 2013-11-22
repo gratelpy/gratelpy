@@ -61,6 +61,9 @@ if 'setuptools' not in sys.modules:
             # 'X.Y.Z' -> (X,Y,Z)
             v_tuple = _.__version__.split('.') # asummes 'X.Y.Z' numbering
             v_tuple = tuple([int(s) for s in v_tuple])
+	    if len(v_tuple) < 3:
+                # version must be 'X.Y.0'
+	        v_tuple = (v_tuple[0], v_tuple[1], 0)
 
             if v_tuple < dep[1]:
                 print('Package %s was found in your Python setup, however\n'
