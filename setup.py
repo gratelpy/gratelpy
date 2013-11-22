@@ -20,12 +20,6 @@ gratelpy_scripts = [join('bin', 'gratelpy_subclient'),
                     join('bin', 'gratelpy_test'),
                     join('bin', 'gratelpy_time')]
                         
-def extension():
-    if os.name == 'nt':
-        return '.py'
-    else:
-        return ''
-
 def windows_prepare(gratelpy_scripts):
     bat = ['@echo off\n',
           'set PYFILE=%~f0\n',
