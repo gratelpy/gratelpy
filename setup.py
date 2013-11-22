@@ -10,6 +10,7 @@ import os
 from os.path import join
 import sys
 import shutil
+from gratelpy import get_version
 
 python_version = sys.version_info
 if python_version[:2] < (2, 7):
@@ -20,7 +21,7 @@ os_name = os.name
 if os_name in ('nt', 'dos'):
     os_name = 'windows'
 
-version = __import__('gratelpy').get_version()
+version = get_version()
 
 gratelpy_scripts = [join('bin', 'gratelpy_subclient'), 
                     join('bin', 'gratelpy_fragment_server'), 
