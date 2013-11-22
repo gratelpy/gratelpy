@@ -12,9 +12,13 @@ import sys
 import shutil
 from gratelpy import get_version
 
-python_version = sys.version_info
-if python_version[:2] < (2, 7):
-    print('GraTeLPy requires Python 2.7')
+py_v = sys.version_info
+py_v_str = '.'.join('%s' % i for i in py_v[:2])
+if py_v[:2] < (2, 7):
+    print('GraTeLPy requires Python 2.7 '
+          'and you run Python %s.\n' % py_v_str)
+    print('You need to update your Python version.\n'
+          'More info here: http://python.org/download/releases/2.7.6/\n')
     sys.exit(1)
 
 dependencies = [
