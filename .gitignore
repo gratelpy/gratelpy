@@ -64,6 +64,9 @@ nosetests.xml
 # GraTelPy output
 *.ode
 *.jac
+*.dict
+*.sys
+*.vsg
 
 # Sphinx Documentation
 _build
