@@ -6,8 +6,10 @@ with GraTeLPy and times execution time of these analyses.
 The following mechansims are analyzed with one client:
 Reversible Substrate Inhibition
 Glycolysis Gluconeogenesis
+Cdc42 Yeast
 
 The following mechanisms are analyzed with two clients:
+Cdc42 Yeast
 Single-Layer MAPK
 
 All analyses are repeated three times.
@@ -24,9 +26,11 @@ from time import time
 
 def main():
     proc_1 = [(get_mechanism('reversible_substrate_inhibition.txt'), 4),
-              (get_mechanism('glycolysis_mechanism.txt'), 7)]
+              (get_mechanism('glycolysis_mechanism.txt'), 7),
+              (get_mechanism('cdc42_yeast.txt'), 8)]
 
-    proc_2 = [(get_mechanism('single_layer_mapk_mechanism.txt'), 9)]
+    proc_2 = [(get_mechanism('cdc42_yeast.txt'), 8),
+              (get_mechanism('single_layer_mapk_mechanism.txt'), 9)]
 
     print('')
     print('One client:')
