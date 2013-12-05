@@ -43,8 +43,8 @@ def main():
             now = time()
             _ = analyze(m[0], m[1], 1)
             timings.append(time()-now)
-            print('run time %.4f' % timings[-1])
-        print('median %.4f' % sorted(timings)[1])
+            print('run time %.4f seconds' % timings[-1])
+        print('median %.4f seconds' % sorted(timings)[1])
 
     print('')
     print('Two clients:')
@@ -57,8 +57,8 @@ def main():
             now = time()
             _ = analyze(m[0], m[1], 2)
             timings.append(time()-now)
-            print('run time %.4f' % timings[-1])
-        print('median %.4f' % sorted(timings)[1])
+            print('run time %.4f seconds' % timings[-1])
+        print('median %.4f seconds' % sorted(timings)[1])
 
 if __name__ == "__main__":
     freeze_support()
