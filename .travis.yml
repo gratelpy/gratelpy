@@ -28,5 +28,5 @@ before_install:
 
 script:
   - printenv PWD
-  - {envpython} setup.py install
-  - {envpython} setup.py test
+  - python setup.py install
+  - python setup.py test
