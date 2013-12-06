@@ -8,12 +8,12 @@ def get_substance_adjacency(alpha, beta):
     # beta:
     
     # number of reactions = number of columns of alpha
-    no_rxn = alpha.shape[1]
+    no_rxn = len(alpha[0])
     # number of substance = number of rows of alpha
-    no_sub = alpha.shape[0]
+    no_sub = len(alpha)
 
     # check
-    if no_rxn != beta.shape[1] or no_sub != beta.shape[0]:
+    if no_rxn != len(beta) or no_sub != len(beta[0]):
         raise
 
     # substance adjacency matrix
@@ -21,7 +21,7 @@ def get_substance_adjacency(alpha, beta):
 
     # build subs_adj matrix row-by-row
     for sub_i in range(no_sub):
-        subs_adj_row = np.zeros((no_sub,), dtype=np.int)
+        subs_adj_row = [0 for i in range(no_sub)]
         for rxn_i in range(no_rxn):
             if alpha[sub_i][rxn_i] > 0:
                 for adj_sub_i in range(no_sub):
@@ -30,7 +30,7 @@ def get_substance_adjacency(alpha, beta):
         subs_adj.append(subs_adj_row)
 
     # return numpy array of adjacency matrix
-    return np.array(subs_adj)
+    return subs_adj
 
 def get_random_alpha_beta(no_complexes, no_reactions, no_times_complexes_tested, remove_empty_reactions = True):
     # build alpha
