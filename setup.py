@@ -161,7 +161,7 @@ setup(
     test_suite = 'gratelpy.tests.runtests',
     install_requires=[
         "networkx >= 1.7.0",
-        "numpy >= 1.6.2",
+        "numpy >= 1.4.0",
         "matplotlib >= 1.2.1",
     ],
 )
