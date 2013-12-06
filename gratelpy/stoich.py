@@ -104,14 +104,21 @@ def get_random_alpha_beta(no_complexes, no_reactions, no_times_complexes_tested,
 
 def get_graph_stoich(alpha, beta, complex_names = None, constant_names = None):
 
+    # number of reactions = number of columns of alpha
+    no_rxn = len(alpha[0])
+    # number of substance = number of rows of alpha
+    no_sub = len(alpha)
+
     # stoichiometry matrix
-    stoich = beta - alpha
+    stoich = []
+    for row_i in range(no_sub):
+        stoich_row = []
+        for col_i in range(no_rxn):
+            stoich_row.append(beta[row_i][col_i] - alpha[row_i][col_i])
+        stoich.append(stoich_row)
+
     # rank of stoichiometry matrix
     stoich_rank = np.linalg.matrix_rank(stoich)
-    # number of reactions = number of columns of stoich
-    no_rxn = stoich.shape[1]
-    # number of substance = number of rows of stoich
-    no_sub = stoich.shape[0]
 
     # make directed graph
     G = nx.DiGraph()
