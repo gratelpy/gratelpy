@@ -58,23 +58,20 @@ sg_dict = subgraphs_reference_dict
 
 class TestReversibleSubstrateInhibition(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        cls._alpha, cls._beta, cls._species, cls._constants, _, _ = \
-            get_network_from_mechanism(
-            resource_path(os.path.join(path, '..', 'mechanisms'),
-                          'reversible_substrate_inhibition.txt'), 
-            4)
-
-        cls._G, cls._stoich, cls._stoich_rank = \
-            get_graph_stoich(cls._alpha, cls._beta)
-
-        cls._vf = get_sensible_fragments(cls._G, cls._stoich_rank)
+    _alpha, _beta, _species, _constants, _, _ =\
+        get_network_from_mechanism(
+        resource_path(os.path.join(path, '..', 'mechanisms'),
+                      'reversible_substrate_inhibition.txt'), 
+        4)
         
-        cls._sg = []
-        for frag in cls._vf:
-            cls._sg.append(get_all_valid_subgraphs(cls._G, cls._stoich_rank,
-                                                   frag))
+    _G, _stoich, _stoich_rank = \
+        get_graph_stoich(_alpha, _beta)
+
+    _vf = get_sensible_fragments(_G, _stoich_rank)
+    
+    _sg = []
+    for frag in _vf:
+        _sg.append(get_all_valid_subgraphs(_G, _stoich_rank, frag))
         
 
     def test_alpha(self):
@@ -96,7 +93,7 @@ class TestReversibleSubstrateInhibition(unittest.TestCase):
     def test_fragments(self):
         self.assertEqual(len(self._vf), len(fragments_reference))
         for frag in self._vf:
-            self.assertIn(frag, fragments_reference)
+            self.assertTrue(frag in fragments_reference)
 
     def test_subgraphs(self):
         self.assertEqual(len(self._sg), len(subgraphs_reference))
