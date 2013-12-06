@@ -28,7 +28,7 @@ def get_substance_adjacency(alpha, beta):
                         subs_adj_row[adj_sub_i] = 1
         subs_adj.append(subs_adj_row)
 
-    # return numpy array of adjacency matrix
+    # return adjacency matrix
     return subs_adj
 
 # def get_random_alpha_beta(no_complexes, no_reactions, no_times_complexes_tested, remove_empty_reactions = True):
