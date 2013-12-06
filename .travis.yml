@@ -21,6 +21,10 @@ script:
   - printenv PWD
   - python setup.py install
   - python setup.py test
+  - cd /
+  - printenv PWD
+  - gratelpy_test
+  - gratelpy_time
 
 notifications:
     email: false
