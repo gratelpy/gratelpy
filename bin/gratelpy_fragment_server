@@ -17,7 +17,6 @@ import functools
 import itertools as it
 from multiprocessing import Pool
 
-import numpy as np
 
 from gratelpy.fragments import get_valid_fragments, score_fragment, get_sensible_fragments, pretty_print
 from gratelpy.subgraphs import get_all_valid_subgraphs
@@ -133,7 +132,7 @@ def main():
     pickle.dump({'constants_dict': dict_constants, 'complexes_dict': dict_complexes, 'constants_dict_reverse': dict_constants_reverse, 'complexes_dict_reverse': dict_complexes_reverse}, open(dict_name, 'wb'))
 
     # presently, the subgraph scoring function (score_subgraph in subgraphs.py) assumes that all stoichiometric coefficients equal 1!
-    if np.max(alpha) > 1 or np.max(beta) > 1:
+    if max(max(alpha)) > 1 or max(max(beta)) > 1:
         raise Exception('presently, the subgraph scoring function (score_subgraph in subgraphs.py) assumes that all stoichiometric coefficients equal 1!')
     
     G, stoich, stoich_rank = get_graph_stoich(alpha, beta)
