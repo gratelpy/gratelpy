@@ -3,7 +3,7 @@
 
 language: python
 
-# NetworkX needs at least 2.4, so nothing we can do about that.
+# NetworkX needs at least 2.6, so nothing we can do about that.
 python:
 #  - "2.6"
   - "2.7"
