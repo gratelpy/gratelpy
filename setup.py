@@ -14,8 +14,8 @@ from gratelpy import get_version
 
 py_v = sys.version_info
 py_v_str = '.'.join('%s' % i for i in py_v[:2])
-if py_v[:2] < (2, 7):
-    print('GraTeLPy requires Python 2.7 '
+if py_v[:2] < (2, 6):
+    print('GraTeLPy requires Python 2.6 (or higher) '
           'and you run Python %s.\n' % py_v_str)
     print('You need to update your Python version.\n'
           'More info here: http://python.org/download/releases/2.7.6/\n')
