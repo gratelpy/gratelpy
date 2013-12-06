@@ -249,7 +249,7 @@ def get_path_graph(sc):
     # collect all starting and end points of paths
     path_starts = {}
     for key in sc.keys():
-        path_starts = []
+        path_starts[key] = []
 
  #   path_ends = dict.fromkeys(sc.keys(),[])
 
