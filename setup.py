@@ -128,7 +128,7 @@ setup(
     name='GraTeLPy',
     version=version,
     author='Georg Walther and Matthew Hartley',
-    author_email='Georg.Walther@jic.ac.uk',
+    author_email='gratelpy@gmail.com',
     packages=['gratelpy', 'gratelpy.tests'],
     package_dir = {'gratelpy': 'gratelpy',
                    'gratelpy.tests': join('gratelpy', 'tests')},
