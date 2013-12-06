@@ -1,5 +1,7 @@
 import numpy as np
 import networkx as nx
+import linalg
+import sys
 
 def get_substance_adjacency(alpha, beta):
     # alpa:
@@ -118,7 +120,21 @@ def get_graph_stoich(alpha, beta, complex_names = None, constant_names = None):
         stoich.append(stoich_row)
 
     # rank of stoichiometry matrix
-    stoich_rank = np.linalg.matrix_rank(stoich)
+    if no_sub < no_rxn:
+        # need to transpose stoich for svd call
+        stoich_tr = []
+        for i in range(no_rxn):
+            stoich_tr_row = []
+            for j in range(no_sub):
+                stoich_tr_row.append(stoich[j][i])
+            stoich_tr.append(stoich_tr_row)
+        matrix_U, sing_vals, matrix_V_t = linalg.svd(stoich_tr)
+    else:
+        matrix_U, sing_vals, matrix_V_t = linalg.svd(stoich)
+    # tol computation lent from NumPy
+    # https://github.com/numpy/numpy/blob/85b83e6938fa6f5176eaab8e8fd1652b27d53aa0/numpy/linalg/linalg.py#L1513
+    tol = max(sing_vals) * max(no_rxn, no_sub) * sys.float_info.epsilon
+    stoich_rank = sum([1 for s in sing_vals if s > tol])
 
     # make directed graph
     G = nx.DiGraph()
