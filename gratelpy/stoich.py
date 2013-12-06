@@ -32,77 +32,77 @@ def get_substance_adjacency(alpha, beta):
     # return numpy array of adjacency matrix
     return subs_adj
 
-def get_random_alpha_beta(no_complexes, no_reactions, no_times_complexes_tested, remove_empty_reactions = True):
-    # build alpha
-    alpha_as_list = []
-    for s_i in range(no_complexes):
-        s_alpha = [0 for w_i in range(no_reactions)]
-        test_indices = np.random.randint(0, no_reactions-1, size=no_times_complexes_tested)
-        for index in test_indices:
-            if np.random.rand() <= 0.5:
-                s_alpha[index] = 1
-        alpha_as_list.append(s_alpha)
-    alpha = np.array(alpha_as_list)
+# def get_random_alpha_beta(no_complexes, no_reactions, no_times_complexes_tested, remove_empty_reactions = True):
+#     # build alpha
+#     alpha_as_list = []
+#     for s_i in range(no_complexes):
+#         s_alpha = [0 for w_i in range(no_reactions)]
+#         test_indices = np.random.randint(0, no_reactions-1, size=no_times_complexes_tested)
+#         for index in test_indices:
+#             if np.random.rand() <= 0.5:
+#                 s_alpha[index] = 1
+#         alpha_as_list.append(s_alpha)
+#     alpha = np.array(alpha_as_list)
 
-    # build beta
-    beta_as_list = []
-    for s_i in range(no_complexes):
-        s_beta = [0 for w_i in range(no_reactions)]
-        test_indices = np.random.randint(0, no_reactions-1, size=no_times_complexes_tested)
-        for index in test_indices:
-            if np.random.rand() <= 0.5:
-                s_beta[index] = 1
-        beta_as_list.append(s_beta)
-    beta = np.array(beta_as_list)
+#     # build beta
+#     beta_as_list = []
+#     for s_i in range(no_complexes):
+#         s_beta = [0 for w_i in range(no_reactions)]
+#         test_indices = np.random.randint(0, no_reactions-1, size=no_times_complexes_tested)
+#         for index in test_indices:
+#             if np.random.rand() <= 0.5:
+#                 s_beta[index] = 1
+#         beta_as_list.append(s_beta)
+#     beta = np.array(beta_as_list)
 
-    if remove_empty_reactions:
-        reaction_indexes = []
-        for rxn_i in range(no_reactions):
-            if all(entries == 0 for entries in alpha[:,rxn_i]) and all(entries == 0 for entries in beta[:,rxn_i]):
-                reaction_indexes.append(rxn_i)
-        alpha = np.delete(alpha, np.s_[reaction_indexes], 1)
-        beta = np.delete(beta, np.s_[reaction_indexes], 1)
+#     if remove_empty_reactions:
+#         reaction_indexes = []
+#         for rxn_i in range(no_reactions):
+#             if all(entries == 0 for entries in alpha[:,rxn_i]) and all(entries == 0 for entries in beta[:,rxn_i]):
+#                 reaction_indexes.append(rxn_i)
+#         alpha = np.delete(alpha, np.s_[reaction_indexes], 1)
+#         beta = np.delete(beta, np.s_[reaction_indexes], 1)
 
-    # make sure nothing funny happened
-    assert alpha.shape == beta.shape
+#     # make sure nothing funny happened
+#     assert alpha.shape == beta.shape
 
-    # remove s1 -> s1 type of reactions
-    reaction_indexes = []
-    for rxn_i in range(alpha.shape[1]):
-        if sum(alpha[:,rxn_i]) == 1 and sum(beta[:,rxn_i]) == 1:
-            if all(a == b for a,b in zip(alpha[:,rxn_i], beta[:,rxn_i])):
-                reaction_indexes.append(rxn_i)
-    alpha = np.delete(alpha, np.s_[reaction_indexes], 1)
-    beta = np.delete(beta, np.s_[reaction_indexes], 1)
+#     # remove s1 -> s1 type of reactions
+#     reaction_indexes = []
+#     for rxn_i in range(alpha.shape[1]):
+#         if sum(alpha[:,rxn_i]) == 1 and sum(beta[:,rxn_i]) == 1:
+#             if all(a == b for a,b in zip(alpha[:,rxn_i], beta[:,rxn_i])):
+#                 reaction_indexes.append(rxn_i)
+#     alpha = np.delete(alpha, np.s_[reaction_indexes], 1)
+#     beta = np.delete(beta, np.s_[reaction_indexes], 1)
 
-    # make sure nothing funny happened
-    assert alpha.shape == beta.shape
+#     # make sure nothing funny happened
+#     assert alpha.shape == beta.shape
 
-    # remove empty rows (unused complexes)
-    complex_indexes = []
-    for cmpl_i in range(alpha.shape[0]):
-        if all(entry == 0 for entry in alpha[cmpl_i,:]) and all(entry == 0 for entry in beta[cmpl_i,:]):
-            complex_indexes.append(cmpl_i)
-    alpha = np.delete(alpha, np.s_[complex_indexes], 0)
-    beta = np.delete(beta, np.s_[complex_indexes], 0)
+#     # remove empty rows (unused complexes)
+#     complex_indexes = []
+#     for cmpl_i in range(alpha.shape[0]):
+#         if all(entry == 0 for entry in alpha[cmpl_i,:]) and all(entry == 0 for entry in beta[cmpl_i,:]):
+#             complex_indexes.append(cmpl_i)
+#     alpha = np.delete(alpha, np.s_[complex_indexes], 0)
+#     beta = np.delete(beta, np.s_[complex_indexes], 0)
 
-    # make sure nothing funny happened
-    assert alpha.shape == beta.shape
+#     # make sure nothing funny happened
+#     assert alpha.shape == beta.shape
 
-    # remove trimolcular and higher order reactions
-    reaction_indexes = []
-    for rxn_i in range(alpha.shape[1]):
-        if sum(alpha[:,rxn_i]) >= 3:
-            reaction_indexes.append(rxn_i)
+#     # remove trimolcular and higher order reactions
+#     reaction_indexes = []
+#     for rxn_i in range(alpha.shape[1]):
+#         if sum(alpha[:,rxn_i]) >= 3:
+#             reaction_indexes.append(rxn_i)
 
-    if min(alpha.shape) != 0:
-        alpha = np.delete(alpha, np.s_[reaction_indexes], 1)
-        beta = np.delete(beta, np.s_[reaction_indexes], 1)
+#     if min(alpha.shape) != 0:
+#         alpha = np.delete(alpha, np.s_[reaction_indexes], 1)
+#         beta = np.delete(beta, np.s_[reaction_indexes], 1)
 
-    # make sure nothing funny happened
-    assert alpha.shape == beta.shape
+#     # make sure nothing funny happened
+#     assert alpha.shape == beta.shape
 
-    return alpha, beta
+#     return alpha, beta
 
 def get_graph_stoich(alpha, beta, complex_names = None, constant_names = None):
 
