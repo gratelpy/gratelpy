@@ -23,3 +23,6 @@ script:
   - cd /
   - printenv PWD
   - python setup.py test
+
+notifications:
+    email: false
