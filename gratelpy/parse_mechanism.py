@@ -1,7 +1,5 @@
 import re
 
-import numpy as np
-
 def fgsl(v):
     return format_gsl(v)
 
@@ -490,12 +488,21 @@ def get_network_from_mechanism(filename, no_complexes):
     # check if we detected all rate constants
     if len(constants) != no_constants:
         raise Exception('number of rows in mechanism file counted: '+str(no_constants) + ' - constants detected: '+str(constants.keys()))
-
+    
     # create alpha and beta
-    alpha_transposed = np.array(alpha_transposed)
-    beta_transposed = np.array(beta_transposed)
-    alpha = np.transpose(alpha_transposed)
-    beta = np.transpose(beta_transposed)
+    # we do not need NumPy to transpose these
+    no_rows = len(alpha_transposed)
+    no_cols = len(alpha_transposed[0])
+    alpha = []
+    beta = []
+    for i in range(no_cols):
+        alpha_row = []
+        beta_row = []
+        for j in range(no_rows):
+            alpha_row.append(alpha_transposed[j][i])
+            beta_row.append(beta_transposed[j][i])
+        alpha.append(alpha_row)
+        beta.append(beta_row)
     
     return alpha, beta, complexes, constants, complexes_reverse, constants_reverse
 
