@@ -19,6 +19,11 @@ before_install:
   - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then sudo apt-get install -qq python-numpy python-scipy python-matplotlib python-pydot python-gdal; fi
   - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then sudo apt-get install -qq python3-numpy python3-scipy; fi
 
+  # Travis CI-specific?
+  - pip install pyyaml --use-mirrors
+  - pip install pyparsing --use-mirrors
+  - pip install coveralls --use-mirrors
+
   - sudo pip install -r requirements.txt --use-mirrors
 
 script:
