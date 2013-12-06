@@ -1,8 +1,12 @@
 import networkx as nx
 from networkx.algorithms import bipartite
 
-from matplotlib import pyplot as plt
-import matplotlib
+try:
+    from matplotlib import pyplot as plt
+    import matplotlib
+except ImportError:
+    print 'The drawing module requires matplotlib. Please install matplotlib.'
+    raise
 
 def gratelpy_draw(G, positions=None, dictionary_complexes=None, dictionary_reactions=None, filename=None, subgraph=None, rnsize = 1600, cnsize = 1400):
     # draws entire graph or subgraph (subgraph being a fragment)
