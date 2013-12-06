@@ -1,6 +1,7 @@
 import networkx as nx
 from networkx.algorithms import bipartite
 from collections import defaultdict
+from gratelpy.utils import invert_dict
 
 def get_valid_path_graph_cycles(path_graph):
     # path_graph: digraph with nodes = paths & edge n1 -> n2 => endpoint(n1) = beginning(n2)
@@ -83,11 +84,11 @@ def get_lpa_alpha_beta(alpha, beta, slow_indices, complex_dict=None, constant_di
 
     # construct reverse dictionaries
     if complex_dict is not None:
-        complex_dict_reverse = {v:k for k,v in complex_dict.iteritems()}
+        complex_dict_reverse = invert_dict(complex_dict)
     else:
         complex_dict_reverse = None
     if constant_dict is not None:
-        constant_dict_reverse = {v:k for k,v in constant_dict.iteritems()}
+        constant_dict_reverse = invert_dict(constant_dict)
     else:
         constant_dict_reverse = None
 
@@ -211,11 +212,11 @@ def get_lpa_alpha_beta(alpha, beta, slow_indices, complex_dict=None, constant_di
         beta_lpa.append(beta_lpa_row)
 
     if complex_dict_reverse is not None:
-        complex_dict_lpa = {v:k for k,v in complex_dict_lpa_reverse.iteritems()}
+        complex_dict_lpa = invert_dict(complex_dict_lpa_reverse)
     else:
         complex_dict_lpa = None
     if constant_dict_reverse is not None:
-        constant_dict_lpa = {v:k for k,v in constant_dict_lpa_reverse.iteritems()}
+        constant_dict_lpa = invert_dict(constant_dict_lpa_reverse)
     else:
         constant_dict_lpa = None
 
@@ -246,7 +247,10 @@ def get_path_graph(sc):
     paths = list(paths)
 
     # collect all starting and end points of paths
-    path_starts = {key:[] for key in sc.keys()}#dict.fromkeys(sc.keys(),[])
+    path_starts = {}
+    for key in sc.keys():
+        path_starts = []
+
  #   path_ends = dict.fromkeys(sc.keys(),[])
 
     for path in paths:

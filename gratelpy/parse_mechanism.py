@@ -1,4 +1,5 @@
 import re
+from gratelpy.utils import invert_dict
 
 def fgsl(v):
     return format_gsl(v)
@@ -114,11 +115,11 @@ def print_jac_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant
     # check if we were passed a 'reverse' dict and reverse it if needed
     if complex_dict is not None:
         if type(complex_dict.keys()[0]) is not type(int()):
-            complex_dict = {v:k for k,v in complex_dict.iteritems()}
+            complex_dict = invert_dict(complex_dict)
 
     if constant_dict is not None:
         if type(constant_dict.keys()[0]) is not type(int()):
-            constant_dict = {v:k for k,v in constant_dict.iteritems()}
+            constant_dict = invert_dict(constant_dict)
 
     # open file
     mechanism_file_name = basename+'.jac'
@@ -225,11 +226,11 @@ def print_ode_from_alpha_beta(basename, alpha, beta, complex_dict=None, constant
     # check if we were passed a 'reverse' dict and reverse it if needed
     if complex_dict is not None:
         if type(complex_dict.keys()[0]) is not type(int()):
-            complex_dict = {v:k for k,v in complex_dict.iteritems()}
+            complex_dict = invert_dict(complex_dict)
 
     if constant_dict is not None:
         if type(constant_dict.keys()[0]) is not type(int()):
-            constant_dict = {v:k for k,v in constant_dict.iteritems()}
+            constant_dict = invert_dict(constant_dict)
     
     # open file
     mechanism_file_name = basename+'.ode'
