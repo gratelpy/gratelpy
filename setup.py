@@ -162,6 +162,6 @@ setup(
     install_requires=[
         "networkx >= 1.7.0",
         "numpy >= 1.4.0",
-        "matplotlib >= 1.2.1",
+        "matplotlib",
     ],
 )
