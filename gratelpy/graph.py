@@ -1,5 +1,4 @@
 import networkx as nx
-import numpy as np
 from networkx.algorithms import bipartite
 from collections import defaultdict
 
@@ -73,6 +72,11 @@ def get_bipartite_sets(G):
         return complexes, reactions
 
 def get_lpa_alpha_beta(alpha, beta, slow_indices, complex_dict=None, constant_dict=None):
+    try:
+        import numpy as np
+    except ImportError:
+        print 'This method requires NumPy. Please install NumPy first.'
+        raise
     # alpha: reactant stoichiometric coefficients of well-mixed system
     # beta: product stoichiometric coefficients of well-mixed system
     # slow_indices: indices of slow species in system; indices are row indices of alpha, beta
