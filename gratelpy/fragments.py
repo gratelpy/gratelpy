@@ -147,6 +147,15 @@ def score_fragment(vs, sc, frag):
     return frag, sc, K_S
 
 def get_all_substance_combinations_with_cycles(alpha, beta):
+    try:
+        import numpy
+        alpha = numpy.array(alpha)
+        beta = numpy.array(beta)
+    except ImportError:
+        print('This method requires that alpha and beta are NumPy arrays.'
+              'NumPy does not appear to be installed. Please install NumPy.')
+        raise
+
     # alpha, beta are stoichiometry matrices as used throughout code
 
     # number of reactions = number of columns of alpha
