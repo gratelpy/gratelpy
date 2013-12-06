@@ -24,9 +24,9 @@ before_install:
   - pip install pyparsing --use-mirrors
   - pip install coveralls --use-mirrors
 
-  - sudo pip install -r requirements.txt --use-mirrors
+  - pip install -r requirements.txt --use-mirrors
 
 script:
   - printenv PWD
-  - sudo python setup.py install
-  - sudo python setup.py test
+  - python setup.py install
+  - python setup.py test
