@@ -23,7 +23,6 @@ if py_v[:2] < (2, 7):
 
 dependencies = [
     ('networkx', (1, 7, 0), 'https://pypi.python.org/pypi/networkx/'),
-    ('numpy', (1, 6, 2), 'https://pypi.python.org/pypi/numpy'),
     ('matplotlib', (1, 2, 1), 'https://pypi.python.org/pypi/matplotlib')
 ]
 
@@ -161,7 +160,6 @@ setup(
     test_suite = 'gratelpy.tests.runtests',
     install_requires=[
         "networkx >= 1.7.0",
-        "numpy >= 1.4.0",
         "matplotlib",
     ],
 )
