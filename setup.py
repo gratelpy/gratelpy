@@ -22,8 +22,7 @@ if py_v[:2] < (2, 7):
     sys.exit(1)
 
 dependencies = [
-    ('networkx', (1, 7, 0), 'https://pypi.python.org/pypi/networkx/'),
-    ('matplotlib', (1, 2, 1), 'https://pypi.python.org/pypi/matplotlib')
+    ('networkx', (1, 7, 0), 'https://pypi.python.org/pypi/networkx/')
 ]
 
 os_name = os.name
@@ -159,7 +158,6 @@ setup(
 	],
     test_suite = 'gratelpy.tests.runtests',
     install_requires=[
-        "networkx >= 1.7.0",
-        "matplotlib",
+        "networkx >= 1.7.0"
     ],
 )
