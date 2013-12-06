@@ -20,8 +20,6 @@ before_install:
 script:
   - printenv PWD
   - python setup.py install
-  - cd /
-  - printenv PWD
   - python setup.py test
 
 notifications:
