@@ -1,5 +1,4 @@
 import unittest
-import numpy as np
 import cPickle as pickle
 
 import os
@@ -11,15 +10,15 @@ from gratelpy.fragments import get_sensible_fragments
 from gratelpy.subgraphs import get_all_valid_subgraphs
 from gratelpy.pyin import resource_path
 
-alpha_reference = np.array([[1, 0, 1, 0, 1, 0],
-                            [0, 0, 1, 0, 0, 0],
-                            [0, 0, 0, 1, 1, 0],
-                            [0, 0, 0, 0, 0, 1]])
+alpha_reference = [[1, 0, 1, 0, 1, 0],
+                   [0, 0, 1, 0, 0, 0],
+                   [0, 0, 0, 1, 1, 0],
+                   [0, 0, 0, 0, 0, 1]]
 
-beta_reference = np.array([[0, 1, 0, 0, 0, 1],
-                           [0, 0, 0, 1, 0, 0],
-                           [0, 0, 1, 0, 0, 1],
-                           [0, 0, 0, 0, 1, 0]])
+beta_reference = [[0, 1, 0, 0, 0, 1],
+                  [0, 0, 0, 1, 0, 0],
+                  [0, 0, 1, 0, 0, 1],
+                  [0, 0, 0, 0, 1, 0]]
 
 species_reference = {'[A1]': 0, '[A2]': 1, '[A3]': 2, '[A4]': 3}
 constants_reference = {'k1': 0, 'k2': 1, 'k3': 2, 'k4': 3, 'k5': 4, 'k6': 5}
