@@ -14,5 +14,5 @@ def runtests():
     suite.addTest(TestReversibleSubstrateInhibition('test_fragments'))
     suite.addTest(TestReversibleSubstrateInhibition('test_subgraphs'))
 
-    failures = unittest.TextTestRunner().run(suite)
-    sys.exit(failures)
+    unittest.TextTestRunner().run(suite)
+    return suite
