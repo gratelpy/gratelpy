@@ -1,0 +1,27 @@
+# .travis.yml inspired by NetworkX's
+# https://github.com/networkx/networkx/blob/master/.travis.yml
+
+language: python
+
+# NetworkX needs at least 2.4, so nothing we can do about that.
+python:
+  - "2.6"
+  - "2.7"
+  - "3.2"
+  - "3.3"
+  - "pypy"
+
+virtualenv:
+  system_site_packages: true
+before_install:
+  # Current TravisCI VM is Ubuntu 12.04 which has Python 2.7 and 3.2.
+  # So apt-get will only apply to those virtualenvs.
+  - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then sudo apt-get install -qq python-numpy python-scipy python-matplotlib python-pydot python-gdal; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then sudo apt-get install -qq python3-numpy python3-scipy; fi
+
+  - sudo pip install -r requirements.txt --use-mirrors
+
+script:
+  - printenv PWD
+  - sudo python setup.py install
+  - python setup.py test
