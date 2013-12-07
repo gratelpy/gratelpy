@@ -73,6 +73,8 @@ class TestReversibleSubstrateInhibition(unittest.TestCase):
     for frag in _vf:
         _sg.append(get_all_valid_subgraphs(_G, _stoich_rank, frag))
         
+    def test_stoich_rank(self):
+        self.assertEqual(self._stoich_rank, 3)
 
     def test_alpha(self):
         for row, row_ref in zip(self._alpha, alpha_reference):
