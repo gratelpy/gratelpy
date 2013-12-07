@@ -1,12 +1,29 @@
 GraTeLPy
 ========
 
-## Development Status of GraTeLPy
+## Requirements for GraTeLPy
 
-GraTeLPy requires Python 2.6 or 2.7 and NetworkX 1.6 or above.
+GraTeLPy requires Python 2.6 or 2.7 and NetworkX 1.6 or above and runs on Windows, Mac OSX, and Linux.
 
-If the following status icon is green, GraTeLPy works properly with these requirements: 
+We test GraTeLPy continually on a variety of platforms to ensure that it will work for you.
+If you encounter any problems installing or using GraTeLPy please open an
+[issue](https://github.com/gratelpy/gratelpy/issues) or [drop us a line](mailto:gratelpy@gmail.com).
+
+## GraTeLPy Status
+
+We test continually GraTeLPy on Linux (64-bit Ubuntu Linux 12.04) and Mac OS X 10.8.5.
+A green status icon means that the most recent version of GraTeLPy ran corrcetly for that software configuration.
+
+On **Linux** with both Python 2.6 and 2.7 with NetworkX 1.6, 1.7, 1.8, and the latest version of NetworkX:
 [![Build Status](https://travis-ci.org/gratelpy/gratelpy.png?branch=master)](https://travis-ci.org/gratelpy/gratelpy)
+
+On **Mac OS X** with Python 2.7 (2.6 testing coming soon hopefully) 
+with NetworkX 1.6, 1.7, 1.8, and the latest version of NetworkX:
+[![Build Status](https://travis-ci.org/gratelpy/gratelpy.png?branch=master.osx)](https://travis-ci.org/gratelpy/gratelpy)
+
+Testing on **Windows** is done by hand and therefore less frequent. 
+Our latest test of the current version of GraTeLPy with the current version
+of the [Continuum Analytics Anaconda Python bundle](http://continuum.io/downloads) on Windows 8 worked correctly.
 
 ## Documentation Note
 
