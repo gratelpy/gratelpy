@@ -1,8 +1,18 @@
 #!/usr/bin/env python
 
 from gratelpy.tests import runtests
+import networkx
+import sys
 
 def main():
+    py_v = sys.version_info
+    py_v_str = '.'.join('%s' % i for i in py_v[:2])
+
+    print('')
+    print('Your Python version is %s.' % py_v_str)
+    print('Your NetworkX version is %s.' % str(networkx.__version__))
+    print('')
+
     runtests()
 
 if __name__ == '__main__':
