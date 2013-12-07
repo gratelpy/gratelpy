@@ -13,7 +13,7 @@ env:
 before_install:
 #  - brew update
   - sudo easy_install pip
-  - if [ $NETWORKX_VERSION = LATEST ]; then pip install networkx --use-mirrors; else pip install -q networkx==$NETWORKX_VERSION --use-mirrors; fi;
+  - if [ $NETWORKX_VERSION = LATEST ]; then pip install networkx --user --use-mirrors; else pip install -q networkx==$NETWORKX_VERSION --user --use-mirrors; fi;
 
 install:
 #  - brew install cmake
