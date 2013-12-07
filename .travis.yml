@@ -15,7 +15,7 @@ env:
   - NETWORKX_VERSION=1.6
   - NETWORKX_VERSION=1.7
   - NETWORKX_VERSION=1.8
-  - NETWORKX_VERSION=HEAD
+  - NETWORKX_VERSION=">1.8"
 
 before_install:
   - pip install -q networkx==$NETWORKX_VERSION --use-mirrors
