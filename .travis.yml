@@ -5,6 +5,7 @@ language:
   - objective-c
 
 env:
+  - PYTHON=2.7
 #  - NETWORKX_VERSION=1.6
 #  - NETWORKX_VERSION=1.7
 #  - NETWORKX_VERSION=1.8
@@ -16,7 +17,7 @@ before_install:
 
 install:
   - brew install cmake
-  - brew install osx/python26.rb
+  - if [ $PYTHON = 2.7 ]; then brew install python27; else brew install osx/python26.rb; fi;
 
 script:
   - python bin/gratelpy_test
