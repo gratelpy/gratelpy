@@ -1,6 +1,15 @@
 GraTeLPy
 ========
 
+## Development Status of GraTeLPy
+
+GraTeLPy requires Python 2.6 or 2.7 and NetworkX 1.6 or above.
+
+If the following status icon is green, GraTeLPy works properly with these requirements: 
+[![Build Status](https://travis-ci.org/gratelpy/gratelpy.png?branch=master)](https://travis-ci.org/gratelpy/gratelpy)
+
+## Documentation Note
+
 **Please Note**: At present the documentation we provide (in doc/) is
 very rudimentary. Until we update our documentation, this README.md file
 will act in place of proper documentation that we owe you.
