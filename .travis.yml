@@ -15,10 +15,10 @@ env:
   - NETWORKX_VERSION=1.6
   - NETWORKX_VERSION=1.7
   - NETWORKX_VERSION=1.8
-  - NETWORKX_VERSION='LATEST'
+  - NETWORKX_VERSION=LATEST
 
 before_install:
-  - if [[ $NETWORKX_VERSION=='LATEST' ]]; then pip install networkx --use-mirrors; else pip install -q networkx==$NETWORKX_VERSION --use-mirrors; fi;
+  - if [ $NETWORKX_VERSION = LATEST ]; then pip install networkx --use-mirrors; else pip install -q networkx==$NETWORKX_VERSION --use-mirrors; fi;
 
 script:
   - printenv PWD
