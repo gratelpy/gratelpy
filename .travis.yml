@@ -21,7 +21,7 @@ install:
   - python setup.py install --user
 
 script:
-  - gratelpy_test
+  - /Users/travis/Library/Python/2.7/bin/gratelpy_test
 
 notifications:
     email: false
