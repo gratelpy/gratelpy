@@ -24,6 +24,8 @@ from gratelpy.pyin import resource_path
 from os.path import join
 from time import time
 
+import sys
+
 def main():
     proc_1 = [(get_mechanism('reversible_substrate_inhibition.txt'), 4),
               (get_mechanism('glycolysis_mechanism.txt'), 7),
@@ -32,6 +34,11 @@ def main():
     proc_2 = [(get_mechanism('cdc42_yeast.txt'), 8),
               (get_mechanism('single_layer_mapk_mechanism.txt'), 9)]
 
+    py_v = sys.version_info
+    py_v_str = '.'.join('%s' % i for i in py_v[:2])
+
+    print('')
+    print('Your Python version is %s' % py_v_str)
     print('')
     print('One client:')
     print('')
