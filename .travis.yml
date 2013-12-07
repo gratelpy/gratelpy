@@ -16,8 +16,9 @@ before_install:
 #  - if [ $NETWORKX_VERSION = LATEST ]; then pip install networkx --use-mirrors; else pip install -q networkx==$NETWORKX_VERSION --use-mirrors; fi;
 
 install:
-  - brew install cmake
-  - if [ $PYTHON = 2.7 ]; then brew install python; else brew install osx/python26.rb; fi;
+#  - brew install cmake
+#  - if [ $PYTHON = 2.7 ]; then brew install python; else brew install osx/python26.rb; fi;
+  - python setup.py install
 
 script:
   - python bin/gratelpy_test
