@@ -15,6 +15,7 @@ before_install:
 #  - if [ $NETWORKX_VERSION = LATEST ]; then pip install networkx --use-mirrors; else pip install -q networkx==$NETWORKX_VERSION --use-mirrors; fi;
 
 install:
+  - brew install cmake
   - brew install osx/python26.rb
 
 script:
