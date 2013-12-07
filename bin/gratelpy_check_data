@@ -8,7 +8,10 @@ import sys
 import networkx as nx
 
 import cPickle as pickle
-from collections import Counter
+try:
+    from collections import Counter
+except ImportError:
+    from gratelpy.counter_python26 import Counter
 import errno
 from gratelpy.graph import get_path_graph, get_valid_path_graph_cycles
 from gratelpy.subgraphs import get_subgraph_motifs, score_subgraph
@@ -69,7 +72,9 @@ if dictname is not None:
         else:
             raise Exception('unknown error')
 
-fragment_tags = {s[0]: (tuple(sorted(s[frag_i][0])), tuple(sorted(s[frag_i][1]))) for s in data}
+fragment_tags = {}
+for s in data:
+    fragment_tags[s[0]] = (tuple(sorted(s[frag_i][0])), tuple(sorted(s[frag_i][1])))
 fragments = [fragment_tags[s[0]] for s in data] 
 
 fragment_counter = Counter(fragments)
@@ -78,8 +83,12 @@ if len(duplicate_fragments) > 0:
     print str(len(duplicate_fragments)),'duplicate fragments detected'
     print 'on average, duplicate fragments occured',str(float(sum([fragment_counter[f] for f in duplicate_fragments]))/len(duplicate_fragments)),'times'
 
-subgraph_components = {fragment_tags[s[frag_i]]: s[sc_i] for s in data}
-subgraphs = {fragment_tags[s[frag_i]]: s[sg_i] for s in data}
+subgraph_components = {}
+for s in data:
+    subgraph_components[fragment_tags[s[frag_i]]] = s[sc_i] 
+subgraphs = {}
+for s in data:
+    subgraphs[fragment_tags[s[frag_i]]] = s[sg_i]
 edges_only_subgraphs = {}
 for f in fragments:
     edges_only_subgraphs[f] = []
@@ -87,7 +96,9 @@ for f in fragments:
         if all(len(el)==2 for el in sg):
             edges_only_subgraphs[f].append(sg)
 
-ks = {fragment_tags[s[frag_i]]: s[ks_i] for s in data}
+ks = {}
+for s in data:
+    ks[fragment_tags[s[frag_i]]] = s[ks_i] 
 order = len(fragments[0][0])
 if any(order != len(f[0]) for f in fragments):
     print 'Orders of fragments detected:'
@@ -293,8 +304,12 @@ if dictname is None:
             output_file.write('------------------------------------------\n')
         output_file.write('\n')
 else:
-    cd = {'s'+str(key+1): dictionary['complexes_dict_reverse'][key].translate(None,'[]') for key in dictionary['complexes_dict_reverse']}
-    kd = {'w'+str(key+1): dictionary['constants_dict_reverse'][key].translate(None,'[]') for key in dictionary['constants_dict_reverse']}
+    cd = {}
+    for key in dictionary['complexes_dict_reverse']:
+        cd['s'+str(key+1)] = dictionary['complexes_dict_reverse'][key].translate(None,'[]')
+    kd = {}
+    for key in dictionary['constants_dict_reverse']:
+        kd['w'+str(key+1)] = dictionary['constants_dict_reverse'][key].translate(None,'[]') 
     
     for f_i, f in enumerate(critical_fragments_unique):
         sg_motifs = get_subgraph_motifs(subgraph_components[f])
