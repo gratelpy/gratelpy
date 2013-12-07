@@ -12,16 +12,13 @@ env:
 #  - NETWORKX_VERSION=LATEST
 
 before_install:
-  - mkdir $HOME/local
-  - setenv PATH $PATH:$HOME/local
-  - setenv PYTHONPATH $PYTHONPATH:$HOME/local
 #  - brew update
 #  - if [ $NETWORKX_VERSION = LATEST ]; then pip install networkx --use-mirrors; else pip install -q networkx==$NETWORKX_VERSION --use-mirrors; fi;
 
 install:
 #  - brew install cmake
 #  - if [ $PYTHON = 2.7 ]; then brew install python; else brew install osx/python26.rb; fi;
-  - python setup.py install --prefix=$HOME/local
+  - python setup.py install --user
 
 script:
   - gratelpy_test
