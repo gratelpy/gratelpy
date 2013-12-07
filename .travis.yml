@@ -17,7 +17,7 @@ before_install:
 
 install:
   - brew install cmake
-  - if [ $PYTHON = 2.7 ]; then brew install python27; else brew install osx/python26.rb; fi;
+  - if [ $PYTHON = 2.7 ]; then brew install python; else brew install osx/python26.rb; fi;
 
 script:
   - python bin/gratelpy_test
