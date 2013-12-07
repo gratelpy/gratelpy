@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-"""check_data.py
-
-Usage: check_data.py data_file [dictionary file]"""
+"""Usage: gratelpy_check_data data_file [dictionary file]"""
 
 import sys
 
@@ -37,6 +35,13 @@ fragment_counter = None
 subgraph_components = None
 subgraphs = None 
 ks = None
+
+print('\nGraTeLPy Copyright (C) 2013  Georg R Walther, Matthew Hartley.\n'
+      'This program comes with ABSOLUTELY NO WARRANTY.\n'
+      'This is free software, and you are welcome to redistribute it '
+      'under certain conditions.\n'
+      'For details visit https://github.com/gratelpy/gratelpy and '
+      'read our LICENSE or contact the author at gratelpy@gmail.com.\n')
 
 try:
     filename = sys.argv[1]

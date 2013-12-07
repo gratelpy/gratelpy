@@ -25,8 +25,16 @@ from os.path import join
 from time import time
 
 import sys
+import networkx
 
 def main():
+    print('\nGraTeLPy Copyright (C) 2013  Georg R Walther, Matthew Hartley.\n'
+          'This program comes with ABSOLUTELY NO WARRANTY.\n'
+          'This is free software, and you are welcome to redistribute it '
+          'under certain conditions.\n'
+          'For details visit https://github.com/gratelpy/gratelpy and '
+          'read our LICENSE or contact the author at gratelpy@gmail.com.\n')
+
     proc_1 = [(get_mechanism('reversible_substrate_inhibition.txt'), 4),
               (get_mechanism('glycolysis_mechanism.txt'), 7),
               (get_mechanism('cdc42_yeast.txt'), 8)]
@@ -37,8 +45,8 @@ def main():
     py_v = sys.version_info
     py_v_str = '.'.join('%s' % i for i in py_v[:2])
 
-    print('')
     print('Your Python version is %s' % py_v_str)
+    print('Your NetworkX version is %s.' % str(networkx.__version__))
     print('')
     print('One client:')
     print('')

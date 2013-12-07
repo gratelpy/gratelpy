@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-"""lpa.py
-
-Usage: lpa.py mechanism_file num_complexes [order of interest]"""
+"""Usage: gratelpy_fragment_server mechanism_file number_of_species_in_mechanism [order of interest]"""
 
 import sys
 
@@ -266,4 +264,19 @@ def main():
     return alpha, beta, dict_complexes, dict_constants, dict_complexes_reverse, dict_constants_reverse
 
 if __name__ == '__main__':
+    print('\nGraTeLPy Copyright (C) 2013  Georg R Walther, Matthew Hartley.\n'
+          'This program comes with ABSOLUTELY NO WARRANTY.\n'
+          'This is free software, and you are welcome to redistribute it '
+          'under certain conditions.\n'
+          'For details visit https://github.com/gratelpy/gratelpy and '
+          'read our LICENSE or contact the author at gratelpy@gmail.com.\n')
+
+    py_v = sys.version_info
+    py_v_str = '.'.join('%s' % i for i in py_v[:2])
+
+    print('GraTeLPy Fragment Server.')
+    print('Your Python version is %s.' % py_v_str)
+    print('Your NetworkX version is %s.' % str(nx.__version__))
+    print('')
+
     alpha, beta, dict_complexes, dict_constants, dict_complexes_reverse, dict_constants_reverse = main()

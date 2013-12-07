@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-"""benchmark.py
-
-Usage: benchmark.py bechnmark_file your_file"""
+"""Usage: benchmark.py bechnmark_file your_file"""
 
 import cPickle as pickle
 import sys
@@ -230,6 +228,13 @@ def data_compare(b_data, b_filename, y_data, y_filename):
 
     
 def main():
+    print('\nGraTeLPy Copyright (C) 2013  Georg R Walther, Matthew Hartley.\n'
+          'This program comes with ABSOLUTELY NO WARRANTY.\n'
+          'This is free software, and you are welcome to redistribute it '
+          'under certain conditions.\n'
+          'For details visit https://github.com/gratelpy/gratelpy and '
+          'read our LICENSE or contact the author at gratelpy@gmail.com.\n')
+
     # declare global variables
     global benchmark_file_name
     global your_file_name

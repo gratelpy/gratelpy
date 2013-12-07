@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-"""subclient.py
-
-Usage: subclient.py mechanism_file num_complexes [fragment_server_hostname=localhost] [port number on fragments server = 50000]
+"""Usage: gratelpy_subclient mechanism_file number_of_species_in_mechanism [fragment_server_hostname=localhost] [port number on fragments server = 50000]
 """
 import sys
 import networkx as nx
@@ -29,6 +27,21 @@ def process_fragment_q(fragment_q, valid_frag_q, G, stoich_rank):
             return
 
 def main():
+    print('\nGraTeLPy Copyright (C) 2013  Georg R Walther, Matthew Hartley.\n'
+          'This program comes with ABSOLUTELY NO WARRANTY.\n'
+          'This is free software, and you are welcome to redistribute it '
+          'under certain conditions.\n'
+          'For details visit https://github.com/gratelpy/gratelpy and '
+          'read our LICENSE or contact the author at gratelpy@gmail.com.\n')
+
+    py_v = sys.version_info
+    py_v_str = '.'.join('%s' % i for i in py_v[:2])
+
+    print('GraTeLPy Client.')
+    print('Your Python version is %s.' % py_v_str)
+    print('Your NetworkX version is %s.' % str(nx.__version__))
+    print('')
+
     try:
         mechanism_file = sys.argv[1]
         num_complexes = int(sys.argv[2])
