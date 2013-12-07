@@ -5,7 +5,6 @@ Usage: benchmark.py bechnmark_file your_file"""
 
 import cPickle as pickle
 import sys
-from collections import Counter
 from gratelpy.subgraphs import get_subgraph_motifs
 
 # data format
@@ -55,8 +54,24 @@ def duplicate_fragments(b_data, b_filename, y_data, y_filename):
     b_duplicates = False
     y_duplicates = False
     
-    bf_ctr = Counter([bf_tags[s[0]] for s in benchmark_fs])
-    yf_ctr = Counter([yf_tags[s[0]] for s in your_fs])
+    # Python 2.6: try and replace following line by hand
+    # bf_ctr = Counter([bf_tags[s[0]] for s in benchmark_fs])
+    bf_ctr = {}
+    for s in benchmark_fs:
+        el = bf_tags[s[0]]
+        if el not in bf_ctr.keys():
+            bf_ctr[el] = 1
+        else:
+            bf_ctr[el] += 1
+    # Python 2.6: try and replace the following line by hand
+    # yf_ctr = Counter([yf_tags[s[0]] for s in your_fs])
+    yf_ctr = {}
+    for s in your_fs:
+        el = yf_tags[s[0]]
+        if el not in yf_ctr.keys():
+            yf_ctr[el] = 1
+        else:
+            yf_ctr[el] += 1
 
     if max(bf_ctr.values()) > 1:
         b_duplicates = True
@@ -115,22 +130,38 @@ def data_compare(b_data, b_filename, y_data, y_filename):
     global bf_tags
     global yf_tags
 
-    bf_tags = {s[0]: (tuple(sorted(s[frag_i][0])), tuple(sorted(s[frag_i][1]))) for s in b_data}
-    yf_tags = {s[0]: (tuple(sorted(s[frag_i][0])), tuple(sorted(s[frag_i][1]))) for s in y_data}
+    bf_tags = {}
+    for s in b_data:
+        bf_tags[s[0]] = (tuple(sorted(s[frag_i][0])), tuple(sorted(s[frag_i][1])))
+    yf_tags = {}
+    for s in y_data:
+        yf_tags[s[0]] = (tuple(sorted(s[frag_i][0])), tuple(sorted(s[frag_i][1])))
 
     b_fragments = frozenset([bf_tags[s[0]] for s in b_data])
     y_fragments = frozenset([yf_tags[s[0]] for s in y_data])
 
-    b_sc = {bf_tags[s[0]]: s[sc_i] for s in b_data}
-    y_sc = {yf_tags[s[0]]: s[sc_i] for s in y_data}
+    b_sc = {}
+    for s in b_data:
+        b_sc[bf_tags[s[0]]] = s[sc_i]
+    y_sc = {}
+    for s in y_data:
+        y_sc[yf_tags[s[0]]] = s[sc_i]
 
     # b_sg = {bf_tags[s[0]]: frozenset([frozenset([edge for edge in sg if len(edge)==2]+[(path[0],path[1],path[2]) for path in sg if len(path)>2]) for sg in s[sg_i]]) for s in b_data}
     # y_sg = {yf_tags[s[0]]: frozenset([frozenset([edge for edge in sg if len(edge)==2]+[(path[0],path[1],path[2]) for path in sg if len(path)>2]) for sg in s[sg_i]]) for s in y_data}
-    b_sg = {bf_tags[s[0]]: frozenset([frozenset([el for el in sg]) for sg in s[sg_i]]) for s in b_data}
-    y_sg = {yf_tags[s[0]]: frozenset([frozenset([el for el in sg]) for sg in s[sg_i]]) for s in y_data}
+    b_sg = {}
+    for s in b_data:
+        b_sg[bf_tags[s[0]]] = frozenset([frozenset([el for el in sg]) for sg in s[sg_i]])
+    y_sg = {}
+    for s in y_data:
+        y_sg[yf_tags[s[0]]] = frozenset([frozenset([el for el in sg]) for sg in s[sg_i]])
 
-    b_ks = {bf_tags[s[0]]: s[ks_i] for s in b_data}
-    y_ks = {yf_tags[s[0]]: s[ks_i] for s in y_data}
+    b_ks = {}
+    for s in b_data:
+        b_ks[bf_tags[s[0]]] = s[ks_i]
+    y_ks = {}
+    for s in y_data:
+        y_ks[yf_tags[s[0]]] = s[ks_i]
 
     print 'set of fragments in',b_filename,'no. of fragments:',len(b_fragments)
     print 'set of fragments in',y_filename,'no. of fragments:',len(y_fragments)
