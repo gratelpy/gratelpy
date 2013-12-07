@@ -5,8 +5,6 @@ language:
   - objective-c
 
 env:
-  - PATH=$HOME/local
-  - PYTHONPATH=$HOME/local
   - PYTHON=2.7
 #  - NETWORKX_VERSION=1.6
 #  - NETWORKX_VERSION=1.7
@@ -15,9 +13,11 @@ env:
 
 before_install:
   - mkdir $HOME/local
+  - setenv PATH $PATH:$HOME/local
+  - setenv PYTHONPATH $PYTHONPATH:$HOME/local
 #  - brew update
 #  - if [ $NETWORKX_VERSION = LATEST ]; then pip install networkx --use-mirrors; else pip install -q networkx==$NETWORKX_VERSION --use-mirrors; fi;
-  - wget 
+
 install:
 #  - brew install cmake
 #  - if [ $PYTHON = 2.7 ]; then brew install python; else brew install osx/python26.rb; fi;
