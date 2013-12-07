@@ -11,12 +11,18 @@ python:
 #  - "3.3"
 #  - "pypy"
 
+env:
+  - NETWORKX_VERSION=1.6
+  - NETWORKX_VERSION=1.7
+  - NETWORKX_VERSION=1.8
+  - NETWORKX_VERSION=HEAD
+
 before_install:
-  - pip install -r requirements.txt --use-mirrors
+  - pip install -q networkx==$NETWORKX_VERSION --use-mirrors
 
 script:
   - printenv PWD
-  - python setup.py install
+  - python setup.py -q install
   - python setup.py test
   - cd /
   - printenv PWD
