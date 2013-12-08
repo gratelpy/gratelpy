@@ -12,7 +12,7 @@ If you encounter any problems installing or using GraTeLPy please open an
 ## GraTeLPy Status
 
 We test continually GraTeLPy on Linux (64-bit Ubuntu Linux 12.04) and Mac OS X 10.8.5.
-A green status icon means that the most recent version of GraTeLPy ran corrcetly for that software configuration.
+A green status icon means that the most recent version of GraTeLPy ran correctly for that software configuration.
 
 On **Linux** with both Python 2.6 and 2.7 with NetworkX 1.6, 1.7, 1.8, and the latest version of NetworkX:
 [![Build Status](https://travis-ci.org/gratelpy/gratelpy.png?branch=master)](https://travis-ci.org/gratelpy/gratelpy)
@@ -24,6 +24,16 @@ with NetworkX 1.6, 1.7, 1.8, and the latest version of NetworkX:
 Testing on **Windows** is done by hand and therefore less frequent. 
 Our latest test of the current version of GraTeLPy with the current version
 of the [Continuum Analytics Anaconda Python bundle](http://continuum.io/downloads) on Windows 8 worked correctly.
+
+## GraTeLPy Versions
+
+We improve GraTeLPy continually and release all tested and working improvements directly on GitHub.
+The latest working version of GraTeLPy can always be downloaded
+[here](https://github.com/gratelpy/gratelpy/archive/master.zip).
+
+From time to time we release numbered versions to mark specific improvements and developments.
+A list of our numbered releases can be found
+[here](https://github.com/gratelpy/gratelpy/releases).
 
 ## Documentation Note
 
