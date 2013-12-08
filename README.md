@@ -38,6 +38,11 @@ A list of our numbered releases can be found
 The latest release of these numbered versions is also always avaiable on PyPI
 [here](https://pypi.python.org/pypi/GraTeLPy).
 
+## Who Uses GraTeLPy
+
+* [Md. Ruhul Amin, Marc R Roussel (2013): Graph-Theoretic Analysis of a Model for the Coupling 
+Between Photosynthesis and Photorespiration](http://www.nrcresearchpress.com/doi/abs/10.1139/cjc-2013-0315)
+
 ## Documentation Note
 
 **Please Note**: At present the documentation we provide (in doc/) is
