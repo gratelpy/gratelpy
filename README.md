@@ -25,7 +25,7 @@ Testing on **Windows** is done by hand and therefore less frequent.
 Our latest test of the current version of GraTeLPy with the current version
 of the [Continuum Analytics Anaconda Python bundle](http://continuum.io/downloads) on Windows 8 worked correctly.
 
-## GraTeLPy Versions
+## Download GraTeLPy
 
 We improve GraTeLPy continually and release all tested and working improvements directly on GitHub.
 The latest working version of GraTeLPy can always be downloaded
@@ -34,6 +34,9 @@ The latest working version of GraTeLPy can always be downloaded
 From time to time we release numbered versions to mark specific improvements and developments.
 A list of our numbered releases can be found
 [here](https://github.com/gratelpy/gratelpy/releases).
+
+The latest release of these numbered versions is also always avaiable on PyPI
+[here](https://pypi.python.org/pypi/GraTeLPy).
 
 ## Documentation Note
 
