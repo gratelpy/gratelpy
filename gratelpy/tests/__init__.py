@@ -1,11 +1,11 @@
 import unittest
 import sys
 
-from test_reversible_substrate_inhibition import TestReversibleSubstrateInhibition
-from test_stoich_ranks import TestStoichRanks
-from test_critical_fragments import TestCriticalFragments
-
 def runtests():
+    from test_reversible_substrate_inhibition import TestReversibleSubstrateInhibition
+    from test_stoich_ranks import TestStoichRanks
+    from test_critical_fragments import TestCriticalFragments
+
     suite = unittest.TestSuite()
 
     # add TestCase objects
