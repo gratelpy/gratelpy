@@ -31,5 +31,5 @@ def runtests():
     suite.addTest(TestCriticalFragments('test_glycolysis_gluconeogenesis_rank_5'))
     suite.addTest(TestCriticalFragments('test_single_layer_mapk'))
     
-    unittest.TextTestRunner().run(suite)
+    unittest.TextTestRunner(verbosity=2).run(suite)
     return suite
