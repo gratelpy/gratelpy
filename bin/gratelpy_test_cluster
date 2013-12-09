@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+"""Usage: gratelpy_time_cluster [mechanism_name] [no_species] [queue name]
+[no_clients]"""
+import os
+import cStringIO as StringIO
+import socket
+import sys
+from gratelpy import get_mechanism
+
+def main(mechanism_name='reversible_substrate_inhibition.txt', 
+         no_species=4, queue='normal', no_clients=1):
+
+    print('\nGraTeLPy Copyright (C) 2013  Georg R Walther, Matthew Hartley.\n'
+          'This program comes with ABSOLUTELY NO WARRANTY.\n'
+          'This is free software, and you are welcome to redistribute it '
+          'under certain conditions.\n'
+          'For details visit https://github.com/gratelpy/gratelpy and '
+          'read our LICENSE or contact the author at gratelpy@gmail.com.\n')
+    
+    if os.name != 'posix':
+        print('This script has only been tested on Linux clusters.\n'
+              'Please try this feature on a Linux cluster.')
+        sys.exit(1)
+
+    try:
+        mechanism = get_mechanism(mechanism_name)
+    except:
+        print __doc__
+        sys.exit(1)
+
+    server = socket.gethostname()
+    name = os.path.split(mechanism)[-1].split('.')[0]
+
+    bash = StringIO.StringIO()
+    bash.write('#!/usr/bin/env bash\n')
+    bash.write('gratelpy_fragment_server '+mechanism+' '+str(no_species)+' &\n')
+
+    for c in range(no_clients):
+        bash.write('bsub '+'-J '+name+' -o '+name+'.out.%J'+''
+                   ' '+'-q '+queue+' '
+                   '\"gratelpy_subclient '+mechanism+' '+str(no_species)+''
+                   ' '+server+'\"\n')
+
+    print('The commands we will now call are:\n')
+    print(bash.getvalue())
+    if any([os.path.exists(name+ext) for ext in ['.dict', '.vsg']]):
+        print('\nError:\n')
+        print('.dict or .vsg file detected for this mechanism: %s\n'
+              'You need to delete both of these files, otherwise\n'
+              'the fragment server will not start and clients will crash.' \
+              % name)
+        sys.exit(1)
+    else:
+        os.system(bash.getvalue())
+
+if __name__ == '__main__':
+   main(*sys.argv[1:])

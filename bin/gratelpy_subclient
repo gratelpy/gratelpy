@@ -2,7 +2,9 @@
 """Usage: gratelpy_subclient mechanism_file number_of_species_in_mechanism [fragment_server_hostname=localhost] [port number on fragments server = 50000]
 """
 import sys
+import socket
 import networkx as nx
+from time import time
 
 import Queue
 from multiprocessing.managers import SyncManager
@@ -40,6 +42,7 @@ def main():
     print('GraTeLPy Client.')
     print('Your Python version is %s.' % py_v_str)
     print('Your NetworkX version is %s.' % str(nx.__version__))
+    print('This client is executed on host %s.' % socket.getfqdn())
     print('')
 
     try:
@@ -64,7 +67,9 @@ def main():
     
     QueueManager.register('get_fragment_q')
     QueueManager.register('get_valid_frag_q')
-    
+
+    now = time()
+
     m = QueueManager(address=(frag_server, fragments_server_port), authkey='smallg')
     
     m.connect()
@@ -77,6 +82,8 @@ def main():
     G, stoich, stoich_rank = get_graph_stoich(alpha, beta)
     
     process_fragment_q(fragment_q, valid_frag_q, G, stoich_rank)
+
+    print('This client ran for this many seconds:\n%.2f' % (time()-now))
 
 if __name__ == '__main__':
     # limit virtual memory (address space) to 2 GB
