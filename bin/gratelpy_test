@@ -4,7 +4,7 @@ from gratelpy.tests import runtests
 import networkx
 import sys
 
-def main():
+def main(*args):
     print('\nGraTeLPy Copyright (C) 2013  Georg R Walther, Matthew Hartley.\n'
           'This program comes with ABSOLUTELY NO WARRANTY.\n'
           'This is free software, and you are welcome to redistribute it '
@@ -19,9 +19,12 @@ def main():
     print('Your NetworkX version is %s.' % str(networkx.__version__))
     print('')
 
-    runtests()
+    if 'min' in args:
+        runtests(minimal=True)
+    else:
+        runtest(minimal=False)
 
 if __name__ == '__main__':
-    main()
+    main(*sys.argv)
 else:
     print 'Run GraTeLPy Test from the Command Line'

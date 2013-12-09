@@ -1,11 +1,11 @@
 import unittest
 import sys
 
-from test_reversible_substrate_inhibition import TestReversibleSubstrateInhibition
-from test_stoich_ranks import TestStoichRanks
-from test_critical_fragments import TestCriticalFragments
+def runtests(minimal=False):
+    from test_reversible_substrate_inhibition import TestReversibleSubstrateInhibition
+    from test_stoich_ranks import TestStoichRanks
+    from test_critical_fragments import TestCriticalFragments
 
-def runtests():
     suite = unittest.TestSuite()
 
     # add TestCase objects
@@ -23,13 +23,14 @@ def runtests():
     suite.addTest(TestStoichRanks('test_single_layer_mapk'))
     suite.addTest(TestStoichRanks('test_double_layer_mapk'))
 
-    suite.addTest(TestCriticalFragments('test_reversible_substrate'))
-    suite.addTest(TestCriticalFragments('test_cdc42_yeast'))
-    suite.addTest(TestCriticalFragments('test_glycolysis_gluconeogenesis_rank_2'))
-    suite.addTest(TestCriticalFragments('test_glycolysis_gluconeogenesis_rank_3'))
-    suite.addTest(TestCriticalFragments('test_glycolysis_gluconeogenesis_rank_4'))
-    suite.addTest(TestCriticalFragments('test_glycolysis_gluconeogenesis_rank_5'))
-    suite.addTest(TestCriticalFragments('test_single_layer_mapk'))
+    if not minimal:
+        suite.addTest(TestCriticalFragments('test_reversible_substrate'))
+        suite.addTest(TestCriticalFragments('test_cdc42_yeast'))
+        suite.addTest(TestCriticalFragments('test_glycolysis_gluconeogenesis_rank_2'))
+        suite.addTest(TestCriticalFragments('test_glycolysis_gluconeogenesis_rank_3'))
+        suite.addTest(TestCriticalFragments('test_glycolysis_gluconeogenesis_rank_4'))
+        suite.addTest(TestCriticalFragments('test_glycolysis_gluconeogenesis_rank_5'))
+        suite.addTest(TestCriticalFragments('test_single_layer_mapk'))
     
     unittest.TextTestRunner(verbosity=2).run(suite)
     return suite

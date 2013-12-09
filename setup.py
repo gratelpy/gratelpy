@@ -159,7 +159,7 @@ setup(
 		'Topic :: Scientific/Engineering :: Mathematics',
 		'Topic :: Scientific/Engineering :: Physics',
 	],
-    test_suite = 'gratelpy.tests.runtests',
+    test_suite = 'gratelpy.tests',
     install_requires=[
         "networkx >= 1.6"
     ],
