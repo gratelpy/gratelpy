@@ -20,9 +20,11 @@ env:
 before_install:
   - if [ $NETWORKX_VERSION = LATEST ]; then pip install networkx --use-mirrors; else pip install -q networkx==$NETWORKX_VERSION --use-mirrors; fi;
 
-script:
+install:
   - printenv PWD
   - python setup.py -q install
+
+script:
   - python setup.py test
 #  - cd /
 #  - printenv PWD
