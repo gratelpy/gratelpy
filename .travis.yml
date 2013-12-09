@@ -23,7 +23,7 @@ before_install:
 script:
   - printenv PWD
   - python setup.py -q install
-#  - python setup.py test
+  - python setup.py test
 #  - cd /
 #  - printenv PWD
 #  - gratelpy_test
