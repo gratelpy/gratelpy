@@ -26,9 +26,9 @@ install:
 
 script:
   - python setup.py test
-#  - cd /
-#  - printenv PWD
-#  - gratelpy_test
+  - cd /
+  - printenv PWD
+  - gratelpy_test min
 
 notifications:
     email: false
