@@ -2,6 +2,7 @@
 """Usage: gratelpy_subclient mechanism_file number_of_species_in_mechanism [fragment_server_hostname=localhost] [port number on fragments server = 50000]
 """
 import sys
+import socket
 import networkx as nx
 
 import Queue
@@ -40,6 +41,7 @@ def main():
     print('GraTeLPy Client.')
     print('Your Python version is %s.' % py_v_str)
     print('Your NetworkX version is %s.' % str(nx.__version__))
+    print('This client is executed on host %s.' % socket.getfqdn())
     print('')
 
     try:
