@@ -1,10 +1,14 @@
-VERSION = (0,2,0)
+"""
+GraTeLPy
+"""
+
+__version__ = '0.2.0'
 
 import os
 import itertools
 
 def get_version(*args, **kwargs):
-    return str(VERSION[0])+'.'+str(VERSION[1])+'.'+str(VERSION[2])
+    return __version__
 
 def analyze_one_proc(name, no_species, rank=None):
     from gratelpy.parse_mechanism import get_network_from_mechanism
