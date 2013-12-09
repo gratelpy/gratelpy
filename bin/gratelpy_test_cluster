@@ -39,7 +39,7 @@ def main(mechanism_name='reversible_substrate_inhibition.txt',
         bash.write('bsub '+'-J '+name+' -o '+name+'.out.%J'+''
                    ' '+'-q '+queue+' '
                    '\"gratelpy_subclient '+mechanism+' '+str(no_species)+''
-                   ' '+server+'\"')
+                   ' '+server+'\"\n')
 
     print('The commands we will now call are:\n')
     print(bash.getvalue())
