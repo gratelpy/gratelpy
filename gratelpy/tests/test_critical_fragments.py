@@ -11,6 +11,7 @@ from gratelpy.stoich import get_graph_stoich
 from gratelpy.utils import (result_get_fragment,
                             result_get_sc,
                             result_get_sg,
+                            result_get_ks,
                             fragment_get_species,
                             fragment_get_reactions,
                             subgraph_get_species,
@@ -18,6 +19,7 @@ from gratelpy.utils import (result_get_fragment,
                             species_get_index,
                             reaction_get_index)
 from gratelpy.subgraphs import get_subgraph_motifs
+import math
 
 ks_index = -1
 frag_i = 0
@@ -110,6 +112,36 @@ class TestCriticalFragments(unittest.TestCase):
                 sg_motif_match = [set(sg) == key for key in sgm_keys]
                 self.assertEqual(sum(sg_motif_match), 1)
 
+    def check_ks(self, results):
+        for result in results:
+            ks = result_get_ks(result)
+            our_ks = 0.
+            sc = result_get_sc(result)
+            fragment = result_get_fragment(result)
+            species = fragment_get_species(fragment)
+            p_paths = [sc[s]['n_paths'] for s in species]
+            p_paths = [el for p in p_paths for el in p if len(p) != 0]
+            n_paths = [sc[s]['p_paths'] for s in species]
+            n_paths = [el for p in n_paths for el in p if len(p) != 0]
+            all_paths = p_paths + n_paths
+            sg_motifs = get_subgraph_motifs(sc)
+
+            for sg in sg_motifs.keys():
+                kg = 1.
+                tg = len(sg_motifs[sg]['cycles'])
+                kg = kg * math.pow(-1, tg)
+                for edge in sg_motifs[sg]['edges']:
+                    kg = kg * 1.
+                for cycle in sg_motifs[sg]['cycles']:
+                    for path in cycle:
+                        self.assertEqual(all_paths.count(path), 1)
+                        if path in sc[path[0]]['n_paths']:
+                            kg = kg*(-1.)
+                        else:
+                            kg = kg*1.
+                our_ks += kg
+            self.assertEqual(our_ks, ks)
+
     def run_all(self, results,
                 no_critical, expected_critical,
                 mechanism, no_spec, rank):
@@ -120,6 +152,7 @@ class TestCriticalFragments(unittest.TestCase):
         self.check_edges_only_subgraphs(results)
         self.check_sg_fragment_conform(results)
         self.check_sg_sgmotif_conform(results)
+        self.check_ks(results)
 
     def test_reversible_substrate(self):
         mechanism = get_mechanism('reversible_substrate_inhibition.txt')
