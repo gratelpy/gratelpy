@@ -10,6 +10,7 @@ from gratelpy.parse_mechanism import get_network_from_mechanism
 from gratelpy.stoich import get_graph_stoich
 from gratelpy.utils import (result_get_fragment,
                             result_get_sc,
+                            result_get_sg,
                             fragment_get_species,
                             fragment_get_reactions,
                             species_get_index,
@@ -78,6 +79,12 @@ class TestCriticalFragments(unittest.TestCase):
                 reaction = sc[s]['edges'][0][1]
                 r_i = reaction_get_index(reaction)
                 self.assertTrue(alpha[s_i][r_i] > 0)
+
+    def check_edges_only_subgraphs(self, results):
+        for result in results:
+            sg = result_get_sg(result)
+            self.assertTrue(any(all([len(el) == 2 for el in a_sg])
+                                for a_sg in sg))
 
     def test_reversible_substrate(self):
         mechanism = get_mechanism('reversible_substrate_inhibition.txt')
