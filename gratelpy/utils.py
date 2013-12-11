@@ -36,6 +36,15 @@ def fragment_get_species(fragment):
 def fragment_get_reactions(fragment):
     return fragment[1]
 
+
+def subgraph_get_species(sg):
+    return [s[spec_i] for s in sg]
+
+
+def subgraph_get_reactions(sg):
+    return [s[rxn_i] for s in sg]
+
+
 # index in alpha, beta, and stoichiometry matrices
 def species_get_index(species):
     return int(species[1:])-1
