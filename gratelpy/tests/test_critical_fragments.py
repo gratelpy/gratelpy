@@ -93,6 +93,7 @@ class TestCriticalFragments(unittest.TestCase):
         self.check_multiplicity(results)
         self.check_duplicate_fragments(results)
         self.check_fragment_notation(results, mechanism, no_spec, rank)
+        self.check_edges_only_subgraphs(results)
 
     def test_reversible_substrate(self):
         mechanism = get_mechanism('reversible_substrate_inhibition.txt')
