@@ -6,14 +6,27 @@ except ImportError:
     from gratelpy.counter_python26 import Counter
 
 from gratelpy import get_mechanism, analyze_one_proc
+from gratelpy.parse_mechanism import get_network_from_mechanism
+from gratelpy.stoich import get_graph_stoich
+from gratelpy.utils import (result_get_fragment,
+                            result_get_sc,
+                            fragment_get_species,
+                            fragment_get_reactions,
+                            species_get_index,
+                            reaction_get_index)
 
 ks_index = -1
 frag_i = 0
+sc_i = 1
 sg_i = 2
+
+spec_i = 0
+rxn_i = 1
 
 class TestCriticalFragments(unittest.TestCase):
     def get_critical_count(self, results):
         return sum([1 for r in results if r[ks_index] < 0.])
+
     def check_multiplicity(self, results):
         for result in results:
             species = Counter(result[frag_i][0])
@@ -25,14 +38,57 @@ class TestCriticalFragments(unittest.TestCase):
                 self.assertEqual(species, sg_s)
                 self.assertEqual(reactions, sg_r)
 
+    def check_duplicate_fragments(self, results):
+        fragments = []
+        for result in results:
+            species = tuple(result[frag_i][0])
+            reactions = tuple(result[frag_i][1])
+            fragments.append((species, reactions))
+        fragments = Counter(fragments)
+        for f in fragments:
+            self.assertEqual(fragments[f], 1)
+
+    def check_fragment_notation(self, results, name, no_species, des_order):
+        alpha, beta, _, _, _, _ = get_network_from_mechanism(name, 
+                                                             no_species)
+        G, stoich, stoich_rank = get_graph_stoich(alpha, beta)
+
+        for result in results:
+            sc = result_get_sc(result)
+            fragment = result_get_fragment(result)
+            species = fragment_get_species(fragment)
+            self.assertEqual(len(species), des_order)
+            reactions = fragment_get_reactions(fragment)
+
+            fragment_e = {}  # edges encoded in fragment syntax
+            for s_i, s in enumerate(species):
+                fragment_e[s] = (s, reactions[s_i])
+
+            # edges stored in subgraph components dictionary
+            for s in species:
+                # exactly one edge per species
+                self.assertEqual(len(sc[s]['edges']), 1)
+                # syntax-encoded edge equals sc-stored edge
+                self.assertEqual(sc[s]['edges'][0], fragment_e[s])
+                # edges saved in networkx.DiGraph object 'G'
+                self.assertTrue(sc[s]['edges'][0] in G.edges())
+                # edge (s1, r2) means alpha[0][1] > 0
+                s_i = species_get_index(s)
+                reaction = sc[s]['edges'][0][1]
+                r_i = reaction_get_index(reaction)
+                self.assertTrue(alpha[s_i][r_i] > 0)
+
     def test_reversible_substrate(self):
         mechanism = get_mechanism('reversible_substrate_inhibition.txt')
         no_spec = 4
+        rank = 3
         expected_critical = 1
         results = analyze_one_proc(mechanism, no_spec)
         no_critical = self.get_critical_count(results)
         self.assertEqual(no_critical, expected_critical)
         self.check_multiplicity(results)
+        self.check_duplicate_fragments(results)
+        self.check_fragment_notation(results, mechanism, no_spec, rank)
 
     def test_cdc42_yeast(self):
         mechanism = get_mechanism('cdc42_yeast.txt')
@@ -43,6 +99,8 @@ class TestCriticalFragments(unittest.TestCase):
         no_critical = self.get_critical_count(results)
         self.assertEqual(no_critical, expected_critical)
         self.check_multiplicity(results)
+        self.check_duplicate_fragments(results)
+        self.check_fragment_notation(results, mechanism, no_spec, rank)
 
     def test_glycolysis_gluconeogenesis_rank_2(self):
         mechanism = get_mechanism('glycolysis_mechanism.txt')
@@ -53,6 +111,8 @@ class TestCriticalFragments(unittest.TestCase):
         no_critical = self.get_critical_count(results)
         self.assertEqual(no_critical, expected_critical)
         self.check_multiplicity(results)
+        self.check_duplicate_fragments(results)
+        self.check_fragment_notation(results, mechanism, no_spec, rank)
 
     def test_glycolysis_gluconeogenesis_rank_3(self):
         mechanism = get_mechanism('glycolysis_mechanism.txt')
@@ -63,6 +123,8 @@ class TestCriticalFragments(unittest.TestCase):
         no_critical = self.get_critical_count(results)
         self.assertEqual(no_critical, expected_critical)
         self.check_multiplicity(results)
+        self.check_duplicate_fragments(results)
+        self.check_fragment_notation(results, mechanism, no_spec, rank)
 
     def test_glycolysis_gluconeogenesis_rank_4(self):
         mechanism = get_mechanism('glycolysis_mechanism.txt')
@@ -73,6 +135,8 @@ class TestCriticalFragments(unittest.TestCase):
         no_critical = self.get_critical_count(results)
         self.assertEqual(no_critical, expected_critical)
         self.check_multiplicity(results)
+        self.check_duplicate_fragments(results)
+        self.check_fragment_notation(results, mechanism, no_spec, rank)
 
     def test_glycolysis_gluconeogenesis_rank_5(self):
         mechanism = get_mechanism('glycolysis_mechanism.txt')
@@ -83,6 +147,8 @@ class TestCriticalFragments(unittest.TestCase):
         no_critical = self.get_critical_count(results)
         self.assertEqual(no_critical, expected_critical)
         self.check_multiplicity(results)
+        self.check_duplicate_fragments(results)
+        self.check_fragment_notation(results, mechanism, no_spec, rank)
 
     def test_single_layer_mapk(self):
         mechanism = get_mechanism('single_layer_mapk_mechanism.txt')
@@ -93,3 +159,5 @@ class TestCriticalFragments(unittest.TestCase):
         no_critical = self.get_critical_count(results)
         self.assertEqual(no_critical, expected_critical)
         self.check_multiplicity(results)
+        self.check_duplicate_fragments(results)
+        self.check_fragment_notation(results, mechanism, no_spec, rank)
