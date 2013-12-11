@@ -17,6 +17,7 @@ from gratelpy.utils import (result_get_fragment,
                             subgraph_get_reactions,
                             species_get_index,
                             reaction_get_index)
+from gratelpy.subgraphs import get_subgraph_motifs
 
 ks_index = -1
 frag_i = 0
@@ -98,6 +99,17 @@ class TestCriticalFragments(unittest.TestCase):
                 self.assertEqual(reactions,
                                  Counter(subgraph_get_reactions(sg)))
 
+    def check_sg_sgmotif_conform(self, results):
+        for result in results:
+            sc = result_get_sc(result)
+            sg_motifs = get_subgraph_motifs(sc)
+            sgm_keys = [set(key) for key in sg_motifs.keys()]
+            subgraphs = result_get_sg(result)
+            self.assertEqual(len(sgm_keys), len(subgraphs))
+            for sg in result_get_sg(result):
+                sg_motif_match = [set(sg) == key for key in sgm_keys]
+                self.assertEqual(sum(sg_motif_match), 1)
+
     def run_all(self, results,
                 no_critical, expected_critical,
                 mechanism, no_spec, rank):
@@ -107,6 +119,7 @@ class TestCriticalFragments(unittest.TestCase):
         self.check_fragment_notation(results, mechanism, no_spec, rank)
         self.check_edges_only_subgraphs(results)
         self.check_sg_fragment_conform(results)
+        self.check_sg_sgmotif_conform(results)
 
     def test_reversible_substrate(self):
         mechanism = get_mechanism('reversible_substrate_inhibition.txt')
