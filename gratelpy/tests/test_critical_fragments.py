@@ -10,10 +10,16 @@ from gratelpy.parse_mechanism import get_network_from_mechanism
 from gratelpy.stoich import get_graph_stoich
 from gratelpy.utils import (result_get_fragment,
                             result_get_sc,
+                            result_get_sg,
+                            result_get_ks,
                             fragment_get_species,
                             fragment_get_reactions,
+                            subgraph_get_species,
+                            subgraph_get_reactions,
                             species_get_index,
                             reaction_get_index)
+from gratelpy.subgraphs import get_subgraph_motifs
+import math
 
 ks_index = -1
 frag_i = 0
@@ -22,6 +28,7 @@ sg_i = 2
 
 spec_i = 0
 rxn_i = 1
+
 
 class TestCriticalFragments(unittest.TestCase):
     def get_critical_count(self, results):
@@ -49,7 +56,7 @@ class TestCriticalFragments(unittest.TestCase):
             self.assertEqual(fragments[f], 1)
 
     def check_fragment_notation(self, results, name, no_species, des_order):
-        alpha, beta, _, _, _, _ = get_network_from_mechanism(name, 
+        alpha, beta, _, _, _, _ = get_network_from_mechanism(name,
                                                              no_species)
         G, stoich, stoich_rank = get_graph_stoich(alpha, beta)
 
@@ -78,6 +85,75 @@ class TestCriticalFragments(unittest.TestCase):
                 r_i = reaction_get_index(reaction)
                 self.assertTrue(alpha[s_i][r_i] > 0)
 
+    def check_edges_only_subgraphs(self, results):
+        for result in results:
+            sg = result_get_sg(result)
+            self.assertTrue(sum(all([len(el) == 2 for el in a_sg])
+                                for a_sg in sg) == 1)
+
+    def check_sg_fragment_conform(self, results):
+        for result in results:
+            fragment = result_get_fragment(result)
+            species = Counter(fragment_get_species(fragment))
+            reactions = Counter(fragment_get_reactions(fragment))
+            for sg in result_get_sg(result):
+                self.assertEqual(species, Counter(subgraph_get_species(sg)))
+                self.assertEqual(reactions,
+                                 Counter(subgraph_get_reactions(sg)))
+
+    def check_sg_sgmotif_conform(self, results):
+        for result in results:
+            sc = result_get_sc(result)
+            sg_motifs = get_subgraph_motifs(sc)
+            sgm_keys = [set(key) for key in sg_motifs.keys()]
+            subgraphs = result_get_sg(result)
+            self.assertEqual(len(sgm_keys), len(subgraphs))
+            for sg in result_get_sg(result):
+                sg_motif_match = [set(sg) == key for key in sgm_keys]
+                self.assertEqual(sum(sg_motif_match), 1)
+
+    def check_ks(self, results):
+        for result in results:
+            ks = result_get_ks(result)
+            our_ks = 0.
+            sc = result_get_sc(result)
+            fragment = result_get_fragment(result)
+            species = fragment_get_species(fragment)
+            p_paths = [sc[s]['n_paths'] for s in species]
+            p_paths = [el for p in p_paths for el in p if len(p) != 0]
+            n_paths = [sc[s]['p_paths'] for s in species]
+            n_paths = [el for p in n_paths for el in p if len(p) != 0]
+            all_paths = p_paths + n_paths
+            sg_motifs = get_subgraph_motifs(sc)
+
+            for sg in sg_motifs.keys():
+                kg = 1.
+                tg = len(sg_motifs[sg]['cycles'])
+                kg = kg * math.pow(-1, tg)
+                for edge in sg_motifs[sg]['edges']:
+                    kg = kg * 1.
+                for cycle in sg_motifs[sg]['cycles']:
+                    for path in cycle:
+                        self.assertEqual(all_paths.count(path), 1)
+                        if path in sc[path[0]]['n_paths']:
+                            kg = kg*(-1.)
+                        else:
+                            kg = kg*1.
+                our_ks += kg
+            self.assertEqual(our_ks, ks)
+
+    def run_all(self, results,
+                no_critical, expected_critical,
+                mechanism, no_spec, rank):
+        self.assertEqual(no_critical, expected_critical)
+        self.check_multiplicity(results)
+        self.check_duplicate_fragments(results)
+        self.check_fragment_notation(results, mechanism, no_spec, rank)
+        self.check_edges_only_subgraphs(results)
+        self.check_sg_fragment_conform(results)
+        self.check_sg_sgmotif_conform(results)
+        self.check_ks(results)
+
     def test_reversible_substrate(self):
         mechanism = get_mechanism('reversible_substrate_inhibition.txt')
         no_spec = 4
@@ -85,10 +161,8 @@ class TestCriticalFragments(unittest.TestCase):
         expected_critical = 1
         results = analyze_one_proc(mechanism, no_spec)
         no_critical = self.get_critical_count(results)
-        self.assertEqual(no_critical, expected_critical)
-        self.check_multiplicity(results)
-        self.check_duplicate_fragments(results)
-        self.check_fragment_notation(results, mechanism, no_spec, rank)
+        self.run_all(results, no_critical, expected_critical,
+                     mechanism, no_spec, rank)
 
     def test_cdc42_yeast(self):
         mechanism = get_mechanism('cdc42_yeast.txt')
@@ -97,10 +171,8 @@ class TestCriticalFragments(unittest.TestCase):
         expected_critical = 35
         results = analyze_one_proc(mechanism, no_spec, rank)
         no_critical = self.get_critical_count(results)
-        self.assertEqual(no_critical, expected_critical)
-        self.check_multiplicity(results)
-        self.check_duplicate_fragments(results)
-        self.check_fragment_notation(results, mechanism, no_spec, rank)
+        self.run_all(results, no_critical, expected_critical,
+                     mechanism, no_spec, rank)
 
     def test_glycolysis_gluconeogenesis_rank_2(self):
         mechanism = get_mechanism('glycolysis_mechanism.txt')
@@ -109,10 +181,8 @@ class TestCriticalFragments(unittest.TestCase):
         expected_critical = 1
         results = analyze_one_proc(mechanism, no_spec, rank)
         no_critical = self.get_critical_count(results)
-        self.assertEqual(no_critical, expected_critical)
-        self.check_multiplicity(results)
-        self.check_duplicate_fragments(results)
-        self.check_fragment_notation(results, mechanism, no_spec, rank)
+        self.run_all(results, no_critical, expected_critical,
+                     mechanism, no_spec, rank)
 
     def test_glycolysis_gluconeogenesis_rank_3(self):
         mechanism = get_mechanism('glycolysis_mechanism.txt')
@@ -121,10 +191,8 @@ class TestCriticalFragments(unittest.TestCase):
         expected_critical = 8
         results = analyze_one_proc(mechanism, no_spec, rank)
         no_critical = self.get_critical_count(results)
-        self.assertEqual(no_critical, expected_critical)
-        self.check_multiplicity(results)
-        self.check_duplicate_fragments(results)
-        self.check_fragment_notation(results, mechanism, no_spec, rank)
+        self.run_all(results, no_critical, expected_critical,
+                     mechanism, no_spec, rank)
 
     def test_glycolysis_gluconeogenesis_rank_4(self):
         mechanism = get_mechanism('glycolysis_mechanism.txt')
@@ -133,10 +201,8 @@ class TestCriticalFragments(unittest.TestCase):
         expected_critical = 12
         results = analyze_one_proc(mechanism, no_spec, rank)
         no_critical = self.get_critical_count(results)
-        self.assertEqual(no_critical, expected_critical)
-        self.check_multiplicity(results)
-        self.check_duplicate_fragments(results)
-        self.check_fragment_notation(results, mechanism, no_spec, rank)
+        self.run_all(results, no_critical, expected_critical,
+                     mechanism, no_spec, rank)
 
     def test_glycolysis_gluconeogenesis_rank_5(self):
         mechanism = get_mechanism('glycolysis_mechanism.txt')
@@ -145,10 +211,8 @@ class TestCriticalFragments(unittest.TestCase):
         expected_critical = 5
         results = analyze_one_proc(mechanism, no_spec, rank)
         no_critical = self.get_critical_count(results)
-        self.assertEqual(no_critical, expected_critical)
-        self.check_multiplicity(results)
-        self.check_duplicate_fragments(results)
-        self.check_fragment_notation(results, mechanism, no_spec, rank)
+        self.run_all(results, no_critical, expected_critical,
+                     mechanism, no_spec, rank)
 
     def test_single_layer_mapk(self):
         mechanism = get_mechanism('single_layer_mapk_mechanism.txt')
@@ -157,7 +221,5 @@ class TestCriticalFragments(unittest.TestCase):
         expected_critical = 9
         results = analyze_one_proc(mechanism, no_spec, rank)
         no_critical = self.get_critical_count(results)
-        self.assertEqual(no_critical, expected_critical)
-        self.check_multiplicity(results)
-        self.check_duplicate_fragments(results)
-        self.check_fragment_notation(results, mechanism, no_spec, rank)
+        self.run_all(results, no_critical, expected_critical,
+                     mechanism, no_spec, rank)
