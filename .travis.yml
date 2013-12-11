@@ -22,7 +22,7 @@ install:
 
 script:
   - python setup.py test
-  - /Users/travis/Library/Python/2.7/bin/gratelpy_test
+  - /Users/travis/Library/Python/2.7/bin/gratelpy_test min
 
 notifications:
     email: false

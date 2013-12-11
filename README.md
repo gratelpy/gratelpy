@@ -12,7 +12,7 @@ If you encounter any problems installing or using GraTeLPy please open an
 ## GraTeLPy Status
 
 We test continually GraTeLPy on Linux (64-bit Ubuntu Linux 12.04) and Mac OS X 10.8.5.
-A green status icon means that the most recent version of GraTeLPy ran corrcetly for that software configuration.
+A green status icon means that the most recent version of GraTeLPy ran correctly for that software configuration.
 
 On **Linux** with both Python 2.6 and 2.7 with NetworkX 1.6, 1.7, 1.8, and the latest version of NetworkX:
 [![Build Status](https://travis-ci.org/gratelpy/gratelpy.png?branch=master)](https://travis-ci.org/gratelpy/gratelpy)
@@ -24,6 +24,24 @@ with NetworkX 1.6, 1.7, 1.8, and the latest version of NetworkX:
 Testing on **Windows** is done by hand and therefore less frequent. 
 Our latest test of the current version of GraTeLPy with the current version
 of the [Continuum Analytics Anaconda Python bundle](http://continuum.io/downloads) on Windows 8 worked correctly.
+
+## Download GraTeLPy
+
+We improve GraTeLPy continually and release all tested and working improvements directly on GitHub.
+The latest working version of GraTeLPy can always be downloaded
+[here](https://github.com/gratelpy/gratelpy/archive/master.zip).
+
+From time to time we release numbered versions to mark specific improvements and developments.
+A list of our numbered releases can be found
+[here](https://github.com/gratelpy/gratelpy/releases).
+
+The latest release of these numbered versions is also always avaiable on PyPI
+[here](https://pypi.python.org/pypi/GraTeLPy).
+
+## Who Uses GraTeLPy
+
+* [Md. Ruhul Amin, Marc R Roussel (2013): Graph-Theoretic Analysis of a Model for the Coupling 
+Between Photosynthesis and Photorespiration](http://www.nrcresearchpress.com/doi/abs/10.1139/cjc-2013-0315)
 
 ## Documentation Note
 
@@ -140,26 +158,108 @@ Use the mode of installation you chose from the above options and append the
 
 ## Test Your GraTeLPy Setup
 
-Invoke on the command prompt `python` and import GraTeLPy:
+GraTeLPy provides two separate scripts that the user can invoke directly from their command line
+to test their installation of GraTeLPy.
+On Linux and Mac OSX the command line is the terminal while on Windows the command line is the console.
+
+The script `gratelpy_test` runs a series of tests that ensure that the implementation of GraTeLPy
+works as expected. For instance, we know the rank of the stoichiometric matrices of the mechanisms
+provided with GraTeLPy (in `gratelpy/mechanisms`). `gratelpy_test` computes the rank of all of these
+mechansims and tests if the computed values are equal to the expected values.
+
+To invoke `gratelpy_test` simply invoke it from your command prompt:
+<!--- Ignore 'bash': this is only for syntax highlighting on
+GitHub.com, https://help.github.com/articles/github-flavored-markdown#syntax-highlighting --->
+```bash
+gratelpy_test
+```
+
+Depending on your versions of Python and NetworkX you should see output similar to the following.
+The important line here is the last one which should show `OK`.
+If you encounter any errors, please [report those](https://github.com/gratelpy/gratelpy/issues).
 <!--- Ignore 'bash': this is only for syntax highlighting on
 GitHub.com, https://help.github.com/articles/github-flavored-markdown#syntax-highlighting --->
 ```bash
 
-Python 2.7.1 (r271:86832, Apr 12 2011, 16:15:16) 
-[GCC 4.6.0 20110331 (Red Hat 4.6.0-2)] on linux2
-Type "help", "copyright", "credits" or "license" for more information.
->>> import gratelpy
-```
-Validate that you loaded GraTeLPy correctly and that you have 
-the latest version installed
+GraTeLPy Copyright (C) 2013  Georg R Walther, Matthew Hartley.
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it under certain conditions.
+For details visit https://github.com/gratelpy/gratelpy and read our LICENSE or contact 
+the author at gratelpy@gmail.com.
 
+Your Python version is 2.6.
+Your NetworkX version is 1.6.
+
+............
+----------------------------------------------------------------------
+Ran 12 tests in 0.018s
+OK
+```
+
+A second script, `gratelpy_time`, tests how fast GraTeLPy runs on your system.
+This script enumerates all critical fragments for a number of the mechanisms provided with GraTeLPy
+on both one processor and multiple processors (corresponding to one or multiple GraTeLPy clients).
+
+To invoke `gratelpy_time` call it from your command prompt:
 <!--- Ignore 'bash': this is only for syntax highlighting on
 GitHub.com, https://help.github.com/articles/github-flavored-markdown#syntax-highlighting --->
 ```bash
-
->>> gratelpy.get_version()
-'0.1.1'
+gratelpy_time
 ```
+
+Depending on your version of Python, NetworkX and your operating system you should see output
+similar to the following (note that timings will vary for your system):
+
+```bash
+
+GraTeLPy Copyright (C) 2013  Georg R Walther, Matthew Hartley.
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it under certain conditions.
+For details visit https://github.com/gratelpy/gratelpy and read our LICENSE or contact 
+the author at gratelpy@gmail.com.
+
+Your Python version is 2.7
+Your NetworkX version is 1.9.dev_20131206011125.
+
+One client:
+
+Analyzing /usr/lib/python2.7/site-packages/GraTeLPy-0.2.0-py2.7.egg/gratelpy/
+mechanisms/reversible_substrate_inhibition.txt ...
+run time 0.0888 seconds
+run time 0.0514 seconds
+run time 0.0478 seconds
+median 0.0514 seconds
+Analyzing /usr/lib/python2.7/site-packages/GraTeLPy-0.2.0-py2.7.egg/gratelpy/
+mechanisms/glycolysis_mechanism.txt ...
+run time 5.8973 seconds
+run time 5.8835 seconds
+run time 5.9257 seconds
+median 5.8973 seconds
+Analyzing /usr/lib/python2.7/site-packages/GraTeLPy-0.2.0-py2.7.egg/gratelpy/
+mechanisms/cdc42_yeast.txt ...
+run time 10.0858 seconds
+run time 10.2031 seconds
+run time 10.3910 seconds
+median 10.2031 seconds
+
+Two clients:
+
+Analyzing /usr/lib/python2.7/site-packages/GraTeLPy-0.2.0-py2.7.egg/gratelpy/
+mechanisms/cdc42_yeast.txt ...
+run time 7.4444 seconds
+run time 7.4505 seconds
+run time 7.2978 seconds
+median 7.4444 seconds
+Analyzing /usr/lib/python2.7/site-packages/GraTeLPy-0.2.0-py2.7.egg/gratelpy/
+mechanisms/single_layer_mapk_mechanism.txt ...
+run time 10.9153 seconds
+run time 11.4756 seconds
+run time 10.8592 seconds
+median 10.9153 seconds
+```
+
+The above was invoked on a Linux computer. Invoking the same script on Mac OSX or Windows will show different
+path locations for the mechanism `.txt` files.
 
 ## Mechanism Files
 

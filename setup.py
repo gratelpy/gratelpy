@@ -7,7 +7,7 @@ except ImportError:
     from distutils.core import setup
 
 import os
-from os.path import join # this isn't great, confused with str.join
+from os.path import join  # this isn't great, confused with str.join
 import sys
 import shutil
 from gratelpy import get_version
@@ -47,7 +47,7 @@ if 'setuptools' not in sys.modules:
     interrupt = False
 
     for dep in dependencies:
-        v_str = '.'.join('%d' % i for i in dep[1]) # (X,Y.Z) -> 'X.Y.Z'
+        v_str = '.'.join('%d' % i for i in dep[1])  # (X,Y.Z) -> 'X.Y.Z'
         try:
             _ = __import__(dep[0])
         except ImportError:
@@ -57,11 +57,11 @@ if 'setuptools' not in sys.modules:
             interrupt = True
         else:
             # 'X.Y.Z' -> (X,Y,Z)
-            v_tuple = _.__version__.split('.') # asummes 'X.Y.Z' numbering
+            v_tuple = _.__version__.split('.')  # asummes 'X.Y.Z' numbering
             v_tuple = tuple([int(s) for s in v_tuple])
-	    if len(v_tuple) < 3:
+            if len(v_tuple) < 3:
                 # version must be 'X.Y.0'
-	        v_tuple = (v_tuple[0], v_tuple[1], 0)
+                v_tuple = (v_tuple[0], v_tuple[1], 0)
 
             if v_tuple < dep[1]:
                 print('Package %s was found in your Python setup, however\n'
@@ -69,9 +69,9 @@ if 'setuptools' not in sys.modules:
                       'developed with version %s of this package.\n'
                       'Please consider upgrading %s to at least version %s.\n'
                       'More info on %s is here: %s\n' % (dep[0], _.__version__,
-                                                          v_str, dep[0],
-                                                          v_str, dep[0],
-                                                          dep[2]))
+                                                         v_str, dep[0],
+                                                         v_str, dep[0],
+                                                         dep[2]))
 
         if interrupt:
             print('One ore multiple packages that GraTeLPy depends on are '
@@ -92,22 +92,24 @@ if 'setuptools' not in sys.modules:
 
 version = get_version()
 
-gratelpy_scripts = [join('bin', 'gratelpy_subclient'), 
-                    join('bin', 'gratelpy_fragment_server'), 
-                    join('bin', 'gratelpy_check_data'), 
+gratelpy_scripts = [join('bin', 'gratelpy_subclient'),
+                    join('bin', 'gratelpy_fragment_server'),
+                    join('bin', 'gratelpy_check_data'),
                     join('bin', 'gratelpy_benchmark'),
                     join('bin', 'gratelpy_test'),
-                    join('bin', 'gratelpy_time')]
-                        
+                    join('bin', 'gratelpy_time'),
+                    join('bin', 'gratelpy_test_cluster')]
+
+
 def windows_prepare(gratelpy_scripts):
     bat = ['@echo off\n',
-          'set PYFILE=%~f0\n',
-          'set PYFILE=%PYFILE:~0,-4%-script.py\n'
-          '"python.exe" "%PYFILE%" %*\n']
+           'set PYFILE=%~f0\n',
+           'set PYFILE=%PYFILE:~0,-4%-script.py\n'
+           '"python.exe" "%PYFILE%" %*\n']
 
     gratelpy_scripts_windows = []
     windows_bat_files = []
-    
+
     for script in gratelpy_scripts:
         gratelpy_scripts_windows.append(script+'-script.py')
         f = open(script+'.bat', 'w')
@@ -115,50 +117,60 @@ def windows_prepare(gratelpy_scripts):
             f.write(string)
         windows_bat_files.append(f.name)
         f.close()
-        print('Wrote .bat file: %s.' % str(script+'.bat'))    
+        print('Wrote .bat file: %s.' % str(script+'.bat'))
     for script, script_w in zip(gratelpy_scripts, gratelpy_scripts_windows):
         shutil.copy(script, script_w)
         print('Copied %s to %s.' % (script, script_w))
     return gratelpy_scripts_windows + windows_bat_files
-                        
+
 if os_name == 'windows':
     gratelpy_scripts = windows_prepare(gratelpy_scripts)
-    
+
 setup(
     name='GraTeLPy',
     version=version,
     author='Georg Walther and Matthew Hartley',
     author_email='gratelpy@gmail.com',
     packages=['gratelpy', 'gratelpy.tests'],
-    package_dir = {'gratelpy': 'gratelpy',
-                   'gratelpy.tests': join('gratelpy', 'tests')},
-    package_data = {'gratelpy': [join('mechanisms', '*.txt')],
-                    'gratelpy.tests': ['*.dat']},
-    include_package_data = True,
+    package_dir={'gratelpy': 'gratelpy',
+                 'gratelpy.tests': join('gratelpy', 'tests')},
+    package_data={'gratelpy': [join('mechanisms', '*.txt')],
+                  'gratelpy.tests': ['*.dat']},
+    include_package_data=True,
     scripts=gratelpy_scripts,
     url='http://pypi.python.org/pypi/GraTeLPy',
     license='GPLv3',
     description='Graph theoretic linear stability analysis',
-    long_description='GratTeLPy (Graph Theoretic Analysis of Linear Stability) is a software tool for parameter-free, graph-theoretic linear stability analysis. Given a mechanism file that describes a chemical reaction network (CRN) of mass-action reactions, GraTelPy analyzes the provided mechanism and determines if it meets a necessary condition for multistability.\nPlease find out more at https://github.com/gratelpy/gratelpy',
-	classifiers= [
-		'Development Status :: 3 - Alpha',
-		'Environment :: Console',
-		'Intended Audience :: Science/Research',
-		'Intended Audience :: Education',
-                'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
-                'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-		'License :: OSI Approved',
-		'Operating System :: POSIX :: Linux',
-		'Programming Language :: Python :: 2',
-		'Programming Language :: Python :: 2.7',
-		'Topic :: Education',
-		'Topic :: Scientific/Engineering',
-		'Topic :: Scientific/Engineering :: Bio-Informatics',
-		'Topic :: Scientific/Engineering :: Chemistry',
-		'Topic :: Scientific/Engineering :: Mathematics',
-		'Topic :: Scientific/Engineering :: Physics',
-	],
-    test_suite = 'gratelpy.tests.runtests',
+    long_description=('GratTeLPy (Graph Theoretic Analysis'
+                      'of Linear Stability)'
+                      'is a software tool for parameter-free, graph-theoretic'
+                      'linear stability analysis. Given a mechanism file that'
+                      'describes a chemical reaction network (CRN) of'
+                      'mass-action reactions, GraTelPy analyzes the provided'
+                      'mechanism and determines if it meets a necessary'
+                      'condition for multistability.'
+                      '\nPlease find out more at'
+                      'https://github.com/gratelpy/gratelpy'),
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Environment :: Console',
+        'Intended Audience :: Science/Research',
+        'Intended Audience :: Education',
+        ('License :: OSI Approved :: GNU General Public License v3'
+         'or later (GPLv3+)'),
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'License :: OSI Approved',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Topic :: Education',
+        'Topic :: Scientific/Engineering',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
+        'Topic :: Scientific/Engineering :: Chemistry',
+        'Topic :: Scientific/Engineering :: Mathematics',
+        'Topic :: Scientific/Engineering :: Physics',
+        ],
+    test_suite = 'gratelpy.tests',
     install_requires=[
         "networkx >= 1.6"
     ],
