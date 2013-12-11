@@ -13,6 +13,8 @@ from gratelpy.utils import (result_get_fragment,
                             result_get_sg,
                             fragment_get_species,
                             fragment_get_reactions,
+                            subgraph_get_species,
+                            subgraph_get_reactions,
                             species_get_index,
                             reaction_get_index)
 
@@ -86,6 +88,16 @@ class TestCriticalFragments(unittest.TestCase):
             self.assertTrue(sum(all([len(el) == 2 for el in a_sg])
                                 for a_sg in sg) == 1)
 
+    def check_sg_fragment_conform(self, results):
+        for result in results:
+            fragment = result_get_fragment(result)
+            species = Counter(fragment_get_species(fragment))
+            reactions = Counter(fragment_get_reactions(fragment))
+            for sg in result_get_sg(result):
+                self.assertEqual(species, Counter(subgraph_get_species(sg)))
+                self.assertEqual(reactions,
+                                 Counter(subgraph_get_reactions(sg)))
+
     def run_all(self, results,
                 no_critical, expected_critical,
                 mechanism, no_spec, rank):
@@ -94,6 +106,7 @@ class TestCriticalFragments(unittest.TestCase):
         self.check_duplicate_fragments(results)
         self.check_fragment_notation(results, mechanism, no_spec, rank)
         self.check_edges_only_subgraphs(results)
+        self.check_sg_fragment_conform(results)
 
     def test_reversible_substrate(self):
         mechanism = get_mechanism('reversible_substrate_inhibition.txt')
