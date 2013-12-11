@@ -83,8 +83,9 @@ class TestCriticalFragments(unittest.TestCase):
     def check_edges_only_subgraphs(self, results):
         for result in results:
             sg = result_get_sg(result)
-            self.assertTrue(any(all([len(el) == 2 for el in a_sg])
-                                for a_sg in sg))
+            self.assertTrue(sum(all([len(el) == 2 for el in a_sg])
+                                for a_sg in sg) == 1)
+
 
     def test_reversible_substrate(self):
         mechanism = get_mechanism('reversible_substrate_inhibition.txt')
