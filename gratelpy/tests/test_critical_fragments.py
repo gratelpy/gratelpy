@@ -23,6 +23,7 @@ sg_i = 2
 spec_i = 0
 rxn_i = 1
 
+
 class TestCriticalFragments(unittest.TestCase):
     def get_critical_count(self, results):
         return sum([1 for r in results if r[ks_index] < 0.])
@@ -49,7 +50,7 @@ class TestCriticalFragments(unittest.TestCase):
             self.assertEqual(fragments[f], 1)
 
     def check_fragment_notation(self, results, name, no_species, des_order):
-        alpha, beta, _, _, _, _ = get_network_from_mechanism(name, 
+        alpha, beta, _, _, _, _ = get_network_from_mechanism(name,
                                                              no_species)
         G, stoich, stoich_rank = get_graph_stoich(alpha, beta)
 
