@@ -4,6 +4,15 @@ def invert_dict(a_dict):
         rev_dict[a_dict[key]] = key
     return rev_dict
 
+ks_index = -1
+frag_i = 0
+sc_i = 1
+sg_i = 2
+
+spec_i = 0
+rxn_i = 1
+
+
 def result_get_fragment(result):
     return result[0]
 
