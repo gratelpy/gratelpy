@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Usage: gratelpy_subclient mechanism_file number_of_species_in_mechanism [fragment_server_hostname=localhost] [port number on fragments server = 50000]
 """
+import os
 import sys
 import socket
 import networkx as nx
@@ -15,6 +16,7 @@ from multiprocessing.managers import SyncManager
 from gratelpy.parse_mechanism import get_network_from_mechanism
 from gratelpy.subgraphs import get_all_valid_subgraphs
 from gratelpy.stoich import get_graph_stoich
+from gratelpy.pyin import resource_path
 
 def process_fragment_q(fragment_q, valid_frag_q, G, stoich_rank):
     while True:
@@ -51,6 +53,7 @@ def main():
     except IndexError:
         print __doc__
         sys.exit(2)
+    mechanism_file = os.path.realpath(resource_path('', mechanism_file))
 
     try:
         frag_server = sys.argv[3]
