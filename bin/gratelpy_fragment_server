@@ -234,8 +234,8 @@ def main():
             print ('The stoichiometric matrix of your mechanism has '
                    'rank %d and we discovered %d critical fragment(s) of '
                    'order %d.\n'
-                   'Hence your mechanism meets a necessary condition '
-                   'for oscillations ' 
+                   'Hence your mechanism may exhibit oscillations '
+                   'for some values of the parameters '
                    '(Andronov-Hopf bifurcation).' % (full_stoich_rank,
                                                      no_critical,
                                                      stoich_rank))

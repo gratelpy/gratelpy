@@ -1,6 +1,8 @@
 #!/usr/bin/env python
-"""Usage: gratelpy_subclient mechanism_file number_of_species_in_mechanism [fragment_server_hostname=localhost] [port number on fragments server = 50000]
+"""Usage: gratelpy_subclient mechanism_file number_of_species_in_mechanism
+[fragment_server_hostname=localhost] [port number on fragments server = 50000]
 """
+import os
 import sys
 import socket
 import networkx as nx
@@ -15,6 +17,8 @@ from multiprocessing.managers import SyncManager
 from gratelpy.parse_mechanism import get_network_from_mechanism
 from gratelpy.subgraphs import get_all_valid_subgraphs
 from gratelpy.stoich import get_graph_stoich
+from gratelpy.pyin import resource_path
+
 
 def process_fragment_q(fragment_q, valid_frag_q, G, stoich_rank):
     while True:
@@ -27,6 +31,7 @@ def process_fragment_q(fragment_q, valid_frag_q, G, stoich_rank):
         except Queue.Empty:
             print 'All done'
             return
+
 
 def main():
     print('\nGraTeLPy Copyright (C) 2013  Georg R Walther, Matthew Hartley.\n'
@@ -51,6 +56,7 @@ def main():
     except IndexError:
         print __doc__
         sys.exit(2)
+    mechanism_file = os.path.realpath(resource_path('', mechanism_file))
 
     try:
         frag_server = sys.argv[3]
@@ -58,29 +64,31 @@ def main():
         frag_server = 'localhost'
 
     try:
-	    fragments_server_port = int(sys.argv[4])
+        fragments_server_port = int(sys.argv[4])
     except IndexError:
-	    fragments_server_port = 50000
-	    
+        fragments_server_port = 50000
 
-    class QueueManager(SyncManager): pass
-    
+    class QueueManager(SyncManager):
+        pass
+
     QueueManager.register('get_fragment_q')
     QueueManager.register('get_valid_frag_q')
 
     now = time()
 
-    m = QueueManager(address=(frag_server, fragments_server_port), authkey='smallg')
-    
+    m = QueueManager(address=(frag_server, fragments_server_port),
+                     authkey='smallg')
+
     m.connect()
-    
+
     fragment_q = m.get_fragment_q()
     valid_frag_q = m.get_valid_frag_q()
-    
-    alpha, beta, _, _, _, _ = get_network_from_mechanism(mechanism_file, num_complexes)
+
+    alpha, beta, _, _, _, _ = get_network_from_mechanism(mechanism_file,
+                                                         num_complexes)
 
     G, stoich, stoich_rank = get_graph_stoich(alpha, beta)
-    
+
     process_fragment_q(fragment_q, valid_frag_q, G, stoich_rank)
 
     print('This client ran for this many seconds:\n%.2f' % (time()-now))
@@ -88,6 +96,6 @@ def main():
 if __name__ == '__main__':
     # limit virtual memory (address space) to 2 GB
     # see man getrlimit for identifier RLIMIT_AS
-    # resource.setrlimit(resource.RLIMIT_AS,(2147483648,2147483648)) 
-    
+    # resource.setrlimit(resource.RLIMIT_AS,(2147483648,2147483648))
+
     main()
