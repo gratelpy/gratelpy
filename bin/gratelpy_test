@@ -22,7 +22,7 @@ def main(*args):
     if 'min' in args:
         runtests(minimal=True)
     else:
-        runtest(minimal=False)
+        runtests(minimal=False)
 
 if __name__ == '__main__':
     main(*sys.argv)
