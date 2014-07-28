@@ -156,7 +156,7 @@ setup(
         'Environment :: Console',
         'Intended Audience :: Science/Research',
         'Intended Audience :: Education',
-        ('License :: OSI Approved :: GNU General Public License v3'
+        ('License :: OSI Approved :: GNU General Public License v3 '
          'or later (GPLv3+)'),
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'License :: OSI Approved',
